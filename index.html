@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Navdurga Balmitra Mandal</title>
+  <link rel="manifest" href="manifest.json?v=6">
+  <link rel="apple-touch-icon" href="icon.jpg?v=6">
+  <link rel="icon" type="image/jpeg" href="icon.jpg?v=6">
   <style>
     :root { --primary: #b71c1c; --gold: #d4af37; --bg: #fffbf0; }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
@@ -140,26 +143,15 @@
       background: #ffffff;
       padding: 16px;
       border: 5px double #b71c1c;
-      border-radius: 4px;
+      border-radius: 8px;
       color: #111;
+      position: relative;
     }
-    .pr-slogan { text-align: center; font-size: 0.78rem; font-weight: 700; color: #b71c1c; margin-bottom: 4px; }
-    .pr-header { text-align: center; border-bottom: 2px solid var(--gold); padding-bottom: 8px; margin-bottom: 12px; }
-    .pr-title { font-size: 1.15rem; color: #b71c1c; font-weight: 800; letter-spacing: 0.5px; }
-    .pr-sub { font-size: 0.68rem; color: #444; line-height: 1.2; margin-top: 2px; }
-    .pr-badge { display: inline-block; background: #b71c1c; color: #fff; font-size: 0.72rem; font-weight: bold; padding: 2px 14px; border-radius: 12px; margin-top: 6px; }
-    .pr-meta { display: flex; justify-content: space-between; font-size: 0.8rem; border-bottom: 1px solid #ddd; padding-bottom: 6px; margin-bottom: 10px; }
-    .pr-grid { display: grid; grid-template-columns: 110px 1fr; row-gap: 8px; font-size: 0.82rem; line-height: 1.4; }
-    .pr-label { font-weight: 600; color: #555; }
-    .pr-val { font-weight: 700; color: #111; }
-    .pr-amount-box { background: #fff8e1; border: 1px dashed var(--gold); border-radius: 6px; padding: 8px 12px; margin: 12px 0; display: flex; justify-content: space-between; align-items: center; }
-    .pr-words { font-size: 0.75rem; color: #555; font-style: italic; margin-top: -6px; margin-bottom: 8px; border-bottom: 1px dotted #ccc; padding-bottom: 6px; }
-    .pr-footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 14px; padding-top: 8px; border-top: 1px solid #eee; }
     .pr-stamp { padding: 3px 8px; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; transform: rotate(-5deg); border-radius: 4px; display: inline-block; }
     .pr-stamp-paid { border: 2px solid #27ae60; color: #27ae60; }
     .pr-stamp-due { border: 2px solid #c0392b; color: #c0392b; }
 
-    /* Print styling: isolates the receipt when saving as PDF */
+    /* Native Print Isolation */
     @media print {
       body * { visibility: hidden; }
       #capture-receipt, #capture-receipt * { visibility: visible; }
@@ -176,6 +168,13 @@
     <p style="font-size:0.75rem; color:#ffe0b2;">Navratri Utsav 2026</p>
     <div class="header-addr">📍 NEW MUNICIPAL BUILDING 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008</div>
   </header>
+
+  <!-- AUTO 1-TAP INSTALL POPUP -->
+  <div id="install-banner" style="display:none; background:#fff8e1; border:2px solid #f39c12; border-radius:8px; padding:12px; margin:12px; box-shadow:0 4px 12px rgba(0,0,0,0.15); text-align:center;">
+    <p style="font-size:0.9rem; font-weight:700; color:#b71c1c; margin-bottom:4px;">📲 Install Navdurga Mandal App</p>
+    <p style="font-size:0.78rem; color:#555; margin-bottom:8px;">Add to your home screen for quick daily Aarti, Darshan & receipts!</p>
+    <button id="btn-install-app" class="btn" style="background:#2e7d32; width:100%; padding:10px; font-size:0.9rem;">⚡ Add to Home Screen (Install)</button>
+  </div>
 
   <!-- OVERLAY & SIDE DRAWER -->
   <div id="drawer-overlay" onclick="closeDrawer()"></div>
@@ -247,7 +246,7 @@
   <section id="tab-share" class="tab">
     <div class="card" style="border-left-color: #25d366; text-align: center;">
       <h3>📲 Share Mandal App</h3>
-      <p style="font-size: 0.85rem; color:#555;">Share with society members & devotees:</p>
+      <p style="font-size: 0.85rem; color:#555;">Scan QR code or click share to send via WhatsApp:</p>
       <div class="qr-container" style="text-align:center; margin:12px 0;">
         <img id="share-qr-img" style="width:180px; height:180px; display:block; margin:0 auto;" src="" alt="App QR Code">
         <a id="qr-download-link" class="btn" style="background:#333; font-size:0.75rem; padding:5px 10px; margin-top:8px;" download="NBMM_Pandal_QR.png" target="_blank">📥 Save QR Image</a>
@@ -283,14 +282,14 @@
     </div>
   </section>
 
-  <!-- TAB 6: KHATA (ADMIN) -->
+  <!-- TAB 6: KHATA (ADMIN WITH AUTO-LOGIN & STATUS) -->
   <section id="tab-admin" class="tab">
     <div id="login-box" class="card" style="text-align:center;">
       <h3>🔐 Committee Login</h3>
-      <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">Enter credentials:</p>
+      <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">Enter credentials (session is remembered):</p>
       <input type="text" id="uid" class="input-box" placeholder="User ID" />
       <input type="password" id="pin" class="input-box" placeholder="Password" />
-      <button class="btn" style="width:100%;" onclick="doLogin()">Login</button>
+      <button class="btn" style="width:100%;" onclick="doLogin()">Login & Save</button>
       <p id="err" style="color:red; font-size:0.75rem; margin-top:6px; display:none;">Invalid ID or Password</p>
     </div>
 
@@ -316,14 +315,14 @@
         
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
           <div>
-            <label style="font-size:0.75rem; font-weight:600; color:#555;">Status *</label>
+            <label style="font-size:0.75rem; font-weight:600; color:#555;">Payment Status *</label>
             <select id="r-status" class="input-box" style="font-weight:bold; border-color:#27ae60;">
               <option value="Paid" selected>✅ Paid</option>
               <option value="Not Paid">⏳ Not Paid</option>
             </select>
           </div>
           <div>
-            <label style="font-size:0.75rem; font-weight:600; color:#555;">Mode</label>
+            <label style="font-size:0.75rem; font-weight:600; color:#555;">Payment Mode</label>
             <select id="r-mode" class="input-box" onchange="toggleRefInput()">
               <option value="Cash">Cash 💵</option>
               <option value="UPI">UPI / GPay 📱</option>
@@ -350,12 +349,12 @@
       <div class="card">
         <h3>📋 Committee Ledger</h3>
         <p>
-          <strong>Total Paid:</strong> ₹<span id="tot-in" style="color:#2e7d32;">0</span> | 
-          <strong>Pending:</strong> ₹<span id="tot-pending" style="color:#d35400;">0</span>
+          <strong>Total Collected (Paid):</strong> ₹<span id="tot-in" style="color:#2e7d32;">0</span> | 
+          <strong>Pending (Due):</strong> ₹<span id="tot-pending" style="color:#d35400;">0</span>
         </p>
         <p>
-          <strong>Expense:</strong> ₹<span id="tot-ex" style="color:#c0392b;">0</span> | 
-          <strong>Balance:</strong> ₹<strong id="tot-bal" style="color:var(--primary);">0</strong>
+          <strong>Total Expense:</strong> ₹<span id="tot-ex" style="color:#c0392b;">0</span> | 
+          <strong>Net Balance:</strong> ₹<strong id="tot-bal" style="color:var(--primary);">0</strong>
         </p>
         <table class="table">
           <thead><tr><th>Donor / Ref</th><th>Status</th><th>₹</th><th>Actions</th></tr></thead>
@@ -366,67 +365,84 @@
     </div>
   </section>
 
-  <!-- RECEIPT MODAL -->
+  <!-- RECEIPT MODAL WITH LOGO -->
   <div id="receipt-modal">
     <div class="modal-content-wrap">
       
       <div id="capture-receipt" class="printable-receipt">
-        <div class="pr-slogan">॥ श्री गणेशाय नमः ॥ &nbsp;&nbsp;&nbsp;&nbsp; ॥ जय माता दी ॥</div>
-        
-        <div class="pr-header">
-          <div class="pr-title">NAVDURGA BALMITRA MANDAL</div>
-          <div class="pr-sub">NEW MUNICIPAL BUILDING 76 TENAMENT, 5TH LANE, KAMATHIPURA, SUKHLAJI STREET, MUMBAI - 400008</div>
-          <div class="pr-sub">Helpline: +91 9820727275</div>
-          <div class="pr-badge" id="pr-receipt-type">OFFICIAL DONATION RECEIPT</div>
+        <!-- TOP SHLOKA BAR -->
+        <div style="display:flex; justify-content:space-between; font-size:0.72rem; font-weight:bold; color:#b71c1c; border-bottom:1px dashed #d4af37; padding-bottom:4px; margin-bottom:8px;">
+          <span>॥ श्री गणेशाय नमः ॥</span>
+          <span>॥ जय माता दी ॥</span>
         </div>
 
-        <div class="pr-meta">
-          <div><strong>Receipt No:</strong> <span id="pr-rec" style="color:var(--primary); font-weight:800;"></span></div>
+        <!-- HEADER WITH EMBEDDED CIRCULAR LOGO -->
+        <div style="display:flex; align-items:center; gap:10px; border-bottom:2px solid #b71c1c; padding-bottom:8px; margin-bottom:8px;">
+          <img src="icon.jpg" alt="Logo" style="width:60px; height:60px; object-fit:cover; border-radius:50%; border:2px solid #d4af37; flex-shrink:0;" onerror="this.style.display='none'"/>
+          <div style="flex:1; text-align:left;">
+            <div style="font-size:1.05rem; font-weight:900; color:#b71c1c; text-transform:uppercase; line-height:1.2;">Navdurga Balmitra Mandal</div>
+            <div style="font-size:0.65rem; color:#444; line-height:1.2; margin-top:2px;">NEW MUNICIPAL BLDG 76 TENAMENT, 5TH LANE, KAMATHIPURA, SUKHLAJI ST, MUMBAI 400008</div>
+            <div style="font-size:0.65rem; color:#666; margin-top:1px;">📞 Helpline: +91 9820727275</div>
+          </div>
+        </div>
+
+        <!-- RECEIPT BADGE -->
+        <div style="text-align:center; margin-bottom:8px;">
+          <div id="pr-receipt-type" style="display:inline-block; background:#b71c1c; color:#fff; font-size:0.72rem; font-weight:700; padding:2px 14px; border-radius:12px; text-transform:uppercase;">Official Donation Receipt</div>
+        </div>
+
+        <!-- VOUCHER META -->
+        <div style="display:flex; justify-content:space-between; font-size:0.78rem; background:#fff8e7; padding:4px 8px; border-radius:4px; border-left:3px solid #d4af37; margin-bottom:8px;">
+          <div><strong>Receipt No:</strong> <span id="pr-rec" style="color:#b71c1c; font-weight:800;"></span></div>
           <div><strong>Date:</strong> <span id="pr-date"></span></div>
         </div>
 
-        <div class="pr-grid">
-          <div class="pr-label">Received From:</div>
-          <div class="pr-val" id="pr-name"></div>
+        <!-- PARTICULARS -->
+        <div style="display:grid; grid-template-columns:110px 1fr; row-gap:6px; font-size:0.8rem; line-height:1.4;">
+          <div style="color:#555; font-weight:600;">Received From:</div>
+          <div id="pr-name" style="font-weight:800; color:#111;"></div>
 
-          <div class="pr-label">Address / Flat:</div>
-          <div class="pr-val" id="pr-addr"></div>
+          <div style="color:#555; font-weight:600;">Room / Address:</div>
+          <div id="pr-addr" style="font-weight:600; color:#333;"></div>
 
-          <div class="pr-label">Status:</div>
-          <div class="pr-val" id="pr-status-text"></div>
+          <div style="color:#555; font-weight:600;">Payment Status:</div>
+          <div id="pr-status-text" style="font-weight:800;"></div>
 
-          <div class="pr-label">Payment Mode:</div>
-          <div class="pr-val" id="pr-mode"></div>
+          <div style="color:#555; font-weight:600;">Payment Mode:</div>
+          <div id="pr-mode" style="font-weight:600;"></div>
 
-          <div class="pr-label" id="pr-ref-lbl" style="display:none;">Transaction Ref:</div>
-          <div class="pr-val" id="pr-ref-val" style="display:none;"></div>
+          <div id="pr-ref-lbl" style="color:#555; font-weight:600; display:none;">Transaction Ref:</div>
+          <div id="pr-ref-val" style="font-weight:700; color:#2980b9; display:none;"></div>
 
-          <div class="pr-label">Contribution For:</div>
-          <div class="pr-val">Navratri Utsav 2026 Seva</div>
+          <div style="color:#555; font-weight:600;">Towards:</div>
+          <div style="font-weight:600;">Navratri Utsav 2026 Seva & Puja</div>
         </div>
 
-        <div class="pr-amount-box">
-          <span style="font-size:0.75rem; text-transform:uppercase; font-weight:bold; color:#444;" id="pr-amt-label">Rupees Received:</span>
-          <span style="font-size:1.4rem; font-weight:800; color:var(--primary);">₹<span id="pr-amt"></span>/-</span>
+        <!-- AMOUNT BOX -->
+        <div style="display:flex; justify-content:space-between; align-items:center; background:#fffdf5; border:1.5px dashed #b71c1c; border-radius:6px; padding:8px 12px; margin:8px 0;">
+          <span id="pr-amt-label" style="font-size:0.75rem; font-weight:800; color:#555; text-transform:uppercase;">Rupees Received:</span>
+          <span style="font-size:1.35rem; font-weight:900; color:#b71c1c;">₹<span id="pr-amt"></span>/-</span>
         </div>
 
-        <div class="pr-words">
-          <strong>In Words:</strong> <span id="pr-words-val"></span>
+        <!-- IN WORDS -->
+        <div style="font-size:0.72rem; color:#444; border-bottom:1px dotted #ccc; padding-bottom:4px; margin-bottom:8px;">
+          <strong>In Words:</strong> <span id="pr-words-val" style="font-style:italic; color:#222;"></span>
         </div>
 
-        <div class="pr-footer">
+        <!-- FOOTER & STAMP -->
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:8px; padding-top:6px; border-top:1px solid #eee;">
           <div>
             <div id="pr-stamp-box" class="pr-stamp pr-stamp-paid">PAID & VERIFIED</div>
-            <div style="font-size:0.62rem; color:#888; margin-top:3px;">System Generated Digital Record</div>
+            <div style="font-size:0.6rem; color:#777; margin-top:2px;">Digital Receipt System</div>
           </div>
           <div style="text-align:right;">
-            <div style="font-weight:700; font-size:0.78rem;">Navdurga Balmitra Mandal</div>
-            <div style="font-size:0.65rem; color:#666; margin-top:2px;">(Authorized Signatory)</div>
+            <div style="font-weight:800; font-size:0.75rem; color:#111;">Navdurga Balmitra Mandal</div>
+            <div style="font-size:0.62rem; color:#666;">(Authorised Signatory)</div>
           </div>
         </div>
       </div>
 
-      <!-- DIRECT ACTIONS -->
+      <!-- ACTIONS -->
       <div style="display:flex; flex-direction:column; gap:8px; margin-top:12px;">
         <button class="btn" style="background:#e74c3c; width:100%; font-size:0.95rem; padding:12px;" onclick="window.print()">📄 Save as PDF / Print</button>
         <button class="btn" style="background:#25d366; width:100%; font-size:0.95rem; padding:12px;" id="btn-wa-direct">📲 Forward Details on WhatsApp</button>
@@ -437,8 +453,32 @@
   </div>
 
   <script>
-    let currentReceiptItem = null;
+    // 1-TAP INSTALL LOGIC
+    let deferredPrompt;
+    const installBanner = document.getElementById('install-banner');
+    const installBtn = document.getElementById('btn-install-app');
 
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (installBanner) installBanner.style.display = 'block';
+    });
+
+    if (installBtn) {
+      installBtn.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        installBanner.style.display = 'none';
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+      });
+    }
+
+    window.addEventListener('appinstalled', () => {
+      if (installBanner) installBanner.style.display = 'none';
+    });
+
+    // DRAWER LOGIC
     function openDrawer() {
       document.getElementById('side-drawer').style.left = '0px';
       document.getElementById('drawer-overlay').style.display = 'block';
@@ -530,7 +570,7 @@
     }
 
     function shareOnWhatsApp() {
-      const msg = '🚩 *NAVDURGA BALMITRA MANDAL* 🚩\n📍 NEW MUNICIPAL BLDG 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008\n\nCheck out our official Mandal App!\n📅 Aarti & Program Schedule\n🔴 Live Darshan\n🙏 Online Pavitra Daan\n🗺️ Google Maps: https://goo.gl/maps/TxZFq3YUEzNL9uU58?g_st=ac\n\n📲 *Open Here:* ' + window.location.href + '\n📞 Helpline: 9820727275';
+      const msg = '🚩 *NAVDURGA BALMITRA MANDAL* 🚩\n📍 NEW MUNICIPAL BLDG 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008\n\nCheck out our official Mandal App!\n📅 Aarti & Program Schedule\n🔴 Live Darshan\n🙏 Online Pavitra Daan\n🗺️ Google Maps: https://goo.gl/maps/TxZFq3YUEzNL9uU58?g_st=ac\n\n📲 *Open & Install:* ' + window.location.href + '\n📞 Helpline: 9820727275';
       window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msg), '_blank');
     }
 
@@ -542,6 +582,7 @@
       });
     }
 
+    // AUTO-LOGIN LOGIC
     function checkLogin() {
       if (localStorage.getItem('nbmm_auth') === '1') {
         document.getElementById('login-box').style.display = 'none';
@@ -726,7 +767,6 @@
     }
 
     function openReceiptModal(item) {
-      currentReceiptItem = item;
       const isPaid = (item.status !== 'Not Paid');
 
       document.getElementById('pr-rec').innerText = item.rec;
@@ -793,9 +833,12 @@
       window.open(url, '_blank');
     }
 
+    // INITIALIZATION
     initDays();
     initShare();
     checkLogin();
   </script>
 </body>
-  </html>
+</html>
+
+  
