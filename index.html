@@ -42,9 +42,12 @@
   <!-- TAB 1: SCHEDULE -->
   <main id="tab-schedule" class="tab active">
     <div class="card" style="border-left-color: #2e7d32;">
-      <h3>Pandal Address</h3>
+      <h3>Pandal Address & Helpdesk</h3>
       <p>New Municipal Building 76 Tenament, 5th Lane, Sukhlaji Street</p>
-      <a class="btn" style="background:#2e7d32; margin-top:5px;" href="https://www.google.com/maps/search/?api=1&query=New+Municipal+Building+76+Tenament+5th+Lane+Sukhlaji+Street" target="_blank">🗺️ Open in Google Maps</a>
+      <div style="display:flex; gap:8px; margin-top:8px;">
+        <a class="btn" style="background:#2e7d32; flex:1;" href="https://www.google.com/maps/search/?api=1&query=New+Municipal+Building+76+Tenament+5th+Lane+Sukhlaji+Street" target="_blank">🗺️ Maps</a>
+        <a class="btn" style="background:#b71c1c; flex:1;" href="tel:+919820727275">📞 Call Helpline</a>
+      </div>
     </div>
 
     <div class="card">
@@ -84,8 +87,18 @@
     </div>
   </main>
 
-  <!-- TAB 4: INFO -->
+  <!-- TAB 4: INFO & CONTACTS -->
   <main id="tab-info" class="tab">
+    <div class="card">
+      <h3>Mandal Office & Contacts</h3>
+      <p>📍 New Municipal Bldg 76 Tenament, 5th Lane Sukhlaji St.</p>
+      <div style="margin-top:10px; padding:10px; background:#f9f9f9; border-radius:6px;">
+        <p><strong>Mandal Helpline / Coordinator:</strong></p>
+        <p style="font-size:1.05rem; font-weight:bold; color:var(--primary); margin:4px 0;">📞 9820727275</p>
+        <a class="btn" style="background:#2e7d32; width:100%; margin-top:6px;" href="tel:+919820727275">📲 Tap to Call Helpline</a>
+      </div>
+    </div>
+
     <div class="card">
       <h3>Jai Ambe Gauri (Aarti)</h3>
       <p style="white-space: pre-line; line-height: 1.7; font-size: 0.85rem;">
@@ -95,11 +108,6 @@
         उज्ज्वल से दोउ नैना, चंद्रबदन नीको॥
         जय अम्बे गौरी...
       </p>
-    </div>
-    <div class="card">
-      <h3>Office & Contacts</h3>
-      <p>📍 New Municipal Bldg 76 Tenament, 5th Lane Sukhlaji St.</p>
-      <p style="margin-top:6px;"><strong>President:</strong> <a href="tel:+919800000000" style="color:var(--primary);">Call Office</a></p>
     </div>
   </main>
 
@@ -220,7 +228,6 @@
     }
     showDays();
 
-    // Login credentials
     function login() {
       const u = document.getElementById('uid').value.trim();
       const p = document.getElementById('pin').value.trim();
