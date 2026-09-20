@@ -167,6 +167,55 @@
     <p style="font-size:0.75rem; color:#ffe0b2;">Navratri Utsav 2026</p>
     <div class="header-addr">📍 NEW MUNICIPAL BUILDING 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008</div>
   </header>
+    <!-- DEDICATED QR SCAN INSTALL MODAL -->
+  <div id="qr-install-modal" style="
+    display: none; 
+    position: fixed; 
+    top: 0; left: 0; right: 0; bottom: 0; 
+    background: rgba(0,0,0,0.85); 
+    z-index: 500; 
+    padding: 20px;
+  ">
+    <div style="
+      background: #ffffff; 
+      max-width: 380px; 
+      margin: 20vh auto 0; 
+      border-radius: 12px; 
+      padding: 22px; 
+      text-align: center; 
+      border: 3px solid #b71c1c; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    ">
+      <img src="icon.jpg" alt="Logo" style="width:70px; height:70px; border-radius:50%; border:2px solid #d4af37; margin-bottom:10px;" />
+      <h3 style="color:#b71c1c; font-size:1.15rem; margin-bottom:6px;">Navdurga Balmitra Mandal</h3>
+      <p style="font-size:0.85rem; color:#444; line-height:1.4; margin-bottom:16px;">
+        Tap below to install the official Mandal App directly on your mobile home screen!
+      </p>
+
+      <button id="btn-modal-install" class="btn" style="
+        background: #27ae60; 
+        width: 100%; 
+        font-size: 1rem; 
+        padding: 14px; 
+        font-weight: 700;
+        letter-spacing: 0.5px;
+      ">
+        📥 INSTALL APP NOW
+      </button>
+
+      <button onclick="document.getElementById('qr-install-modal').style.display='none'" style="
+        background: none; 
+        border: none; 
+        color: #777; 
+        font-size: 0.8rem; 
+        margin-top: 12px; 
+        cursor: pointer;
+      ">
+        Continue in Browser Instead
+      </button>
+    </div>
+  </div>
+  
 
   <!-- AUTO 1-TAP INSTALL POPUP -->
   <div id="install-banner" style="display:none; background:#fff8e1; border:2px solid #f39c12; border-radius:8px; padding:12px; margin:12px; box-shadow:0 4px 12px rgba(0,0,0,0.15); text-align:center;">
@@ -521,49 +570,49 @@
   </div>
 
   <script>
-    // 1. REGISTER SERVICE WORKER
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
+      // 1. REGISTER SERVICE WORKER
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+
+  // 2. DETECT QR SCAN & HANDLE NATIVE INSTALL
+  let deferredPrompt;
+  const qrModal = document.getElementById('qr-install-modal');
+  const installBtn = document.getElementById('btn-modal-install');
+  const urlParams = new URLSearchParams(window.location.search);
+  const isFromQR = (urlParams.get('install') === 'true');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+
+    // If scanned via QR, pop open the center modal immediately
+    if (isFromQR && qrModal) {
+      qrModal.style.display = 'block';
     }
+  });
 
-    // 2. DIRECT AUTO-INSTALL TRIGGER ON QR SCAN
-    let deferredPrompt;
-    const installBanner = document.getElementById('install-banner');
-    const installBtn = document.getElementById('btn-install-app');
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-
-      // Detect if user opened the page via QR scan link
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('install') === 'true') {
-        setTimeout(() => {
-          if (deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then(() => {
-              deferredPrompt = null;
-            });
-          }
-        }, 500);
-      }
-
-      if (installBanner) installBanner.style.display = 'block';
-    });
-
-    if (installBtn) {
-      installBtn.addEventListener('click', async () => {
-        if (!deferredPrompt) return;
-        installBanner.style.display = 'none';
+  // Tapping the big button triggers the browser's native prompt with a valid user gesture
+  if (installBtn) {
+    installBtn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        qrModal.style.display = 'none';
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
         deferredPrompt = null;
-      });
-    }
-
-    window.addEventListener('appinstalled', () => {
-      if (installBanner) installBanner.style.display = 'none';
+      } else {
+        // Fallback for browsers that hide beforeinstallprompt or iOS Safari
+        alert("To install:\n1. Tap your browser's menu (⋮ or share icon)\n2. Tap 'Add to Home screen'");
+        qrModal.style.display = 'none';
+      }
     });
+  }
+
+  window.addEventListener('appinstalled', () => {
+    if (qrModal) qrModal.style.display = 'none';
+  });
+    
+  
 
     // DRAWER
     function openDrawer() {
