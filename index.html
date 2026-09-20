@@ -4,8 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Navdurga Balmitra Mandal</title>
+
+  <!-- Libraries for Image & PDF Generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <style>
-    :root { --primary: #b71c1c; --gold: #f39c12; --bg: #fffbf0; }
+    :root { --primary: #b71c1c; --gold: #d4af37; --bg: #fffbf0; }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
     body { background: var(--bg); color: #2c3e50; min-height: 100vh; }
     
@@ -34,7 +39,6 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
     }
     header h1 { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.5px; padding: 0 45px; }
     .header-addr { display: inline-block; margin-top: 5px; background: rgba(0,0,0,0.3); padding: 4px 10px; border-radius: 15px; font-size: 0.7rem; line-height: 1.3; }
@@ -49,7 +53,7 @@
       background: #ffffff;
       box-shadow: 4px 0 20px rgba(0,0,0,0.35);
       z-index: 200;
-      transition: transform 0.25s ease, left 0.25s ease;
+      transition: left 0.25s ease;
       display: flex;
       flex-direction: column;
     }
@@ -115,14 +119,134 @@
     .day-bar { display: flex; overflow-x: auto; gap: 6px; padding-bottom: 8px; margin-bottom: 10px; }
     .day-btn { flex: 0 0 auto; background: #fff; border: 1px solid #ccc; border-radius: 16px; padding: 6px 12px; font-size: 0.78rem; font-weight: 600; color: #444; cursor: pointer; }
     .day-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-    .input-box { width: 100%; padding: 10px; margin: 5px 0 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95rem; }
+    .input-box { width: 100%; padding: 10px; margin: 4px 0 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem; }
     .table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin-top: 8px; }
     .table th, .table td { border: 1px solid #eee; padding: 6px; text-align: left; vertical-align: middle; }
     .table th { background: #f5f5f5; }
-    #receipt-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 300; padding: 20px; }
-    .receipt-box { background: #fff; max-width: 400px; margin: 30px auto; border-radius: 10px; padding: 18px; border: 2px dashed var(--primary); }
-    .qr-container { text-align: center; margin: 12px auto; padding: 10px; background: #fafafa; border: 1px dashed #ddd; border-radius: 8px; }
-    .share-btn-group { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+    
+    /* PROFESSIONAL RECEIPT STYLING */
+    #receipt-modal { 
+      display: none; 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      right: 0; 
+      bottom: 0; 
+      background: rgba(0,0,0,0.8); 
+      z-index: 300; 
+      padding: 12px; 
+      overflow-y: auto;
+    }
+    .modal-content-wrap {
+      max-width: 460px;
+      margin: 10px auto;
+    }
+    .printable-receipt {
+      background: #ffffff;
+      padding: 18px;
+      border: 5px double #b71c1c;
+      border-radius: 4px;
+      position: relative;
+      color: #111;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    }
+    .pr-slogan {
+      text-align: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #b71c1c;
+      margin-bottom: 4px;
+    }
+    .pr-header {
+      text-align: center;
+      border-bottom: 2px solid var(--gold);
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+    .pr-title {
+      font-size: 1.15rem;
+      color: #b71c1c;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+    .pr-sub {
+      font-size: 0.68rem;
+      color: #444;
+      line-height: 1.2;
+      margin-top: 2px;
+    }
+    .pr-badge {
+      display: inline-block;
+      background: #b71c1c;
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: bold;
+      padding: 2px 14px;
+      border-radius: 12px;
+      margin-top: 6px;
+      letter-spacing: 0.5px;
+    }
+    .pr-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+    }
+    .pr-grid {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      row-gap: 8px;
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+    .pr-label {
+      font-weight: 600;
+      color: #555;
+    }
+    .pr-val {
+      font-weight: 700;
+      color: #111;
+    }
+    .pr-amount-box {
+      background: #fff8e1;
+      border: 1px dashed var(--gold);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin: 12px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .pr-words {
+      font-size: 0.75rem;
+      color: #555;
+      font-style: italic;
+      margin-top: -6px;
+      margin-bottom: 8px;
+      border-bottom: 1px dotted #ccc;
+      padding-bottom: 6px;
+    }
+    .pr-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 14px;
+      padding-top: 8px;
+      border-top: 1px solid #eee;
+    }
+    .pr-stamp {
+      border: 2px solid #27ae60;
+      color: #27ae60;
+      padding: 3px 8px;
+      font-weight: 800;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      transform: rotate(-5deg);
+      border-radius: 4px;
+      display: inline-block;
+    }
   </style>
 </head>
 <body>
@@ -183,7 +307,7 @@
   <section id="tab-live" class="tab">
     <div class="card">
       <h3>Live Darshan</h3>
-      <p style="font-size:0.85rem; margin-bottom:10px;">Watch Aarti live from our Sukhlaji Street pandal:</p>
+      <p style="font-size:0.85rem; margin-bottom:10px;">Watch Aarti live from our pandal:</p>
       <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:8px;">
         <iframe style="position:absolute; top:0; left:0; width:100%; height:100%;" src="https://www.youtube.com/embed/live_stream?channel=YOUR_CHANNEL_ID" frameborder="0" allowfullscreen></iframe>
       </div>
@@ -205,7 +329,7 @@
   <section id="tab-share" class="tab">
     <div class="card" style="border-left-color: #25d366; text-align: center;">
       <h3>📲 Share Mandal App</h3>
-      <p style="font-size: 0.85rem; color:#555;">Share with society members, relatives & devotees:</p>
+      <p style="font-size: 0.85rem; color:#555;">Share with society members & devotees:</p>
       <div class="qr-container">
         <p style="font-size:0.75rem; color:#666; margin-bottom:6px;">Scan to open on any mobile:</p>
         <img id="share-qr-img" style="width:180px; height:180px; display:block; margin:0 auto;" src="" alt="App QR Code">
@@ -242,7 +366,7 @@
     </div>
   </section>
 
-  <!-- TAB 6: KHATA (ADMIN) -->
+  <!-- TAB 6: KHATA (ADMIN WITH DETAILED RECEIPT FORM) -->
   <section id="tab-admin" class="tab">
     <div id="login-box" class="card" style="text-align:center;">
       <h3>🔐 Committee Login</h3>
@@ -255,24 +379,41 @@
 
     <div id="panel-box" style="display:none;">
       <div class="card" style="border-left-color:#2e7d32;">
-        <h3 id="form-title">🧾 Receipt / Entry Generator</h3>
+        <h3 id="form-title">🧾 New Donation / Receipt Entry</h3>
         <input type="hidden" id="edit-id" value="" />
         
         <select id="r-type" class="input-box">
           <option value="Income">Income (Vargani / Daan)</option>
           <option value="Expense">Expense (Pandal / Light / Sound)</option>
         </select>
-        <input type="text" id="r-name" class="input-box" placeholder="Person / Shop Name (e.g. Ramesh Bhai)" />
-        <input type="tel" id="r-phone" class="input-box" placeholder="WhatsApp Phone (Optional)" />
-        <select id="r-mode" class="input-box">
-          <option value="Cash">Cash 💵</option>
-          <option value="UPI">GPay / PhonePe / UPI 📱</option>
-          <option value="Bank">Bank Transfer 🏦</option>
-        </select>
-        <input type="number" id="r-amt" class="input-box" placeholder="Amount (₹)" />
         
-        <div style="display:flex; gap:8px;">
-          <button class="btn" id="save-btn" style="background:#2e7d32; flex:1;" onclick="saveRecord()">💾 Save & Share Receipt</button>
+        <label style="font-size:0.75rem; font-weight:600; color:#555;">Donor Name *</label>
+        <input type="text" id="r-name" class="input-box" placeholder="e.g. Ramesh Bhai Shah" />
+
+        <label style="font-size:0.75rem; font-weight:600; color:#555;">Room / Flat / Shop No. (Optional)</label>
+        <input type="text" id="r-address" class="input-box" placeholder="e.g. Room 14, 2nd Floor" />
+        
+        <label style="font-size:0.75rem; font-weight:600; color:#555;">WhatsApp Phone Number</label>
+        <input type="tel" id="r-phone" class="input-box" placeholder="e.g. 9820000000" />
+        
+        <label style="font-size:0.75rem; font-weight:600; color:#555;">Payment Mode</label>
+        <select id="r-mode" class="input-box" onchange="toggleRefInput()">
+          <option value="Cash">Cash 💵</option>
+          <option value="UPI">Google Pay / PhonePe / UPI 📱</option>
+          <option value="Cheque">Cheque 🏦</option>
+          <option value="Bank">Bank Transfer / NEFT 🏛️</option>
+        </select>
+
+        <div id="ref-field" style="display:none;">
+          <label style="font-size:0.75rem; font-weight:600; color:#555;">Transaction Ref / UTR / Cheque No.</label>
+          <input type="text" id="r-ref" class="input-box" placeholder="e.g. UPI Ref 429188..." />
+        </div>
+
+        <label style="font-size:0.75rem; font-weight:600; color:#555;">Amount in Rupees (₹) *</label>
+        <input type="number" id="r-amt" class="input-box" placeholder="e.g. 501" />
+        
+        <div style="display:flex; gap:8px; margin-top:6px;">
+          <button class="btn" id="save-btn" style="background:#2e7d32; flex:1;" onclick="saveRecord()">💾 Save & Generate Official Receipt</button>
           <button class="btn" id="cancel-edit-btn" style="background:#c0392b; display:none;" onclick="cancelEdit()">Cancel</button>
         </div>
       </div>
@@ -282,7 +423,7 @@
         <p><strong>Total Income:</strong> ₹<span id="tot-in">0</span> | <strong>Expense:</strong> ₹<span id="tot-ex">0</span></p>
         <p><strong>Net Balance:</strong> ₹<strong id="tot-bal" style="color:var(--primary);">0</strong></p>
         <table class="table">
-          <thead><tr><th>Name</th><th>Mode</th><th>₹</th><th>Actions</th></tr></thead>
+          <thead><tr><th>Donor / Ref</th><th>Mode</th><th>₹</th><th>Actions</th></tr></thead>
           <tbody id="rec-rows"></tbody>
         </table>
         <button class="btn" style="background:#333; width:100%; margin-top:10px;" onclick="doLogout()">🔒 Lock & Sign Out</button>
@@ -290,25 +431,80 @@
     </div>
   </section>
 
-  <!-- RECEIPT POPUP -->
+  <!-- AUTO-POPULATED OFFICIAL RECEIPT MODAL -->
   <div id="receipt-modal">
-    <div class="receipt-box">
-      <h3 style="color:var(--primary); text-align:center;">NAVDURGA BALMITRA MANDAL</h3>
-      <p style="text-align:center; font-size:0.72rem; line-height:1.2; margin-top:2px;">NEW MUNICIPAL BLDG 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI ST MUMBAI 400008</p>
-      <hr style="margin:8px 0;">
-      <p><strong>Receipt:</strong> <span id="m-rec"></span></p>
-      <p><strong>Name:</strong> <span id="m-name"></span></p>
-      <p><strong>Mode:</strong> <span id="m-mode"></span></p>
-      <p><strong>Amount:</strong> <strong style="font-size:1.1rem; color:var(--primary);">₹<span id="m-amt"></span></strong></p>
-      <div style="display:flex; gap:8px; margin-top:14px;">
-        <button class="btn" style="background:#25d366; flex:1;" id="m-wa">📲 WhatsApp</button>
-        <button class="btn" style="background:#666; flex:1;" onclick="document.getElementById('receipt-modal').style.display='none'">Close</button>
+    <div class="modal-content-wrap">
+      
+      <!-- THE RENDERED RECEIPT -->
+      <div id="capture-receipt" class="printable-receipt">
+        <div class="pr-slogan">॥ श्री गणेशाय नमः ॥ &nbsp;&nbsp;&nbsp;&nbsp; ॥ जय माता दी ॥</div>
+        
+        <div class="pr-header">
+          <div class="pr-title">NAVDURGA BALMITRA MANDAL</div>
+          <div class="pr-sub">NEW MUNICIPAL BUILDING 76 TENAMENT, 5TH LANE, KAMATHIPURA, SUKHLAJI STREET, MUMBAI - 400008</div>
+          <div class="pr-sub">Helpline: +91 9820727275</div>
+          <div class="pr-badge">OFFICIAL DONATION RECEIPT</div>
+        </div>
+
+        <div class="pr-meta">
+          <div><strong>Receipt No:</strong> <span id="pr-rec" style="color:var(--primary); font-weight:800;"></span></div>
+          <div><strong>Date:</strong> <span id="pr-date"></span></div>
+        </div>
+
+        <div class="pr-grid">
+          <div class="pr-label">Received From:</div>
+          <div class="pr-val" id="pr-name"></div>
+
+          <div class="pr-label">Address / Flat:</div>
+          <div class="pr-val" id="pr-addr"></div>
+
+          <div class="pr-label">Payment Mode:</div>
+          <div class="pr-val" id="pr-mode"></div>
+
+          <div class="pr-label" id="pr-ref-lbl" style="display:none;">Transaction Ref:</div>
+          <div class="pr-val" id="pr-ref-val" style="display:none;"></div>
+
+          <div class="pr-label">Contribution For:</div>
+          <div class="pr-val">Navratri Utsav 2026 Seva & Puja</div>
+        </div>
+
+        <div class="pr-amount-box">
+          <span style="font-size:0.75rem; text-transform:uppercase; font-weight:bold; color:#444;">Rupees:</span>
+          <span style="font-size:1.4rem; font-weight:800; color:var(--primary);">₹<span id="pr-amt"></span>/-</span>
+        </div>
+
+        <div class="pr-words">
+          <strong>In Words:</strong> <span id="pr-words-val"></span>
+        </div>
+
+        <div class="pr-footer">
+          <div>
+            <div class="pr-stamp">PAID & VERIFIED</div>
+            <div style="font-size:0.62rem; color:#888; margin-top:3px;">System Generated Digital Receipt</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-weight:700; font-size:0.78rem;">Navdurga Balmitra Mandal</div>
+            <div style="font-size:0.65rem; color:#666; margin-top:2px;">(Authorized Signatory)</div>
+          </div>
+        </div>
       </div>
+
+      <!-- BUTTONS -->
+      <div style="display:flex; flex-direction:column; gap:8px; margin-top:12px;">
+        <div style="display:flex; gap:8px;">
+          <button class="btn" style="background:#27ae60; flex:1;" onclick="downloadReceiptImage()">🖼️ Save Image (PNG)</button>
+          <button class="btn" style="background:#e74c3c; flex:1;" onclick="downloadReceiptPDF()">📄 Download PDF</button>
+        </div>
+        <button class="btn" style="background:#25d366; width:100%;" id="btn-wa-direct">📲 Forward Details on WhatsApp</button>
+        <button class="btn" style="background:#555; width:100%;" onclick="closeReceiptModal()">Close Receipt</button>
+ </div>
+
     </div>
   </div>
 
   <script>
-    // DIRECT DRAWER FUNCTIONS
+    let currentReceiptItem = null;
+
     function openDrawer() {
       document.getElementById('side-drawer').style.left = '0px';
       document.getElementById('drawer-overlay').style.display = 'block';
@@ -322,16 +518,37 @@
     function switchSection(name, btn) {
       document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.drawer-links button').forEach(b => b.classList.remove('active'));
-
       const target = document.getElementById('tab-' + name);
       if (target) target.classList.add('active');
       if (btn) btn.classList.add('active');
-
       closeDrawer();
       window.scrollTo(0, 0);
     }
 
-    // FESTIVAL SCHEDULE
+    function toggleRefInput() {
+      const mode = document.getElementById('r-mode').value;
+      const refBox = document.getElementById('ref-field');
+      refBox.style.display = (mode === 'Cash') ? 'none' : 'block';
+    }
+
+    // NUMBER TO WORDS CONVERTER
+    function numberToWords(num) {
+      const a = ['', 'One ', 'Two ', 'Three ', 'Four ', 'Five ', 'Six ', 'Seven ', 'Eight ', 'Nine ', 'Ten ', 'Eleven ', 'Twelve ', 'Thirteen ', 'Fourteen ', 'Fifteen ', 'Sixteen ', 'Seventeen ', 'Eighteen ', 'Nineteen '];
+      const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+      num = parseInt(num);
+      if (!num) return 'Zero Rupees Only';
+      
+      function inWords(n) {
+        if (n < 20) return a[n];
+        if (n < 100) return b[Math.floor(n / 10)] + (n % 10 ? ' ' + a[n % 10] : '');
+        if (n < 1000) return a[Math.floor(n / 100)] + 'Hundred ' + (n % 100 ? 'and ' + inWords(n % 100) : '');
+        if (n < 100000) return inWords(Math.floor(n / 1000)) + 'Thousand ' + (n % 1000 ? inWords(n % 1000) : '');
+        if (n < 10000000) return inWords(Math.floor(n / 100000)) + 'Lakh ' + (n % 100000 ? inWords(n % 100000) : '');
+        return inWords(Math.floor(n / 10000000)) + 'Crore ' + (n % 10000000 ? inWords(n % 10000000) : '');
+      }
+      return inWords(num).trim() + ' Rupees Only';
+    }
+
     const DAYS = [
       { d: "Day 1", dt: "Oct 11", devi: "Maa Shailputri", clr: "Orange", p: "Kalash Sthapana (8 AM) & Opening Aarti", pr: "Peda & Sheera" },
       { d: "Day 2", dt: "Oct 12", devi: "Maa Brahmacharini", clr: "White", p: "Traditional Garba Night", pr: "Kheer" },
@@ -372,7 +589,6 @@
       `;
     }
 
-    // SHARE TAB SETUP
     function initShare() {
       const u = window.location.href;
       const qr = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(u);
@@ -393,7 +609,6 @@
       });
     }
 
-    // AUTH & LEDGER
     function checkLogin() {
       if (localStorage.getItem('nbmm_auth') === '1') {
         document.getElementById('login-box').style.display = 'none';
@@ -433,7 +648,7 @@
       const name = document.getElementById('r-name').value.trim();
       const amt = parseFloat(document.getElementById('r-amt').value);
       if (!name || isNaN(amt) || amt <= 0) {
-        alert('Please enter a valid name and amount');
+        alert('Please enter a valid donor name and amount');
         return;
       }
 
@@ -445,26 +660,32 @@
         if (idx !== -1) {
           data[idx].type = document.getElementById('r-type').value;
           data[idx].name = name;
+          data[idx].address = document.getElementById('r-address').value.trim();
           data[idx].phone = document.getElementById('r-phone').value.trim();
           data[idx].mode = document.getElementById('r-mode').value;
+          data[idx].ref = document.getElementById('r-ref').value.trim();
           data[idx].amt = amt;
           localStorage.setItem('nbmm_entries', JSON.stringify(data));
         }
         cancelEdit();
       } else {
+        const d = new Date();
         const item = {
           id: Date.now(),
-          rec: 'NBMM-' + (data.length + 1),
+          rec: 'NBMM-' + String(data.length + 1).padStart(4, '0'),
           type: document.getElementById('r-type').value,
           name: name,
+          address: document.getElementById('r-address').value.trim() || 'Mumbai',
           phone: document.getElementById('r-phone').value.trim(),
           mode: document.getElementById('r-mode').value,
-          amt: amt
+          ref: document.getElementById('r-ref').value.trim(),
+          amt: amt,
+          dateStr: d.toLocaleDateString('en-IN') + ' ' + d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
         };
         data.unshift(item);
         localStorage.setItem('nbmm_entries', JSON.stringify(data));
         cancelEdit();
-        if (item.type === 'Income') openReceipt(item);
+        if (item.type === 'Income') openReceiptModal(item);
       }
       renderRows();
     }
@@ -477,12 +698,15 @@
       document.getElementById('edit-id').value = item.id;
       document.getElementById('r-type').value = item.type;
       document.getElementById('r-name').value = item.name;
+      document.getElementById('r-address').value = item.address || '';
       document.getElementById('r-phone').value = item.phone || '';
       document.getElementById('r-mode').value = item.mode;
+      document.getElementById('r-ref').value = item.ref || '';
       document.getElementById('r-amt').value = item.amt;
 
+      toggleRefInput();
       document.getElementById('form-title').innerText = '✏️ Edit ' + item.rec;
-      document.getElementById('save-btn').innerText = '🔄 Update Entry';
+      document.getElementById('save-btn').innerText = '🔄 Update & Show Receipt';
       document.getElementById('save-btn').style.background = '#2980b9';
       document.getElementById('cancel-edit-btn').style.display = 'inline-flex';
       window.scrollTo(0, 0);
@@ -491,12 +715,15 @@
     function cancelEdit() {
       document.getElementById('edit-id').value = '';
       document.getElementById('r-name').value = '';
+      document.getElementById('r-address').value = '';
       document.getElementById('r-amt').value = '';
       document.getElementById('r-phone').value = '';
-      document.getElementById('form-title').innerText = '🧾 Receipt / Entry Generator';
-      document.getElementById('save-btn').innerText = '💾 Save & Share Receipt';
+      document.getElementById('r-ref').value = '';
+      document.getElementById('form-title').innerText = '🧾 New Donation / Receipt Entry';
+      document.getElementById('save-btn').innerText = '💾 Save & Generate Official Receipt';
       document.getElementById('save-btn').style.background = '#2e7d32';
       document.getElementById('cancel-edit-btn').style.display = 'none';
+      toggleRefInput();
     }
 
     function deleteRow(id) {
@@ -521,7 +748,7 @@
           <td style="white-space:nowrap;">
             <button class="btn" style="padding:4px 6px; font-size:0.68rem; background:#2980b9;" onclick="editRow(${x.id})">✏️</button>
             <button class="btn" style="padding:4px 6px; font-size:0.68rem; background:#c0392b;" onclick="deleteRow(${x.id})">🗑️</button>
-            ${x.type === 'Income' ? `<button class="btn" style="padding:4px 6px; font-size:0.68rem; background:#25d366;" onclick='waSend(${JSON.stringify(x)})'>WA</button>` : ''}
+            ${x.type === 'Income' ? `<button class="btn" style="padding:4px 6px; font-size:0.68rem; background:#25d366;" onclick='openReceiptModal(${JSON.stringify(x)})'>🧾 Receipt</button>` : ''}
           </td>
         `;
         tb.appendChild(tr);
@@ -531,23 +758,73 @@
       document.getElementById('tot-bal').innerText = (inc - exp);
     }
 
-    function openReceipt(x) {
-      document.getElementById('m-rec').innerText = x.rec;
-      document.getElementById('m-name').innerText = x.name;
-      document.getElementById('m-mode').innerText = x.mode;
-      document.getElementById('m-amt').innerText = x.amt;
-      document.getElementById('m-wa').onclick = () => waSend(x);
+    // AUTO-FILLS THE RECEIPT DETAILS AUTOMATICALLY
+    function openReceiptModal(item) {
+      currentReceiptItem = item;
+      document.getElementById('pr-rec').innerText = item.rec;
+      document.getElementById('pr-date').innerText = item.dateStr || new Date().toLocaleDateString('en-IN');
+      document.getElementById('pr-name').innerText = item.name;
+      document.getElementById('pr-addr').innerText = item.address || 'Mumbai';
+      document.getElementById('pr-mode').innerText = item.mode;
+      document.getElementById('pr-amt').innerText = item.amt;
+      document.getElementById('pr-words-val').innerText = numberToWords(item.amt);
+
+      if (item.ref) {
+        document.getElementById('pr-ref-lbl').style.display = 'block';
+        document.getElementById('pr-ref-val').style.display = 'block';
+        document.getElementById('pr-ref-val').innerText = item.ref;
+      } else {
+        document.getElementById('pr-ref-lbl').style.display = 'none';
+        document.getElementById('pr-ref-val').style.display = 'none';
+      }
+
+      document.getElementById('btn-wa-direct').onclick = function() {
+        waSend(item);
+      };
+
       document.getElementById('receipt-modal').style.display = 'block';
     }
 
+    function closeReceiptModal() {
+      document.getElementById('receipt-modal').style.display = 'none';
+    }
+
+    function downloadReceiptImage() {
+      const target = document.getElementById('capture-receipt');
+      html2canvas(target, { scale: 3 }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `${currentReceiptItem.rec}_Receipt.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    }
+
+    function downloadReceiptPDF() {
+      const target = document.getElementById('capture-receipt');
+      html2canvas(target, { scale: 3 }).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: 'a5'
+        });
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        
+        pdf.addImage(imgData, 'PNG', 0, 10, pdfWidth, pdfHeight);
+        pdf.save(`${currentReceiptItem.rec}_Receipt.pdf`);
+      });
+    }
+
     function waSend(x) {
-      const txt = `🚩 *NAVDURGA BALMITRA MANDAL* 🚩%0A📍 NEW MUNICIPAL BLDG 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008%0A%0A*DONATION RECEIPT*%0A──────────────────────%0A🧾 *Receipt:* ${x.rec}%0A👤 *Name:* ${x.name}%0A💰 *Amount:* ₹${x.amt}%0A💳 *Mode:* ${x.mode}%0A──────────────────────%0A🙏 Thank you for your support to Navratri Utsav 2026!`;
+      const txt = `🚩 *NAVDURGA BALMITRA MANDAL* 🚩%0A📍 NEW MUNICIPAL BLDG 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008%0A%0A*OFFICIAL DONATION RECEIPT*%0A──────────────────────%0A🧾 *Receipt No:* ${x.rec}%0A👤 *Donor Name:* ${x.name}%0A🏠 *Address/Room:* ${x.address || 'Mumbai'}%0A💰 *Amount:* ₹${x.amt}/-%0A📝 *In Words:* ${numberToWords(x.amt)}%0A💳 *Payment Mode:* ${x.mode} ${x.ref ? '(' + x.ref + ')' : ''}%0A📅 *Date:* ${x.dateStr || ''}%0A──────────────────────%0A🙏 Thank you for your generous contribution to Navratri Utsav 2026!%0A*(Official PDF / Image Receipt attached)*`;
       const p = (x.phone || '').replace(/\D/g, '');
       const url = p.length >= 10 ? `https://wa.me/91${p.slice(-10)}?text=${txt}` : `https://api.whatsapp.com/send?text=${txt}`;
       window.open(url, '_blank');
     }
 
-    // INITIALIZE ON LOAD
     initDays();
     initShare();
     checkLogin();
