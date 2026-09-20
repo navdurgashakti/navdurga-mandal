@@ -25,12 +25,10 @@
     .day-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
     .input-box { width: 100%; padding: 9px; margin: 5px 0 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem; }
     .table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin-top: 8px; }
-    .table th, .table td { border: 1px solid #eee; padding: 6px; text-align: left; }
+    .table th, .table td { border: 1px solid #eee; padding: 6px; text-align: left; vertical-align: middle; }
     .table th { background: #f5f5f5; }
     #receipt-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 200; padding: 20px; }
     .receipt-box { background: #fff; max-width: 400px; margin: 30px auto; border-radius: 10px; padding: 18px; border: 2px dashed var(--primary); }
-    
-    /* Share Specific */
     .qr-container { text-align: center; margin: 12px auto; padding: 10px; background: #fafafa; border: 1px dashed #ddd; border-radius: 8px; }
     .share-btn-group { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
   </style>
@@ -91,38 +89,22 @@
     </div>
   </main>
 
-  <!-- TAB 4: SHARE (NEW) -->
+  <!-- TAB 4: SHARE -->
   <main id="tab-share" class="tab">
     <div class="card" style="border-left-color: #25d366; text-align: center;">
       <h3>📲 Share Mandal App</h3>
       <p style="font-size: 0.85rem; color:#555;">Share with society members, relatives & devotees:</p>
-      
-      <!-- Generated QR Code for the Live URL -->
       <div class="qr-container">
         <p style="font-size:0.75rem; color:#666; margin-bottom:6px;">Scan to open on any mobile:</p>
         <img id="share-qr-img" style="width:180px; height:180px; display:block; margin:0 auto;" src="" alt="App QR Code">
         <a id="qr-download-link" class="btn" style="background:#333; font-size:0.75rem; padding:5px 10px; margin-top:8px;" download="NBMM_Pandal_QR.png" target="_blank">📥 Save QR Image</a>
       </div>
-
       <div class="share-btn-group">
-        <button class="btn" style="background:#25d366;" onclick="shareOnWhatsApp()">
-          💬 Share on WhatsApp
-        </button>
-        <button class="btn" style="background:#2980b9;" onclick="copyAppUrl()">
-          📋 Copy App Link
-        </button>
-        <button class="btn" style="background:#8e44ad;" onclick="triggerNativeShare()">
-          📤 More Sharing Options
-        </button>
+        <button class="btn" style="background:#25d366;" onclick="shareOnWhatsApp()">💬 Share on WhatsApp</button>
+        <button class="btn" style="background:#2980b9;" onclick="copyAppUrl()">📋 Copy App Link</button>
+        <button class="btn" style="background:#8e44ad;" onclick="triggerNativeShare()">📤 More Sharing Options</button>
       </div>
       <p id="copy-status" style="color:#2e7d32; font-size:0.8rem; margin-top:6px; display:none; font-weight:bold;">Link copied to clipboard!</p>
-    </div>
-
-    <div class="card">
-      <h3>Banner Notice Tip</h3>
-      <p style="font-size: 0.82rem; color: #555;">
-        You can download the QR code above and give it to your banner printer to place at the entrance gate of <strong>5th Lane, Sukhlaji Street</strong>.
-      </p>
     </div>
   </main>
 
@@ -150,7 +132,7 @@
     </div>
   </main>
 
-  <!-- TAB 6: ADMIN KHATA -->
+  <!-- TAB 6: ADMIN KHATA (WITH EDIT CAPABILITY) -->
   <main id="tab-admin" class="tab">
     <div id="login-box" class="card" style="text-align:center;">
       <h3>🔐 Committee Login</h3>
@@ -162,8 +144,11 @@
     </div>
 
     <div id="panel-box" style="display:none;">
+      <!-- FORM (Used for both Adding and Editing) -->
       <div class="card" style="border-left-color:#2e7d32;">
-        <h3>🧾 Receipt / Entry Generator</h3>
+        <h3 id="form-title">🧾 Receipt / Entry Generator</h3>
+        <input type="hidden" id="edit-id" value="" />
+        
         <select id="r-type" class="input-box">
           <option value="Income">Income (Vargani / Daan)</option>
           <option value="Expense">Expense (Pandal / Light / Sound)</option>
@@ -176,15 +161,20 @@
           <option value="Bank">Bank Transfer 🏦</option>
         </select>
         <input type="number" id="r-amt" class="input-box" placeholder="Amount (₹)" />
-        <button class="btn" style="background:#2e7d32; width:100%;" onclick="saveRecord()">💾 Save & Share Receipt</button>
+        
+        <div style="display:flex; gap:8px;">
+          <button class="btn" id="save-btn" style="background:#2e7d32; flex:1;" onclick="saveRecord()">💾 Save & Share Receipt</button>
+          <button class="btn" id="cancel-edit-btn" style="background:#c0392b; display:none;" onclick="cancelEdit()">Cancel</button>
+        </div>
       </div>
 
+      <!-- LEDGER SUMMARY & TABLE -->
       <div class="card">
         <h3>📋 Ledger & Totals</h3>
         <p><strong>Total Income:</strong> ₹<span id="tot-in">0</span> | <strong>Expense:</strong> ₹<span id="tot-ex">0</span></p>
         <p><strong>Net Balance:</strong> ₹<strong id="tot-bal" style="color:var(--primary);">0</strong></p>
         <table class="table">
-          <thead><tr><th>Name</th><th>Mode</th><th>₹</th><th>Action</th></tr></thead>
+          <thead><tr><th>Name</th><th>Mode</th><th>₹</th><th>Actions</th></tr></thead>
           <tbody id="rec-rows"></tbody>
         </table>
         <button class="btn" style="background:#333; width:100%; margin-top:10px;" onclick="logout()">🔒 Sign Out</button>
@@ -227,13 +217,11 @@
       el.classList.add('active');
     }
 
-    // Dynamic QR generation based on the active URL
     function setupShareTab() {
       const currentUrl = window.location.href;
       const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(currentUrl)}`;
       const qrImg = document.getElementById('share-qr-img');
       const qrDownload = document.getElementById('qr-download-link');
-      
       if (qrImg) qrImg.src = qrUrl;
       if (qrDownload) qrDownload.href = qrUrl;
     }
@@ -325,12 +313,14 @@
       document.getElementById('login-box').style.display = 'block';
       document.getElementById('uid').value = '';
       document.getElementById('pin').value = '';
+      cancelEdit();
     }
 
     function getRecs() {
       return JSON.parse(localStorage.getItem('nbmm_data') || '[]');
     }
 
+    // Save or Update Record
     function saveRecord() {
       const name = document.getElementById('r-name').value.trim();
       const amt = parseFloat(document.getElementById('r-amt').value);
@@ -338,23 +328,80 @@
         alert('Please enter a valid name and amount');
         return;
       }
+      
+      const editId = document.getElementById('edit-id').value;
       const data = getRecs();
-      const item = {
-        id: Date.now(),
-        rec: 'NBMM-' + (data.length + 1),
-        type: document.getElementById('r-type').value,
-        name: name,
-        phone: document.getElementById('r-phone').value.trim(),
-        mode: document.getElementById('r-mode').value,
-        amt: amt
-      };
-      data.unshift(item);
-      localStorage.setItem('nbmm_data', JSON.stringify(data));
+
+      if (editId) {
+        // Edit Existing Record
+        const idx = data.findIndex(item => item.id == editId);
+        if (idx !== -1) {
+          data[idx].type = document.getElementById('r-type').value;
+          data[idx].name = name;
+          data[idx].phone = document.getElementById('r-phone').value.trim();
+          data[idx].mode = document.getElementById('r-mode').value;
+          data[idx].amt = amt;
+          localStorage.setItem('nbmm_data', JSON.stringify(data));
+          alert('Entry updated successfully!');
+        }
+        cancelEdit();
+      } else {
+        // Create New Record
+        const item = {
+          id: Date.now(),
+          rec: 'NBMM-' + (data.length + 1),
+          type: document.getElementById('r-type').value,
+          name: name,
+          phone: document.getElementById('r-phone').value.trim(),
+          mode: document.getElementById('r-mode').value,
+          amt: amt
+        };
+        data.unshift(item);
+        localStorage.setItem('nbmm_data', JSON.stringify(data));
+        cancelEdit();
+        if (item.type === 'Income') openReceipt(item);
+      }
+
+      renderRecords();
+    }
+
+    function editRecord(id) {
+      const data = getRecs();
+      const item = data.find(x => x.id == id);
+      if (!item) return;
+
+      document.getElementById('edit-id').value = item.id;
+      document.getElementById('r-type').value = item.type;
+      document.getElementById('r-name').value = item.name;
+      document.getElementById('r-phone').value = item.phone || '';
+      document.getElementById('r-mode').value = item.mode;
+      document.getElementById('r-amt').value = item.amt;
+
+      document.getElementById('form-title').innerText = `✏️ Edit Entry (${item.rec})`;
+      document.getElementById('save-btn').innerText = '🔄 Update Entry';
+      document.getElementById('save-btn').style.background = '#2980b9';
+      document.getElementById('cancel-edit-btn').style.display = 'inline-flex';
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cancelEdit() {
+      document.getElementById('edit-id').value = '';
       document.getElementById('r-name').value = '';
       document.getElementById('r-amt').value = '';
       document.getElementById('r-phone').value = '';
+      document.getElementById('form-title').innerText = '🧾 Receipt /Entry Generator';
+      document.getElementById('save-btn').innerText = '💾 Save & Share Receipt';
+      document.getElementById('save-btn').style.background = '#2e7d32';
+      document.getElementById('cancel-edit-btn').style.display = 'none';
+    }
+
+    function deleteRecord(id) {
+      if (!confirm('Are you sure you want to delete this entry?')) return;
+      let data = getRecs();
+      data = data.filter(x => x.id != id);
+      localStorage.setItem('nbmm_data', JSON.stringify(data));
       renderRecords();
-      if (item.type === 'Income') openReceipt(item);
     }
 
     function renderRecords() {
@@ -369,7 +416,11 @@
           <td>${x.name}<br><small style="color:#777;">${x.rec}</small></td>
           <td>${x.mode}</td>
           <td style="color:${x.type === 'Income' ? '#2e7d32' : '#c0392b'}; font-weight:bold;">₹${x.amt}</td>
-          <td>${x.type === 'Income' ? `<button class="btn" style="padding:4px 8px; font-size:0.7rem; background:#25d366;" onclick='waSend(${JSON.stringify(x)})'>WA</button>` : 'Exp'}</td>
+          <td style="white-space:nowrap;">
+            <button class="btn" style="padding:4px 6px; font-size:0.68rem; background:#2980b9; margin-right:2px;" onclick='editRecord(${x.id})'>✏️</button>
+            <button class="btn" style="padding:4px 6px; font-size:0.68rem; background:#c0392b; margin-right:2px;" onclick='deleteRecord(${x.id})'>🗑️</button>
+            ${x.type === 'Income' ? `<button class="btn" style="padding:4px 6px; font-size:0.68rem; background:#25d366;" onclick='waSend(${JSON.stringify(x)})'>WA</button>` : ''}
+          </td>
         `;
         tb.appendChild(r);
       });
@@ -396,3 +447,4 @@
   </script>
 </body>
 </html>
+        
