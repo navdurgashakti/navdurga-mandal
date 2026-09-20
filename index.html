@@ -790,7 +790,7 @@
       return cleanBase + '?install=true';
     }
 
-    function initShare() {
+        function initShare() {
       const installUrl = getCleanInstallUrl();
       const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(installUrl);
       
@@ -799,10 +799,14 @@
       
       if (qrImg) qrImg.src = qrApiUrl;
       if (dlLink) {
+        // Remove the restrictive download attribute that triggers the 404
+        dlLink.removeAttribute('download');
         dlLink.href = qrApiUrl;
         dlLink.target = '_blank';
+        dlLink.innerText = '🔍 Open Full QR to Save';
       }
     }
+
 
     function shareOnWhatsApp() {
       const installUrl = getCleanInstallUrl();
