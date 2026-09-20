@@ -430,4 +430,127 @@
     }
 
     function saveRecord() {
-      const name = document.
+      const name = document.getElementById('r-name').value.trim();
+      const amt = parseFloat(document.getElementById('r-amt').value);
+      if (!name || isNaN(amt) || amt <= 0) {
+        alert('Please enter a valid name and amount');
+        return;
+      }
+
+      const editId = document.getElementById('edit-id').value;
+      const data = getStorage();
+
+      if (editId) {
+        const idx = data.findIndex(x => x.id == editId);
+        if (idx !== -1) {
+          data[idx].type = document.getElementById('r-type').value;
+          data[idx].name = name;
+          data[idx].phone = document.getElementById('r-phone').value.trim();
+          data[idx].mode = document.getElementById('r-mode').value;
+          data[idx].amt = amt;
+          localStorage.setItem('nbmm_entries', JSON.stringify(data));
+        }
+        cancelEdit();
+      } else {
+        const item = {
+          id: Date.now(),
+          rec: 'NBMM-' + (data.length + 1),
+          type: document.getElementById('r-type').value,
+          name: name,
+          phone: document.getElementById('r-phone').value.trim(),
+          mode: document.getElementById('r-mode').value,
+          amt: amt
+        };
+        data.unshift(item);
+        localStorage.setItem('nbmm_entries', JSON.stringify(data));
+        cancelEdit();
+        if (item.type === 'Income') openReceipt(item);
+      }
+      renderRows();
+    }
+
+    function editRow(id) {
+      const data = getStorage();
+      const item = data.find(x => x.id == id);
+      if (!item) return;
+
+      document.getElementById('edit-id').value = item.id;
+      document.getElementById('r-type').value = item.type;
+      document.getElementById('r-name').value = item.name;
+      document.getElementById('r-phone').value = item.phone || '';
+      document.getElementById('r-mode').value = item.mode;
+      document.getElementById('r-amt').value = item.amt;
+
+      document.getElementById('form-title').innerText = '✏️ Edit ' + item.rec;
+      document.getElementById('save-btn').innerText = '🔄 Update Entry';
+      document.getElementById('save-btn').style.background = '#2980b9';
+      document.getElementById('cancel-edit-btn').style.display = 'inline-flex';
+      window.scrollTo(0, 0);
+    }
+
+    function cancelEdit() {
+      document.getElementById('edit-id').value = '';
+      document.getElementById('r-name').value = '';
+      document.getElementById('r-amt').value = '';
+      document.getElementById('r-phone').value = '';
+      document.getElementById('form-title').innerText = '🧾 Receipt / Entry Generator';
+      document.getElementById('save-btn').innerText = '💾 Save & Share Receipt';
+      document.getElementById('save-btn').style.background = '#2e7d32';
+      document.getElementById('cancel-edit-btn').style.display = 'none';
+    }
+
+    function deleteRow(id) {
+      if (!confirm('Delete this entry?')) return;
+      let data = getStorage().filter(x => x.id != id);
+      localStorage.setItem('nbmm_entries', JSON.stringify(data));
+      renderRows();
+    }
+
+    function renderRows() {
+      const data = getStorage();
+      let inc = 0, exp = 0;
+      const tb = document.getElementById('rec-rows');
+      tb.innerHTML = '';
+      data.forEach(x => {
+        if (x.type === 'Income') inc += x.amt; else exp += x.amt;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${x.name}<br><small style="color:#777;">${x.rec}</small></td>
+          <td>${x.mode}</td>
+          <td style="color:${x.type === 'Income' ? '#2e7d32' : '#c0392b'}; font-weight:bold;">₹${x.amt}</td>
+          <td style="white-space:nowrap;">
+            <button class="btn" style="padding:4px 6px; font-size:0.68rem; background:#2980b9;" onclick="editRow(${x.id})">✏️</button>
+            <button class="btn" style="padding:4px 6px; font-size:0.68rem; background:#c0392b;" onclick="deleteRow(${x.id})">🗑️</button>
+            ${x.type === 'Income' ? `<button class="btn" style="padding:4px 6px; font-size:0.68rem; background:#25d366;" onclick='waSend(${JSON.stringify(x)})'>WA</button>` : ''}
+          </td>
+        `;
+        tb.appendChild(tr);
+      });
+      document.getElementById('tot-in').innerText = inc;
+      document.getElementById('tot-ex').innerText = exp;
+      document.getElementById('tot-bal').innerText = (inc - exp);
+    }
+
+    function openReceipt(x) {
+      document.getElementById('m-rec').innerText = x.rec;
+      document.getElementById('m-name').innerText = x.name;
+      document.getElementById('m-mode').innerText = x.mode;
+      document.getElementById('m-amt').innerText = x.amt;
+      document.getElementById('m-wa').onclick = () => waSend(x);
+      document.getElementById('receipt-modal').style.display = 'block';
+    }
+
+    function waSend(x) {
+      const txt = `🚩 *NAVDURGA BALMITRA MANDAL* 🚩%0A📍 NEW MUNICIPAL BLDG 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008%0A%0A*DONATION RECEIPT*%0A──────────────────────%0A🧾 *Receipt:* ${x.rec}%0A👤 *Name:* ${x.name}%0A💰 *Amount:* ₹${x.amt}%0A💳 *Mode:* ${x.mode}%0A──────────────────────%0A🙏 Thank you for your support to Navratri Utsav 2026!`;
+      const p = (x.phone || '').replace(/\D/g, '');
+      const url = p.length >= 10 ? `https://wa.me/91${p.slice(-10)}?text=${txt}` : `https://api.whatsapp.com/send?text=${txt}`;
+      window.open(url, '_blank');
+    }
+
+    // INITIALIZE ON LOAD
+    initDays();
+    initShare();
+    checkLogin();
+  </script>
+</body>
+</html>
