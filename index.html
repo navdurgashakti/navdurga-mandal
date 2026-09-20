@@ -389,4 +389,10 @@
 
     function waSend(x) {
       const txt = `🚩 *NAVDURGA BALMITRA MANDAL* 🚩%0A📍 5th Lane, Sukhlaji Street%0A%0A*DONATION RECEIPT*%0A──────────────────────%0A🧾 *Receipt:* ${x.rec}%0A👤 *Name:* ${x.name}%0A💰 *Amount:* ₹${x.amt}%0A💳 *Mode:* ${x.mode}%0A──────────────────────%0A🙏 Thank you for your support to Navratri Utsav 2026!`;
-      const p = (x.ph
+      const p = (x.phone || '').replace(/\D/g, '');
+      const url = p.length >= 10 ? `https://wa.me/91${p.slice(-10)}?text=${txt}` : `https://api.whatsapp.com/send?text=${txt}`;
+      window.open(url, '_blank');
+    }
+  </script>
+</body>
+</html>
