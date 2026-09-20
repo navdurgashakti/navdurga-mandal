@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Navdurga Balmitra Mandal</title>
-  <link rel="manifest" href="manifest.json?v=6">
-  <link rel="apple-touch-icon" href="icon.jpg?v=6">
-  <link rel="icon" type="image/jpeg" href="icon.jpg?v=6">
+  <link rel="manifest" href="manifest.json?v=8">
+  <link rel="apple-touch-icon" href="icon.jpg?v=8">
+  <link rel="icon" type="image/jpeg" href="icon.jpg?v=8">
   <style>
     :root { --primary: #b71c1c; --gold: #d4af37; --bg: #fffbf0; }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
@@ -151,7 +151,6 @@
     .pr-stamp-paid { border: 2px solid #27ae60; color: #27ae60; }
     .pr-stamp-due { border: 2px solid #c0392b; color: #c0392b; }
 
-    /* Native Print Isolation */
     @media print {
       body * { visibility: hidden; }
       #capture-receipt, #capture-receipt * { visibility: visible; }
@@ -186,6 +185,7 @@
     </div>
     <div class="drawer-links">
       <button class="active" onclick="switchSection('schedule', this)">📅 Daily Schedule</button>
+      <button onclick="switchSection('media', this)">📸 Photos & Videos</button>
       <button onclick="switchSection('live', this)">🔴 Live Darshan</button>
       <button onclick="switchSection('donate', this)">🙏 Pavitra Daan</button>
       <button onclick="switchSection('share', this)">📤 Share App / QR</button>
@@ -220,7 +220,17 @@
     </div>
   </section>
 
-  <!-- TAB 2: LIVE -->
+  <!-- TAB 2: PHOTOS & VIDEOS -->
+  <section id="tab-media" class="tab">
+    <div class="card">
+      <h3>📸 Utsav Photos & Videos</h3>
+      <p style="font-size:0.85rem; color:#555; margin-bottom:10px;">Select any day to open full-resolution photo albums and video recordings:</p>
+      <div class="day-bar" id="media-day-bar"></div>
+      <div id="media-content-view" style="margin-top:10px;"></div>
+    </div>
+  </section>
+
+  <!-- TAB 3: LIVE -->
   <section id="tab-live" class="tab">
     <div class="card">
       <h3>Live Darshan</h3>
@@ -231,7 +241,7 @@
     </div>
   </section>
 
-  <!-- TAB 3: DAAN -->
+  <!-- TAB 4: DAAN -->
   <section id="tab-donate" class="tab">
     <div class="card" style="text-align:center;">
       <h3>Pavitra Daan / Varthi</h3>
@@ -242,7 +252,7 @@
     </div>
   </section>
 
-  <!-- TAB 4: SHARE -->
+  <!-- TAB 5: SHARE -->
   <section id="tab-share" class="tab">
     <div class="card" style="border-left-color: #25d366; text-align: center;">
       <h3>📲 Share Mandal App</h3>
@@ -259,7 +269,7 @@
     </div>
   </section>
 
-  <!-- TAB 5: INFO & CONTACTS -->
+  <!-- TAB 6: INFO & CONTACTS -->
   <section id="tab-info" class="tab">
     <div class="card">
       <h3>Mandal Office & Contacts</h3>
@@ -282,7 +292,7 @@
     </div>
   </section>
 
-  <!-- TAB 6: KHATA (ADMIN WITH AUTO-LOGIN & STATUS) -->
+  <!-- TAB 7: KHATA (ADMIN WITH LIVE EVENT & MEDIA EDITORS) -->
   <section id="tab-admin" class="tab">
     <div id="login-box" class="card" style="text-align:center;">
       <h3>🔐 Committee Login</h3>
@@ -294,6 +304,74 @@
     </div>
 
     <div id="panel-box" style="display:none;">
+      
+      <!-- ADMIN EVENT / SCHEDULE EDITOR (NEW) -->
+      <div class="card" style="border-left-color: #8e44ad;">
+        <h3>📅 Edit Festival Schedule (All 10 Days)</h3>
+        <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Update daily event details, puja, color, or prasad in real time:</p>
+        
+        <label style="font-size:0.75rem; font-weight:600; color:#555;">Select Festival Day to Edit</label>
+        <select id="adm-sched-day" class="input-box" onchange="loadAdminScheduleFields()">
+          <option value="0">Day 1</option>
+          <option value="1">Day 2</option>
+          <option value="2">Day 3</option>
+          <option value="3">Day 4</option>
+          <option value="4">Day 5</option>
+          <option value="5">Day 6</option>
+          <option value="6">Day 7</option>
+          <option value="7">Day 8</option>
+          <option value="8">Day 9</option>
+          <option value="9">Day 10</option>
+        </select>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div>
+            <label style="font-size:0.75rem; font-weight:600; color:#555;">Day Title & Date</label>
+            <input type="text" id="adm-sched-dt" class="input-box" placeholder="e.g. Oct 11" />
+          </div>
+          <div>
+            <label style="font-size:0.75rem; font-weight:600; color:#555;">Daily Dress Color</label>
+            <input type="text" id="adm-sched-clr" class="input-box" placeholder="e.g. Orange" />
+          </div>
+        </div>
+
+        <label style="font-size:0.75rem; font-weight:600; color:#555;">Devi / Puja Form</label>
+        <input type="text" id="adm-sched-devi" class="input-box" placeholder="e.g. Maa Shailputri" />
+
+        <label style="font-size:0.75rem; font-weight:600; color:#555;">Special Event / Program</label>
+        <input type="text" id="adm-sched-prog" class="input-box" placeholder="e.g. Kalash Sthapana & Garba" />
+
+        <label style="font-size:0.75rem; font-weight:600; color:#555;">Maha Prasad</label>
+        <input type="text" id="adm-sched-prasad" class="input-box" placeholder="e.g. Peda & Sheera" />
+
+        <div style="display:flex; gap:8px;">
+          <button class="btn" style="background:#8e44ad; flex:1;" onclick="saveScheduleDay()">💾 Save & Update Festival Program</button>
+          <button class="btn" style="background:#555; padding:8px 10px; font-size:0.75rem;" onclick="resetScheduleDefaults()" title="Reset to default">🔄 Reset</button>
+        </div>
+      </div>
+
+      <!-- ADMIN PHOTO & VIDEO LINK UPDATER -->
+      <div class="card" style="border-left-color: #f39c12;">
+        <h3>📸 Upload / Update Day-Wise Media Links</h3>
+        <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Paste Google Drive, Photos, or YouTube links for devotees:</p>
+        <select id="adm-media-day" class="input-box" onchange="loadAdminMediaFields()">
+          <option value="0">Day 1</option>
+          <option value="1">Day 2</option>
+          <option value="2">Day 3</option>
+          <option value="3">Day 4</option>
+          <option value="4">Day 5</option>
+          <option value="5">Day 6</option>
+          <option value="6">Day 7</option>
+          <option value="7">Day 8</option>
+          <option value="8">Day 9</option>
+          <option value="9">Day 10</option>
+        </select>
+        <input type="url" id="adm-photo-link" class="input-box" placeholder="Google Drive / Photos Album Link" />
+        <input type="url" id="adm-video-link" class="input-box" placeholder="YouTube / Video Highlights Link (Optional)" />
+        <button class="btn" style="background:#f39c12; color:#000; width:100%;" onclick="saveMediaLink()">💾 Update Links for Selected Day</button>
+      </div>
+
+      <!-- DONATION ENTRY FORM -->
       <div class="card" style="border-left-color:#2e7d32;">
         <h3 id="form-title">🧾 New Donation / Receipt Entry</h3>
         <input type="hidden" id="edit-id" value="" />
@@ -346,6 +424,7 @@
         </div>
       </div>
 
+      <!-- COMMITTEE LEDGER -->
       <div class="card">
         <h3>📋 Committee Ledger</h3>
         <p>
@@ -365,18 +444,15 @@
     </div>
   </section>
 
-  <!-- RECEIPT MODAL WITH LOGO -->
+  <!-- RECEIPT MODAL -->
   <div id="receipt-modal">
     <div class="modal-content-wrap">
-      
       <div id="capture-receipt" class="printable-receipt">
-        <!-- TOP SHLOKA BAR -->
         <div style="display:flex; justify-content:space-between; font-size:0.72rem; font-weight:bold; color:#b71c1c; border-bottom:1px dashed #d4af37; padding-bottom:4px; margin-bottom:8px;">
           <span>॥ श्री गणेशाय नमः ॥</span>
           <span>॥ जय माता दी ॥</span>
         </div>
 
-        <!-- HEADER WITH EMBEDDED CIRCULAR LOGO -->
         <div style="display:flex; align-items:center; gap:10px; border-bottom:2px solid #b71c1c; padding-bottom:8px; margin-bottom:8px;">
           <img src="icon.jpg" alt="Logo" style="width:60px; height:60px; object-fit:cover; border-radius:50%; border:2px solid #d4af37; flex-shrink:0;" onerror="this.style.display='none'"/>
           <div style="flex:1; text-align:left;">
@@ -386,18 +462,15 @@
           </div>
         </div>
 
-        <!-- RECEIPT BADGE -->
         <div style="text-align:center; margin-bottom:8px;">
           <div id="pr-receipt-type" style="display:inline-block; background:#b71c1c; color:#fff; font-size:0.72rem; font-weight:700; padding:2px 14px; border-radius:12px; text-transform:uppercase;">Official Donation Receipt</div>
         </div>
 
-        <!-- VOUCHER META -->
         <div style="display:flex; justify-content:space-between; font-size:0.78rem; background:#fff8e7; padding:4px 8px; border-radius:4px; border-left:3px solid #d4af37; margin-bottom:8px;">
           <div><strong>Receipt No:</strong> <span id="pr-rec" style="color:#b71c1c; font-weight:800;"></span></div>
           <div><strong>Date:</strong> <span id="pr-date"></span></div>
         </div>
 
-        <!-- PARTICULARS -->
         <div style="display:grid; grid-template-columns:110px 1fr; row-gap:6px; font-size:0.8rem; line-height:1.4;">
           <div style="color:#555; font-weight:600;">Received From:</div>
           <div id="pr-name" style="font-weight:800; color:#111;"></div>
@@ -418,18 +491,15 @@
           <div style="font-weight:600;">Navratri Utsav 2026 Seva & Puja</div>
         </div>
 
-        <!-- AMOUNT BOX -->
         <div style="display:flex; justify-content:space-between; align-items:center; background:#fffdf5; border:1.5px dashed #b71c1c; border-radius:6px; padding:8px 12px; margin:8px 0;">
           <span id="pr-amt-label" style="font-size:0.75rem; font-weight:800; color:#555; text-transform:uppercase;">Rupees Received:</span>
           <span style="font-size:1.35rem; font-weight:900; color:#b71c1c;">₹<span id="pr-amt"></span>/-</span>
         </div>
 
-        <!-- IN WORDS -->
         <div style="font-size:0.72rem; color:#444; border-bottom:1px dotted #ccc; padding-bottom:4px; margin-bottom:8px;">
           <strong>In Words:</strong> <span id="pr-words-val" style="font-style:italic; color:#222;"></span>
         </div>
 
-        <!-- FOOTER & STAMP -->
         <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:8px; padding-top:6px; border-top:1px solid #eee;">
           <div>
             <div id="pr-stamp-box" class="pr-stamp pr-stamp-paid">PAID & VERIFIED</div>
@@ -442,18 +512,16 @@
         </div>
       </div>
 
-      <!-- ACTIONS -->
       <div style="display:flex; flex-direction:column; gap:8px; margin-top:12px;">
         <button class="btn" style="background:#e74c3c; width:100%; font-size:0.95rem; padding:12px;" onclick="window.print()">📄 Save as PDF / Print</button>
         <button class="btn" style="background:#25d366; width:100%; font-size:0.95rem; padding:12px;" id="btn-wa-direct">📲 Forward Details on WhatsApp</button>
         <button class="btn" style="background:#555; width:100%;" onclick="closeReceiptModal()">Close Receipt</button>
       </div>
-
     </div>
   </div>
 
   <script>
-    // 1-TAP INSTALL LOGIC
+    // 1-TAP INSTALL
     let deferredPrompt;
     const installBanner = document.getElementById('install-banner');
     const installBtn = document.getElementById('btn-install-app');
@@ -478,7 +546,7 @@
       if (installBanner) installBanner.style.display = 'none';
     });
 
-    // DRAWER LOGIC
+    // DRAWER
     function openDrawer() {
       document.getElementById('side-drawer').style.left = '0px';
       document.getElementById('drawer-overlay').style.display = 'block';
@@ -522,7 +590,8 @@
       return inWords(num).trim() + ' Rupees Only';
     }
 
-    const DAYS = [
+    // DEFAULT SCHEDULE
+    const DEFAULT_DAYS = [
       { d: "Day 1", dt: "Oct 11", devi: "Maa Shailputri", clr: "Orange", p: "Kalash Sthapana (8 AM) & Opening Aarti", pr: "Peda & Sheera" },
       { d: "Day 2", dt: "Oct 12", devi: "Maa Brahmacharini", clr: "White", p: "Traditional Garba Night", pr: "Kheer" },
       { d: "Day 3", dt: "Oct 13", devi: "Maa Chandraghanta", clr: "Red", p: "Balmitra Kids Drawing Contest (6 PM)", pr: "Boondi" },
@@ -535,15 +604,21 @@
       { d: "Day 10", dt: "Oct 20", devi: "Vijayadashami", clr: "Gold", p: "Ravan Dahan & Visarjan Procession", pr: "Jalebi Fafda" }
     ];
 
+    function getScheduleDays() {
+      const stored = localStorage.getItem('nbmm_schedule_custom');
+      return stored ? JSON.parse(stored) : DEFAULT_DAYS;
+    }
+
     function initDays() {
+      const days = getScheduleDays();
       const b = document.getElementById('day-bar');
       b.innerHTML = '';
-      DAYS.forEach((x, i) => {
+      days.forEach((x, i) => {
         const btn = document.createElement('button');
         btn.className = 'day-btn ' + (i === 0 ? 'active' : '');
         btn.innerText = x.d + ' (' + x.dt + ')';
         btn.onclick = function() {
-          document.querySelectorAll('.day-btn').forEach(k => k.classList.remove('active'));
+          document.querySelectorAll('#day-bar .day-btn').forEach(k => k.classList.remove('active'));
           btn.classList.add('active');
           renderDay(i);
         };
@@ -553,13 +628,135 @@
     }
 
     function renderDay(i) {
-      const x = DAYS[i];
+      const days = getScheduleDays();
+      const x = days[i];
       document.getElementById('day-view').innerHTML = `
         <h4 style="color:var(--primary);">${x.d} (${x.dt}) - Color: ${x.clr}</h4>
         <p><strong>Puja:</strong> ${x.devi}</p>
         <p><strong>Special:</strong> ${x.p}</p>
         <p><strong>Prasad:</strong> ${x.pr}</p>
       `;
+    }
+
+    // ADMIN SCHEDULE EDITOR FUNCTIONS
+    function loadAdminScheduleFields() {
+      const idx = document.getElementById('adm-sched-day').value;
+      const days = getScheduleDays();
+      const x = days[idx];
+      document.getElementById('adm-sched-dt').value = x.dt || '';
+      document.getElementById('adm-sched-clr').value = x.clr || '';
+      document.getElementById('adm-sched-devi').value = x.devi || '';
+      document.getElementById('adm-sched-prog').value = x.p || '';
+      document.getElementById('adm-sched-prasad').value = x.pr || '';
+    }
+
+    function saveScheduleDay() {
+      const idx = parseInt(document.getElementById('adm-sched-day').value);
+      const days = getScheduleDays();
+
+      days[idx] = {
+        d: `Day ${idx + 1}`,
+        dt: document.getElementById('adm-sched-dt').value.trim(),
+        clr: document.getElementById('adm-sched-clr').value.trim(),
+        devi: document.getElementById('adm-sched-devi').value.trim(),
+        p: document.getElementById('adm-sched-prog').value.trim(),
+        pr: document.getElementById('adm-sched-prasad').value.trim()
+      };
+
+      localStorage.setItem('nbmm_schedule_custom', JSON.stringify(days));
+      alert(`Day ${idx + 1} schedule updated successfully!`);
+      initDays();
+      initMediaDays();
+    }
+
+    function resetScheduleDefaults() {
+      if (!confirm('Reset all 10 festival days back to default schedule?')) return;
+      localStorage.removeItem('nbmm_schedule_custom');
+      initDays();
+      initMediaDays();
+      loadAdminScheduleFields();
+      alert('Festival schedule reset to defaults.');
+    }
+
+    // DAY-WISE MEDIA GALLERY
+    function getMediaData() {
+      return JSON.parse(localStorage.getItem('nbmm_media') || '{}');
+    }
+
+    function initMediaDays() {
+      const days = getScheduleDays();
+      const mb = document.getElementById('media-day-bar');
+      mb.innerHTML = '';
+      days.forEach((x, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'day-btn ' + (i === 0 ? 'active' : '');
+        btn.innerText = x.d + ' (' + x.dt + ')';
+        btn.onclick = function() {
+          document.querySelectorAll('#media-day-bar .day-btn').forEach(k => k.classList.remove('active'));
+          btn.classList.add('active');
+          renderMediaDay(i);
+        };
+        mb.appendChild(btn);
+      });
+      renderMediaDay(0);
+    }
+
+    function renderMediaDay(idx) {
+      const days = getScheduleDays();
+      const x = days[idx];
+      const media = getMediaData();
+      const current = media[idx] || {};
+
+      let html = `
+        <div style="background:#fffaf0; border:1px solid #fce8cc; padding:14px; border-radius:8px;">
+          <h4 style="color:var(--primary); margin-bottom:4px;">${x.d} (${x.dt}) - ${x.devi}</h4>
+          <p style="font-size:0.8rem; color:#666; margin-bottom:12px;">Events: ${x.p}</p>
+      `;
+
+      if (current.photo) {
+        html += `
+          <a class="btn" style="background:#2980b9; width:100%; margin-bottom:8px;" href="${current.photo}" target="_blank">
+            📁 Open Photo Album (Drive / Google Photos)
+          </a>
+        `;
+      } else {
+        html += `
+          <div style="padding:10px; background:#fff; border:1px dashed #ccc; border-radius:6px; text-align:center; font-size:0.8rem; color:#777; margin-bottom:8px;">
+            ⏳ Photos for ${x.d} will be uploaded soon after the Aarti!
+          </div>
+        `;
+      }
+
+      if (current.video) {
+        html += `
+          <a class="btn" style="background:#c0392b; width:100%;" href="${current.video}" target="_blank">
+            ▶️ Watch Video Highlights / Aarti
+          </a>
+        `;
+      }
+
+      html += `</div>`;
+      document.getElementById('media-content-view').innerHTML = html;
+    }
+
+    function loadAdminMediaFields() {
+      const day = document.getElementById('adm-media-day').value;
+      const media = getMediaData();
+      const current = media[day] || {};
+      document.getElementById('adm-photo-link').value = current.photo || '';
+      document.getElementById('adm-video-link').value = current.video || '';
+    }
+
+    function saveMediaLink() {
+      const day = document.getElementById('adm-media-day').value;
+      const photo = document.getElementById('adm-photo-link').value.trim();
+      const video = document.getElementById('adm-video-link').value.trim();
+
+      const media = getMediaData();
+      media[day] = { photo, video };
+      localStorage.setItem('nbmm_media', JSON.stringify(media));
+      alert(`Media links for Day ${parseInt(day) + 1} updated successfully!`);
+      renderMediaDay(day);
     }
 
     function initShare() {
@@ -570,7 +767,7 @@
     }
 
     function shareOnWhatsApp() {
-      const msg = '🚩 *NAVDURGA BALMITRA MANDAL* 🚩\n📍 NEW MUNICIPAL BLDG 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008\n\nCheck out our official Mandal App!\n📅 Aarti & Program Schedule\n🔴 Live Darshan\n🙏 Online Pavitra Daan\n🗺️ Google Maps: https://goo.gl/maps/TxZFq3YUEzNL9uU58?g_st=ac\n\n📲 *Open & Install:* ' + window.location.href + '\n📞 Helpline: 9820727275';
+      const msg = '🚩 *NAVDURGA BALMITRA MANDAL* 🚩\n📍 NEW MUNICIPAL BLDG 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008\n\nCheck out our official Mandal App!\n📅 Aarti & Program Schedule\n📸 Day-wise Photos & Videos\n🔴 Live Darshan\n🙏 Online Pavitra Daan\n🗺️ Google Maps: https://goo.gl/maps/TxZFq3YUEzNL9uU58?g_st=ac\n\n📲 *Open & Install:* ' + window.location.href + '\n📞 Helpline: 9820727275';
       window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msg), '_blank');
     }
 
@@ -587,6 +784,8 @@
       if (localStorage.getItem('nbmm_auth') === '1') {
         document.getElementById('login-box').style.display = 'none';
         document.getElementById('panel-box').style.display = 'block';
+        loadAdminScheduleFields();
+        loadAdminMediaFields();
         renderRows();
       }
     }
@@ -599,6 +798,8 @@
         document.getElementById('login-box').style.display = 'none';
         document.getElementById('panel-box').style.display = 'block';
         document.getElementById('err').style.display = 'none';
+        loadAdminScheduleFields();
+        loadAdminMediaFields();
         renderRows();
       } else {
         document.getElementById('err').style.display = 'block';
@@ -647,7 +848,7 @@
         const d = new Date();
         const item = {
           id: Date.now(),
-          rec: 'NBMM-' + String(data.length + 1).padStart(4, '0'),
+          rec: 'NBMM-'+ String(data.length + 1).padStart(4, '0'),
           type: document.getElementById('r-type').value,
           name: name,
           address: document.getElementById('r-address').value.trim() || 'Mumbai',
@@ -835,10 +1036,9 @@
 
     // INITIALIZATION
     initDays();
+    initMediaDays();
     initShare();
     checkLogin();
   </script>
 </body>
 </html>
-
-  
