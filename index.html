@@ -1,31 +1,124 @@
-<title>Navdurga Balmitra Mandal</title>
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon.jpg">
-<link rel="icon" type="image/jpeg" href="icon.jpg">
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <link rel="manifest" href="manifest.json?v=2">
- <link rel="apple-touch-icon" href="icon.jpg?v=2"> 
-  <link rel="icon" type="image/jpeg" href="icon.jpg?v=2">
-  
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Navdurga Balmitra Mandal</title>
-  <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon.png">
-<link rel="icon" type="image/png" href="icon.png">
-  
+  <link rel="manifest" href="manifest.json?v=5">
+  <link rel="apple-touch-icon" href="icon.jpg?v=5">
+  <link rel="icon" type="image/jpeg" href="icon.jpg?v=5">
   <style>
     :root { --primary: #b71c1c; --gold: #f39c12; --bg: #fffbf0; }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-    body { background: var(--bg); color: #2c3e50; padding-bottom: 75px; }
-    header { background: linear-gradient(135deg, var(--primary), #7f0000); color: #fff; text-align: center; padding: 18px 12px; border-bottom: 4px solid var(--gold); }
-    header h1 { font-size: 1.25rem; font-weight: 700; }
-    .header-addr { display: inline-block; margin-top: 5px; background: rgba(0,0,0,0.25); padding: 3px 10px; border-radius: 15px; font-size: 0.75rem; }
-    nav { display: flex; justify-content: space-around; position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #ddd; padding: 10px 0; z-index: 100; }
-    nav button { background: none; border: none; font-size: 0.72rem; color: #666; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; }
-    nav button.active { color: var(--primary); font-weight: bold; }
+    body { background: var(--bg); color: #2c3e50; min-height: 100vh; }
+    
+    /* Header with Hamburger Menu */
+    header { 
+      background: linear-gradient(135deg, var(--primary), #7f0000); 
+      color: #fff; 
+      text-align: center; 
+      padding: 16px 12px; 
+      border-bottom: 4px solid var(--gold); 
+      position: sticky; 
+      top: 0; 
+      z-index: 90; 
+    }
+    .menu-btn {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #fff;
+      font-size: 1.3rem;
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    header h1 { font-size: 1.15rem; font-weight: 700; letter-spacing: 0.5px; padding: 0 40px; }
+    .header-addr { display: inline-block; margin-top: 5px; background: rgba(0,0,0,0.3); padding: 4px 10px; border-radius: 15px; font-size: 0.72rem; line-height: 1.3; }
+
+    /* Left Slide-out Drawer */
+    #side-drawer {
+      position: fixed;
+      top: 0;
+      left: -280px;
+      width: 270px;
+      height: 100%;
+      background: #ffffff;
+      box-shadow: 4px 0 15px rgba(0,0,0,0.25);
+      z-index: 200;
+      transition: left 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    #side-drawer.open {
+      left: 0;
+    }
+    .drawer-header {
+      background: linear-gradient(135deg, var(--primary), #7f0000);
+      color: #fff;
+      padding: 20px 16px;
+      border-bottom: 3px solid var(--gold);
+      position: relative;
+    }
+    .drawer-close {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+    .drawer-links {
+      display: flex;
+      flex-direction: column;
+      padding: 12px 0;
+      overflow-y: auto;
+    }
+    .drawer-links button {
+      background: none;
+      border: none;
+      text-align: left;
+      padding: 14px 20px;
+      font-size: 0.95rem;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      border-bottom: 1px solid #f4f4f4;
+      font-weight: 500;
+    }
+    .drawer-links button.active {
+      color: var(--primary);
+      background: #fff5f5;
+      font-weight: 700;
+      border-left: 4px solid var(--primary);
+    }
+    
+    /* Backdrop overlay */
+    #drawer-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 150;
+    }
+    #drawer-overlay.show {
+      display: block;
+    }
+
+    /* Tabs & Cards */
     .tab { display: none; padding: 14px; max-width: 550px; margin: 0 auto; }
     .tab.active { display: block; }
     .card { background: #fff; border-radius: 10px; padding: 14px; margin-bottom: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 4px solid var(--gold); }
@@ -39,27 +132,48 @@
     .table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin-top: 8px; }
     .table th, .table td { border: 1px solid #eee; padding: 6px; text-align: left; vertical-align: middle; }
     .table th { background: #f5f5f5; }
-    #receipt-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 200; padding: 20px; }
+    #receipt-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 300; padding: 20px; }
     .receipt-box { background: #fff; max-width: 400px; margin: 30px auto; border-radius: 10px; padding: 18px; border: 2px dashed var(--primary); }
     .qr-container { text-align: center; margin: 12px auto; padding: 10px; background: #fafafa; border: 1px dashed #ddd; border-radius: 8px; }
     .share-btn-group { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+    .sync-status { font-size: 0.72rem; color: #27ae60; font-weight: bold; margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
   </style>
 </head>
 <body>
 
+  <!-- TOP HEADER -->
   <header>
+    <button class="menu-btn" onclick="toggleDrawer()">☰</button>
     <h1>🚩 NAVDURGA BALMITRA MANDAL</h1>
     <p style="font-size:0.8rem; color:#ffe0b2;">Navratri Utsav 2026</p>
-    <div class="header-addr">📍 5th Lane, Sukhlaji Street</div>
+    <div class="header-addr">📍 NEW MUNICIPAL BUILDING 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008</div>
   </header>
+
+  <!-- OVERLAY & LEFT SLIDE-OUT MENU -->
+  <div id="drawer-overlay" onclick="closeDrawer()"></div>
+  <aside id="side-drawer">
+    <div class="drawer-header">
+      <button class="drawer-close" onclick="closeDrawer()">✕</button>
+      <h3 style="font-size:1.05rem;">Mandal Menu</h3>
+      <p style="font-size:0.75rem; color:#ffe0b2; margin-top:3px;">Sukhlaji Street</p>
+    </div>
+    <div class="drawer-links">
+      <button id="btn-schedule" class="active" onclick="goTab('schedule', this)">📅 Daily Schedule</button>
+      <button id="btn-live" onclick="goTab('live', this)">🔴 Live Darshan</button>
+      <button id="btn-donate" onclick="goTab('donate', this)">🙏 Pavitra Daan</button>
+      <button id="btn-share" onclick="goTab('share', this)">📤 Share App / QR</button>
+      <button id="btn-info" onclick="goTab('info', this)">📜 Info & Contacts</button>
+      <button id="btn-admin" onclick="goTab('admin', this)">🔐 Committee Khata</button>
+    </div>
+  </aside>
 
   <!-- TAB 1: SCHEDULE -->
   <main id="tab-schedule" class="tab active">
     <div class="card" style="border-left-color: #2e7d32;">
       <h3>Pandal Address & Helpdesk</h3>
-      <p>New Municipal Building 76 Tenament, 5th Lane, Sukhlaji Street</p>
+      <p><strong>NEW MUNICIPAL BUILDING 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008</strong></p>
       <div style="display:flex; gap:8px; margin-top:8px;">
-        <a class="btn" style="background:#2e7d32; flex:1;" href="https://www.google.com/maps/search/?api=1&query=New+Municipal+Building+76+Tenament+5th+Lane+Sukhlaji+Street" target="_blank">🗺️ Maps</a>
+        <a class="btn" style="background:#2e7d32; flex:1;" href="https://goo.gl/maps/TxZFq3YUEzNL9uU58?g_st=ac" target="_blank">🗺️ Google Maps</a>
         <a class="btn" style="background:#b71c1c; flex:1;" href="tel:+919820727275">📞 Call Helpline</a>
       </div>
     </div>
@@ -90,7 +204,7 @@
     </div>
   </main>
 
-  <!-- TAB 3: DAAN (UPI) -->
+  <!-- TAB 3: DAAN -->
   <main id="tab-donate" class="tab">
     <div class="card" style="text-align:center;">
       <h3>Pavitra Daan / Varthi</h3>
@@ -124,14 +238,13 @@
   <main id="tab-info" class="tab">
     <div class="card">
       <h3>Mandal Office & Contacts</h3>
-      <p>📍 New Municipal Bldg 76 Tenament, 5th Lane Sukhlaji St.</p>
+      <p>📍 NEW MUNICIPAL BUILDING 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008</p>
       <div style="margin-top:10px; padding:10px; background:#f9f9f9; border-radius:6px;">
         <p><strong>Mandal Helpline / Coordinator:</strong></p>
         <p style="font-size:1.05rem; font-weight:bold; color:var(--primary); margin:4px 0;">📞 9820727275</p>
         <a class="btn" style="background:#2e7d32; width:100%; margin-top:6px;" href="tel:+919820727275">📲 Tap to Call Helpline</a>
       </div>
     </div>
-
     <div class="card">
       <h3>Jai Ambe Gauri (Aarti)</h3>
       <p style="white-space: pre-line; line-height: 1.7; font-size: 0.85rem;">
@@ -144,20 +257,20 @@
     </div>
   </main>
 
-  <!-- TAB 6: ADMIN KHATA (WITH EDIT CAPABILITY) -->
+  <!-- TAB 6: ADMIN KHATA -->
   <main id="tab-admin" class="tab">
     <div id="login-box" class="card" style="text-align:center;">
       <h3>🔐 Committee Login</h3>
-      <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">Enter NBMM credentials:</p>
+      <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">Enter NBMM credentials (saved automatically):</p>
       <input type="text" id="uid" class="input-box" placeholder="User ID" />
       <input type="password" id="pin" class="input-box" placeholder="Password" />
-      <button class="btn" style="width:100%;" onclick="login()">Login</button>
+      <button class="btn" style="width:100%;" onclick="login()">Login & Stay Signed In</button>
       <p id="err" style="color:red; font-size:0.75rem; margin-top:6px; display:none;">Invalid ID or Password</p>
     </div>
 
     <div id="panel-box" style="display:none;">
-      <!-- FORM (Used for both Adding and Editing) -->
       <div class="card" style="border-left-color:#2e7d32;">
+        <div class="sync-status">🟢 Live Cloud Synced</div>
         <h3 id="form-title">🧾 Receipt / Entry Generator</h3>
         <input type="hidden" id="edit-id" value="" />
         
@@ -180,16 +293,15 @@
         </div>
       </div>
 
-      <!-- LEDGER SUMMARY & TABLE -->
       <div class="card">
-        <h3>📋 Ledger & Totals</h3>
+        <h3>📋 Committee Ledger</h3>
         <p><strong>Total Income:</strong> ₹<span id="tot-in">0</span> | <strong>Expense:</strong> ₹<span id="tot-ex">0</span></p>
         <p><strong>Net Balance:</strong> ₹<strong id="tot-bal" style="color:var(--primary);">0</strong></p>
         <table class="table">
           <thead><tr><th>Name</th><th>Mode</th><th>₹</th><th>Actions</th></tr></thead>
           <tbody id="rec-rows"></tbody>
         </table>
-        <button class="btn" style="background:#333; width:100%; margin-top:10px;" onclick="logout()">🔒 Sign Out</button>
+        <button class="btn" style="background:#333; width:100%; margin-top:10px;" onclick="logout()">🔒 Lock & Sign Out</button>
       </div>
     </div>
   </main>
@@ -198,7 +310,7 @@
   <div id="receipt-modal">
     <div class="receipt-box">
       <h3 style="color:var(--primary); text-align:center;">NAVDURGA BALMITRA MANDAL</h3>
-      <p style="text-align:center; font-size:0.75rem;">5th Lane Sukhlaji Street</p>
+      <p style="text-align:center; font-size:0.72rem; line-height:1.2; margin-top:2px;">NEW MUNICIPAL BLDG 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI ST MUMBAI 400008</p>
       <hr style="margin:8px 0;">
       <p><strong>Receipt:</strong> <span id="m-rec"></span></p>
       <p><strong>Name:</strong> <span id="m-name"></span></p>
@@ -211,22 +323,28 @@
     </div>
   </div>
 
-  <!-- NAVIGATION -->
-  <nav>
-    <button class="active" onclick="goTab('schedule', this)">📅 Schedule</button>
-    <button onclick="goTab('live', this)">🔴 Live</button>
-    <button onclick="goTab('donate', this)">🙏 Daan</button>
-    <button onclick="goTab('share', this)">📤 Share</button>
-    <button onclick="goTab('info', this)">📜 Info</button>
-    <button onclick="goTab('admin', this)">🔐 Khata</button>
-  </nav>
-
   <script>
+    const FIREBASE_DB_URL = https://nbmm-khata-default-rtdb.firebaseio.com/
+
+    // DRAWER OPEN / CLOSE
+    function toggleDrawer() {
+      document.getElementById('side-drawer').classList.toggle('open');
+      document.getElementById('drawer-overlay').classList.toggle('show');
+    }
+
+    function closeDrawer() {
+      document.getElementById('side-drawer').classList.remove('open');
+      document.getElementById('drawer-overlay').classList.remove('show');
+    }
+
     function goTab(id, el) {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.drawer-links button').forEach(b => b.classList.remove('active'));
+      
       document.getElementById('tab-' + id).classList.add('active');
-      el.classList.add('active');
+      if (el) el.classList.add('active');
+      closeDrawer();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function setupShareTab() {
@@ -240,7 +358,7 @@
 
     function shareOnWhatsApp() {
       const url = window.location.href;
-      const msg = `🚩 *NAVDURGA BALMITRA MANDAL* 🚩\n📍 5th Lane, Sukhlaji Street\n\nCheck out our official Mandal App for Navratri Utsav 2026!\n📅 Daily Aarti & Function Timings\n🔴 Pandal Live Darshan\n🙏 Online Pavitra Daan (UPI)\n🗺️ Pandal Location & Directions\n\n📲 *Open App Here:* ${url}\n📞 Helpline: 9820727275`;
+      const msg = `🚩 *NAVDURGA BALMITRA MANDAL* 🚩\n📍 NEW MUNICIPAL BLDG 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008\n\nCheck out our official Mandal App for Navratri Utsav 2026!\n📅 Daily Aarti & Timings\n🔴 Live Pandal Darshan\n🙏 Online Pavitra Daan (UPI)\n🗺️ Google Maps: https://goo.gl/maps/TxZFq3YUEzNL9uU58?g_st=ac\n\n📲 *Open App Here:* ${url}\n📞 Helpline: 9820727275`;
       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
@@ -256,7 +374,7 @@
       if (navigator.share) {
         navigator.share({
           title: 'Navdurga Balmitra Mandal',
-          text: 'Official Navratri Utsav 2026 App - 5th Lane Sukhlaji Street',
+          text: 'Official Navratri Utsav 2026 App - Sukhlaji Street Mumbai',
           url: window.location.href
         }).catch(() => {});
       } else {
@@ -304,23 +422,31 @@
       `;
     }
 
-    showDays();
-    setupShareTab();
+    function checkAutoLogin() {
+      const isAuth = localStorage.getItem('nbmm_logged_in');
+      if (isAuth === 'true') {
+        document.getElementById('login-box').style.display = 'none';
+        document.getElementById('panel-box').style.display = 'block';
+        startRealtimeSync();
+      }
+    }
 
     function login() {
       const u = document.getElementById('uid').value.trim();
       const p = document.getElementById('pin').value.trim();
       if (u === 'NBMM' && p === 'NBMM1137@') {
+        localStorage.setItem('nbmm_logged_in', 'true');
         document.getElementById('login-box').style.display = 'none';
         document.getElementById('panel-box').style.display = 'block';
         document.getElementById('err').style.display = 'none';
-        renderRecords();
+        startRealtimeSync();
       } else {
         document.getElementById('err').style.display = 'block';
       }
     }
 
     function logout() {
+      localStorage.removeItem('nbmm_logged_in');
       document.getElementById('panel-box').style.display = 'none';
       document.getElementById('login-box').style.display = 'block';
       document.getElementById('uid').value = '';
@@ -328,61 +454,98 @@
       cancelEdit();
     }
 
-    function getRecs() {
-      return JSON.parse(localStorage.getItem('nbmm_data') || '[]');
+    let recordsCache = [];
+    let syncInterval = null;
+
+    async function fetchCloudRecords() {
+      if (!FIREBASE_DB_URL.startsWith("http")) {
+        recordsCache = JSON.parse(localStorage.getItem('nbmm_data') || '[]');
+        renderRecords(recordsCache);
+        return;
+      }
+      try {
+        const res = await fetch(`${FIREBASE_DB_URL}/records.json`);
+        const data = await res.json();
+        recordsCache = data ? Object.keys(data).map(k => ({ ...data[k], key: k })).reverse() : [];
+        renderRecords(recordsCache);
+      } catch (e) {
+        console.error("Sync error:", e);
+      }
     }
 
-    // Save or Update Record
-    function saveRecord() {
+    function startRealtimeSync() {
+      fetchCloudRecords();
+      if (!syncInterval) {
+        syncInterval = setInterval(fetchCloudRecords, 3000);
+      }
+    }
+
+    async function saveRecord() {
       const name = document.getElementById('r-name').value.trim();
       const amt = parseFloat(document.getElementById('r-amt').value);
       if (!name || isNaN(amt) || amt <= 0) {
         alert('Please enter a valid name and amount');
         return;
       }
-      
-      const editId = document.getElementById('edit-id').value;
-      const data = getRecs();
 
-      if (editId) {
-        // Edit Existing Record
-        const idx = data.findIndex(item => item.id == editId);
-        if (idx !== -1) {
-          data[idx].type = document.getElementById('r-type').value;
-          data[idx].name = name;
-          data[idx].phone = document.getElementById('r-phone').value.trim();
-          data[idx].mode = document.getElementById('r-mode').value;
-          data[idx].amt = amt;
-          localStorage.setItem('nbmm_data', JSON.stringify(data));
-          alert('Entry updated successfully!');
+      const editId = document.getElementById('edit-id').value;
+      const item = {
+        rec: editId ? document.getElementById('edit-rec-no').value : 'NBMM-' + (recordsCache.length + 1),
+        type: document.getElementById('r-type').value,
+        name: name,
+        phone: document.getElementById('r-phone').value.trim(),
+        mode: document.getElementById('r-mode').value,
+        amt: amt,
+        timestamp: Date.now()
+      };
+
+      if (!FIREBASE_DB_URL.startsWith("http")) {
+        let local = JSON.parse(localStorage.getItem('nbmm_data') || '[]');
+        if (editId) {
+          const idx = local.findIndex(x => x.id == editId);
+          if (idx !== -1) local[idx] = { ...item, id: editId };
+        } else {
+          local.unshift({ ...item, id: Date.now() });
         }
-        cancelEdit();
-      } else {
-        // Create New Record
-        const item = {
-          id: Date.now(),
-          rec: 'NBMM-' + (data.length + 1),
-          type: document.getElementById('r-type').value,
-          name: name,
-          phone: document.getElementById('r-phone').value.trim(),
-          mode: document.getElementById('r-mode').value,
-          amt: amt
-        };
-        data.unshift(item);
-        localStorage.setItem('nbmm_data', JSON.stringify(data));
+        localStorage.setItem('nbmm_data', JSON.stringify(local));
+        fetchCloudRecords();
         cancelEdit();
         if (item.type === 'Income') openReceipt(item);
+        return;
       }
 
-      renderRecords();
+      if (editId) {
+        await fetch(`${FIREBASE_DB_URL}/records/${editId}.json`, {
+          method: 'PUT',
+          body: JSON.stringify(item)
+        });
+      } else {
+        const res = await fetch(`${FIREBASE_DB_URL}/records.json`, {
+          method: 'POST',
+          body: JSON.stringify(item)
+        });
+        const resData = await res.json();
+        item.key = resData.name;
+      }
+
+      cancelEdit();
+      await fetchCloudRecords();
+      if (item.type === 'Income') openReceipt(item);
     }
 
-    function editRecord(id) {
-      const data = getRecs();
-      const item = data.find(x => x.id == id);
+    function editRecord(key) {
+      const item = recordsCache.find(x => (x.key ? x.key === key : x.id == key));
       if (!item) return;
 
-      document.getElementById('edit-id').value = item.id;
+      document.getElementById('edit-id').value = item.key || item.id;
+      if (!document.getElementById('edit-rec-no')) {
+        const hid = document.createElement('input');
+        hid.type = 'hidden';
+        hid.id = 'edit-rec-no';
+        document.getElementById('panel-box').appendChild(hid);
+      }
+      document.getElementById('edit-rec-no').value = item.rec;
+
       document.getElementById('r-type').value = item.type;
       document.getElementById('r-name').value = item.name;
       document.getElementById('r-phone').value = item.phone || '';
@@ -390,7 +553,7 @@
       document.getElementById('r-amt').value = item.amt;
 
       document.getElementById('form-title').innerText = `✏️ Edit Entry (${item.rec})`;
-      document.getElementById('save-btn').innerText = '🔄 Update Entry';
+      document.getElementById('save-btn').innerText = '🔄 Update for All Phones';
       document.getElementById('save-btn').style.background = '#2980b9';
       document.getElementById('cancel-edit-btn').style.display = 'inline-flex';
 
@@ -402,35 +565,40 @@
       document.getElementById('r-name').value = '';
       document.getElementById('r-amt').value = '';
       document.getElementById('r-phone').value = '';
-      document.getElementById('form-title').innerText = '🧾 Receipt /Entry Generator';
+      document.getElementById('form-title').innerText = '🧾 Receipt / Entry Generator';
       document.getElementById('save-btn').innerText = '💾 Save & Share Receipt';
       document.getElementById('save-btn').style.background = '#2e7d32';
       document.getElementById('cancel-edit-btn').style.display = 'none';
     }
 
-    function deleteRecord(id) {
-      if (!confirm('Are you sure you want to delete this entry?')) return;
-      let data = getRecs();
-      data = data.filter(x => x.id != id);
-      localStorage.setItem('nbmm_data', JSON.stringify(data));
-      renderRecords();
+    async function deleteRecord(key) {
+      if (!confirm('Are you sure you want to delete this entry across all phones?')) return;
+      if (!FIREBASE_DB_URL.startsWith("http")) {
+        let local = JSON.parse(localStorage.getItem('nbmm_data') || '[]');
+        local = local.filter(x => x.id != key);
+        localStorage.setItem('nbmm_data', JSON.stringify(local));
+        fetchCloudRecords();
+        return;
+      }
+      await fetch(`${FIREBASE_DB_URL}/records/${key}.json`, { method: 'DELETE' });
+      fetchCloudRecords();
     }
 
-    function renderRecords() {
-      const data = getRecs();
+    function renderRecords(data) {
       let inc = 0, exp = 0;
       const tb = document.getElementById('rec-rows');
       tb.innerHTML = '';
       data.forEach(x => {
         if (x.type === 'Income') inc += x.amt; else exp += x.amt;
+        const refKey = x.key ? `'${x.key}'` : x.id;
         const r = document.createElement('tr');
         r.innerHTML = `
           <td>${x.name}<br><small style="color:#777;">${x.rec}</small></td>
           <td>${x.mode}</td>
           <td style="color:${x.type === 'Income' ? '#2e7d32' : '#c0392b'}; font-weight:bold;">₹${x.amt}</td>
           <td style="white-space:nowrap;">
-            <button class="btn" style="padding:4px 6px; font-size:0.68rem; background:#2980b9; margin-right:2px;" onclick='editRecord(${x.id})'>✏️</button>
-            <button class="btn" style="padding:4px 6px; font-size:0.68rem; background:#c0392b; margin-right:2px;" onclick='deleteRecord(${x.id})'>🗑️</button>
+            <button class="btn" style="padding:4px 6px; font-size:0.68rem; background:#2980b9; margin-right:2px;" onclick="editRecord(${refKey})">✏️</button>
+            <button class="btn" style="padding:4px 6px; font-size:0.68rem; background:#c0392b; margin-right:2px;" onclick="deleteRecord(${refKey})">🗑️</button>
             ${x.type === 'Income' ? `<button class="btn" style="padding:4px 6px; font-size:0.68rem; background:#25d366;" onclick='waSend(${JSON.stringify(x)})'>WA</button>` : ''}
           </td>
         `;
@@ -451,12 +619,15 @@
     }
 
     function waSend(x) {
-      const txt = `🚩 *NAVDURGA BALMITRA MANDAL* 🚩%0A📍 5th Lane, Sukhlaji Street%0A%0A*DONATION RECEIPT*%0A──────────────────────%0A🧾 *Receipt:* ${x.rec}%0A👤 *Name:* ${x.name}%0A💰 *Amount:* ₹${x.amt}%0A💳 *Mode:* ${x.mode}%0A──────────────────────%0A🙏 Thank you for your support to Navratri Utsav 2026!`;
+      const txt = `🚩 *NAVDURGA BALMITRA MANDAL* 🚩%0A📍 NEW MUNICIPAL BLDG 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008%0A%0A*DONATION RECEIPT*%0A──────────────────────%0A🧾 *Receipt:* ${x.rec}%0A👤 *Name:* ${x.name}%0A💰 *Amount:* ₹${x.amt}%0A💳 *Mode:* ${x.mode}%0A──────────────────────%0A🙏 Thank you for your support to Navratri Utsav 2026!`;
       const p = (x.phone || '').replace(/\D/g, '');
       const url = p.length >= 10 ? `https://wa.me/91${p.slice(-10)}?text=${txt}` : `https://api.whatsapp.com/send?text=${txt}`;
       window.open(url, '_blank');
     }
+
+    showDays();
+    setupShareTab();
+    checkAutoLogin();
   </script>
 </body>
 </html>
-        
