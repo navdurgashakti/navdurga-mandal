@@ -124,6 +124,10 @@
     .table th, .table td { border: 1px solid #eee; padding: 6px; text-align: left; vertical-align: middle; }
     .table th { background: #f5f5f5; }
     
+    /* STATUS PILLS */
+    .badge-paid { background: #e8f8f5; color: #27ae60; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; border: 1px solid #a3e4d7; display: inline-block; }
+    .badge-unpaid { background: #fef9e7; color: #d35400; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; border: 1px solid #f9e79f; display: inline-block; }
+
     /* PROFESSIONAL RECEIPT STYLING */
     #receipt-modal { 
       display: none; 
@@ -237,8 +241,6 @@
       border-top: 1px solid #eee;
     }
     .pr-stamp {
-      border: 2px solid #27ae60;
-      color: #27ae60;
       padding: 3px 8px;
       font-weight: 800;
       font-size: 0.7rem;
@@ -246,6 +248,14 @@
       transform: rotate(-5deg);
       border-radius: 4px;
       display: inline-block;
+    }
+    .pr-stamp-paid {
+      border: 2px solid #27ae60;
+      color: #27ae60;
+    }
+    .pr-stamp-due {
+      border: 2px solid #c0392b;
+      color: #c0392b;
     }
   </style>
 </head>
@@ -366,7 +376,7 @@
     </div>
   </section>
 
-  <!-- TAB 6: KHATA (ADMIN WITH DETAILED RECEIPT FORM) -->
+  <!-- TAB 6: KHATA (ADMIN WITH PAID / NOT PAID OPTION) -->
   <section id="tab-admin" class="tab">
     <div id="login-box" class="card" style="text-align:center;">
       <h3>🔐 Committee Login</h3>
@@ -382,27 +392,39 @@
         <h3 id="form-title">🧾 New Donation / Receipt Entry</h3>
         <input type="hidden" id="edit-id" value="" />
         
+        <label style="font-size:0.75rem; font-weight:600; color:#555;">Entry Category</label>
         <select id="r-type" class="input-box">
           <option value="Income">Income (Vargani / Daan)</option>
           <option value="Expense">Expense (Pandal / Light / Sound)</option>
         </select>
         
-        <label style="font-size:0.75rem; font-weight:600; color:#555;">Donor Name *</label>
+        <label style="font-size:0.75rem; font-weight:600; color:#555;">Donor / Person Name *</label>
         <input type="text" id="r-name" class="input-box" placeholder="e.g. Ramesh Bhai Shah" />
 
-        <label style="font-size:0.75rem; font-weight:600; color:#555;">Room / Flat / Shop No. (Optional)</label>
+        <label style="font-size:0.75rem; font-weight:600; color:#555;">Room / Flat / Shop No.</label>
         <input type="text" id="r-address" class="input-box" placeholder="e.g. Room 14, 2nd Floor" />
         
         <label style="font-size:0.75rem; font-weight:600; color:#555;">WhatsApp Phone Number</label>
         <input type="tel" id="r-phone" class="input-box" placeholder="e.g. 9820000000" />
         
-        <label style="font-size:0.75rem; font-weight:600; color:#555;">Payment Mode</label>
-        <select id="r-mode" class="input-box" onchange="toggleRefInput()">
-          <option value="Cash">Cash 💵</option>
-          <option value="UPI">Google Pay / PhonePe / UPI 📱</option>
-          <option value="Cheque">Cheque 🏦</option>
-          <option value="Bank">Bank Transfer / NEFT 🏛️</option>
-        </select>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div>
+            <label style="font-size:0.75rem; font-weight:600; color:#555;">Payment Status *</label>
+            <select id="r-status" class="input-box" style="font-weight:bold; border-color:#27ae60;">
+              <option value="Paid" selected>✅ Paid / Received</option>
+              <option value="Not Paid">⏳ Not Paid (Pending/Due)</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:0.75rem; font-weight:600; color:#555;">Payment Mode</label>
+            <select id="r-mode" class="input-box" onchange="toggleRefInput()">
+              <option value="Cash">Cash 💵</option>
+              <option value="UPI">UPI / GPay 📱</option>
+              <option value="Cheque">Cheque 🏦</option>
+              <option value="Bank">Bank Transfer 🏛️</option>
+            </select>
+          </div>
+        </div>
 
         <div id="ref-field" style="display:none;">
           <label style="font-size:0.75rem; font-weight:600; color:#555;">Transaction Ref / UTR / Cheque No.</label>
@@ -420,10 +442,16 @@
 
       <div class="card">
         <h3>📋 Committee Ledger</h3>
-        <p><strong>Total Income:</strong> ₹<span id="tot-in">0</span> | <strong>Expense:</strong> ₹<span id="tot-ex">0</span></p>
-        <p><strong>Net Balance:</strong> ₹<strong id="tot-bal" style="color:var(--primary);">0</strong></p>
+        <p>
+          <strong>Total Collected (Paid):</strong> ₹<span id="tot-in" style="color:#2e7d32;">0</span> | 
+          <strong>Pending (Due):</strong> ₹<span id="tot-pending" style="color:#d35400;">0</span>
+        </p>
+        <p>
+          <strong>Total Expense:</strong> ₹<span id="tot-ex" style="color:#c0392b;">0</span> | 
+          <strong>Net In-Hand Balance:</strong> ₹<strong id="tot-bal" style="color:var(--primary);">0</strong>
+        </p>
         <table class="table">
-          <thead><tr><th>Donor / Ref</th><th>Mode</th><th>₹</th><th>Actions</th></tr></thead>
+          <thead><tr><th>Donor / Ref</th><th>Status</th><th>₹</th><th>Actions</th></tr></thead>
           <tbody id="rec-rows"></tbody>
         </table>
         <button class="btn" style="background:#333; width:100%; margin-top:10px;" onclick="doLogout()">🔒 Lock & Sign Out</button>
@@ -443,7 +471,7 @@
           <div class="pr-title">NAVDURGA BALMITRA MANDAL</div>
           <div class="pr-sub">NEW MUNICIPAL BUILDING 76 TENAMENT, 5TH LANE, KAMATHIPURA, SUKHLAJI STREET, MUMBAI - 400008</div>
           <div class="pr-sub">Helpline: +91 9820727275</div>
-          <div class="pr-badge">OFFICIAL DONATION RECEIPT</div>
+          <div class="pr-badge" id="pr-receipt-type">OFFICIAL DONATION RECEIPT</div>
         </div>
 
         <div class="pr-meta">
@@ -458,6 +486,9 @@
           <div class="pr-label">Address / Flat:</div>
           <div class="pr-val" id="pr-addr"></div>
 
+          <div class="pr-label">Status:</div>
+          <div class="pr-val" id="pr-status-text"></div>
+
           <div class="pr-label">Payment Mode:</div>
           <div class="pr-val" id="pr-mode"></div>
 
@@ -469,7 +500,7 @@
         </div>
 
         <div class="pr-amount-box">
-          <span style="font-size:0.75rem; text-transform:uppercase; font-weight:bold; color:#444;">Rupees:</span>
+          <span style="font-size:0.75rem; text-transform:uppercase; font-weight:bold; color:#444;" id="pr-amt-label">Rupees Received:</span>
           <span style="font-size:1.4rem; font-weight:800; color:var(--primary);">₹<span id="pr-amt"></span>/-</span>
         </div>
 
@@ -479,8 +510,8 @@
 
         <div class="pr-footer">
           <div>
-            <div class="pr-stamp">PAID & VERIFIED</div>
-            <div style="font-size:0.62rem; color:#888; margin-top:3px;">System Generated Digital Receipt</div>
+            <div id="pr-stamp-box" class="pr-stamp pr-stamp-paid">PAID & VERIFIED</div>
+            <div style="font-size:0.62rem; color:#888; margin-top:3px;">System Generated Digital Record</div>
           </div>
           <div style="text-align:right;">
             <div style="font-weight:700; font-size:0.78rem;">Navdurga Balmitra Mandal</div>
@@ -497,7 +528,7 @@
         </div>
         <button class="btn" style="background:#25d366; width:100%;" id="btn-wa-direct">📲 Forward Details on WhatsApp</button>
         <button class="btn" style="background:#555; width:100%;" onclick="closeReceiptModal()">Close Receipt</button>
- </div>
+      </div>
 
     </div>
   </div>
@@ -531,7 +562,6 @@
       refBox.style.display = (mode === 'Cash') ? 'none' : 'block';
     }
 
-    // NUMBER TO WORDS CONVERTER
     function numberToWords(num) {
       const a = ['', 'One ', 'Two ', 'Three ', 'Four ', 'Five ', 'Six ', 'Seven ', 'Eight ', 'Nine ', 'Ten ', 'Eleven ', 'Twelve ', 'Thirteen ', 'Fourteen ', 'Fifteen ', 'Sixteen ', 'Seventeen ', 'Eighteen ', 'Nineteen '];
       const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
@@ -662,6 +692,7 @@
           data[idx].name = name;
           data[idx].address = document.getElementById('r-address').value.trim();
           data[idx].phone = document.getElementById('r-phone').value.trim();
+          data[idx].status = document.getElementById('r-status').value;
           data[idx].mode = document.getElementById('r-mode').value;
           data[idx].ref = document.getElementById('r-ref').value.trim();
           data[idx].amt = amt;
@@ -677,6 +708,7 @@
           name: name,
           address: document.getElementById('r-address').value.trim() || 'Mumbai',
           phone: document.getElementById('r-phone').value.trim(),
+          status: document.getElementById('r-status').value,
           mode: document.getElementById('r-mode').value,
           ref: document.getElementById('r-ref').value.trim(),
           amt: amt,
@@ -700,6 +732,7 @@
       document.getElementById('r-name').value = item.name;
       document.getElementById('r-address').value = item.address || '';
       document.getElementById('r-phone').value = item.phone || '';
+      document.getElementById('r-status').value = item.status || 'Paid';
       document.getElementById('r-mode').value = item.mode;
       document.getElementById('r-ref').value = item.ref || '';
       document.getElementById('r-amt').value = item.amt;
@@ -719,6 +752,7 @@
       document.getElementById('r-amt').value = '';
       document.getElementById('r-phone').value = '';
       document.getElementById('r-ref').value = '';
+      document.getElementById('r-status').value = 'Paid';
       document.getElementById('form-title').innerText = '🧾 New Donation / Receipt Entry';
       document.getElementById('save-btn').innerText = '💾 Save & Generate Official Receipt';
       document.getElementById('save-btn').style.background = '#2e7d32';
@@ -733,34 +767,66 @@
       renderRows();
     }
 
+    function toggleStatus(id) {
+      let data = getStorage();
+      const idx = data.findIndex(x => x.id == id);
+      if (idx !== -1) {
+        data[idx].status = (data[idx].status === 'Not Paid') ? 'Paid' : 'Not Paid';
+        localStorage.setItem('nbmm_entries', JSON.stringify(data));
+        renderRows();
+      }
+    }
+
     function renderRows() {
       const data = getStorage();
-      let inc = 0, exp = 0;
+      let incPaid = 0, incPending = 0, exp = 0;
       const tb = document.getElementById('rec-rows');
       tb.innerHTML = '';
+      
       data.forEach(x => {
-        if (x.type === 'Income') inc += x.amt; else exp += x.amt;
+        const isPaid = (x.status !== 'Not Paid');
+        if (x.type === 'Income') {
+          if (isPaid) incPaid += x.amt; else incPending += x.amt;
+        } else {
+          exp += x.amt;
+        }
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${x.name}<br><small style="color:#777;">${x.rec}</small></td>
-          <td>${x.mode}</td>
-          <td style="color:${x.type === 'Income' ? '#2e7d32' : '#c0392b'}; font-weight:bold;">₹${x.amt}</td>
+          <td>
+            <strong>${x.name}</strong><br>
+            <small style="color:#777;">${x.rec} • ${x.mode}</small>
+          </td>
+          <td>
+            ${x.type === 'Income' ? `
+              <span class="${isPaid ? 'badge-paid' : 'badge-unpaid'}" style="cursor:pointer;" onclick="toggleStatus(${x.id})" title="Tap to toggle status">
+                ${isPaid ? 'PAID ✅' : 'PENDING ⏳'}
+              </span>
+            ` : '<span style="color:#666; font-size:0.7rem;">EXPENSE</span>'}
+          </td>
+          <td style="color:${x.type === 'Income' ? (isPaid ? '#2e7d32' : '#d35400') : '#c0392b'}; font-weight:bold;">
+            ₹${x.amt}
+          </td>
           <td style="white-space:nowrap;">
             <button class="btn" style="padding:4px 6px; font-size:0.68rem; background:#2980b9;" onclick="editRow(${x.id})">✏️</button>
             <button class="btn" style="padding:4px 6px; font-size:0.68rem; background:#c0392b;" onclick="deleteRow(${x.id})">🗑️</button>
-            ${x.type === 'Income' ? `<button class="btn" style="padding:4px 6px; font-size:0.68rem; background:#25d366;" onclick='openReceiptModal(${JSON.stringify(x)})'>🧾 Receipt</button>` : ''}
+            ${x.type === 'Income' ? `<button class="btn" style="padding:4px 6px; font-size:0.68rem; background:#25d366;" onclick='openReceiptModal(${JSON.stringify(x)})'>🧾</button>` : ''}
           </td>
         `;
         tb.appendChild(tr);
       });
-      document.getElementById('tot-in').innerText = inc;
+
+      document.getElementById('tot-in').innerText = incPaid;
+      document.getElementById('tot-pending').innerText = incPending;
       document.getElementById('tot-ex').innerText = exp;
-      document.getElementById('tot-bal').innerText = (inc - exp);
+      document.getElementById('tot-bal').innerText = (incPaid - exp);
     }
 
-    // AUTO-FILLS THE RECEIPT DETAILS AUTOMATICALLY
+    // AUTO-FILLS OFFICIAL RECEIPT (HANDLES PAID & NOT PAID)
     function openReceiptModal(item) {
       currentReceiptItem = item;
+      const isPaid = (item.status !== 'Not Paid');
+
       document.getElementById('pr-rec').innerText = item.rec;
       document.getElementById('pr-date').innerText = item.dateStr || new Date().toLocaleDateString('en-IN');
       document.getElementById('pr-name').innerText = item.name;
@@ -768,6 +834,27 @@
       document.getElementById('pr-mode').innerText = item.mode;
       document.getElementById('pr-amt').innerText = item.amt;
       document.getElementById('pr-words-val').innerText = numberToWords(item.amt);
+
+      const stamp = document.getElementById('pr-stamp-box');
+      const badge = document.getElementById('pr-receipt-type');
+      const statusText = document.getElementById('pr-status-text');
+      const amtLabel = document.getElementById('pr-amt-label');
+
+      if (isPaid) {
+        badge.innerText = 'OFFICIAL DONATION RECEIPT';
+        badge.style.background = '#b71c1c';
+        statusText.innerHTML = '<span style="color:#27ae60;">PAID & RECEIVED ✅</span>';
+        amtLabel.innerText = 'Rupees Received:';
+        stamp.className = 'pr-stamp pr-stamp-paid';
+        stamp.innerText = 'PAID & VERIFIED';
+      } else {
+        badge.innerText = 'CONTRIBUTION PLEDGE / MEMO';
+        badge.style.background = '#d35400';
+        statusText.innerHTML = '<span style="color:#c0392b;">NOT PAID (PENDING / DUE) ⏳</span>';
+        amtLabel.innerText = 'Rupees Pending / Due:';
+        stamp.className = 'pr-stamp pr-stamp-due';
+        stamp.innerText = 'PAYMENT DUE / PENDING';
+      }
 
       if (item.ref) {
         document.getElementById('pr-ref-lbl').style.display = 'block';
@@ -819,7 +906,15 @@
     }
 
     function waSend(x) {
-      const txt = `🚩 *NAVDURGA BALMITRA MANDAL* 🚩%0A📍 NEW MUNICIPAL BLDG 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008%0A%0A*OFFICIAL DONATION RECEIPT*%0A──────────────────────%0A🧾 *Receipt No:* ${x.rec}%0A👤 *Donor Name:* ${x.name}%0A🏠 *Address/Room:* ${x.address || 'Mumbai'}%0A💰 *Amount:* ₹${x.amt}/-%0A📝 *In Words:* ${numberToWords(x.amt)}%0A💳 *Payment Mode:* ${x.mode} ${x.ref ? '(' + x.ref + ')' : ''}%0A📅 *Date:* ${x.dateStr || ''}%0A──────────────────────%0A🙏 Thank you for your generous contribution to Navratri Utsav 2026!%0A*(Official PDF / Image Receipt attached)*`;
+      const isPaid = (x.status !== 'Not Paid');
+      let txt = '';
+      
+      if (isPaid) {
+        txt = `🚩 *NAVDURGA BALMITRA MANDAL* 🚩%0A📍 NEW MUNICIPAL BLDG 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008%0A%0A*OFFICIAL DONATION RECEIPT*%0A──────────────────────%0A🧾 *Receipt No:* ${x.rec}%0A👤 *Donor Name:* ${x.name}%0A🏠 *Address/Room:* ${x.address || 'Mumbai'}%0A💰 *Amount Received:* ₹${x.amt}/-%0A📝 *In Words:* ${numberToWords(x.amt)}%0A💳 *Payment Mode:* ${x.mode} ${x.ref ? '(' + x.ref + ')' : ''}%0A✅ *Status:* Paid & Verified%0A📅 *Date:* ${x.dateStr || ''}%0A──────────────────────%0A🙏 Thank you for your generous contribution to Navratri Utsav 2026!`;
+      } else {
+        txt = `🚩 *NAVDURGA BALMITRA MANDAL* 🚩%0A📍 NEW MUNICIPAL BLDG 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008%0A%0A*CONTRIBUTION PLEDGE / REMINDER*%0A──────────────────────%0A🧾 *Memo No:* ${x.rec}%0A👤 *Name:* ${x.name}%0A🏠 *Address/Room:* ${x.address || 'Mumbai'}%0A💰 *Pledged Amount:* ₹${x.amt}/-%0A📝 *In Words:* ${numberToWords(x.amt)}%0A⏳ *Status:* Payment Pending / Due%0A──────────────────────%0A📱 *Pay via UPI:* navdurgabalmitramandal@upi%0A📞 *Helpline / Coordinator:* 9820727275%0A🙏 Thank you for supporting Navratri Utsav 2026!`;
+      }
+
       const p = (x.phone || '').replace(/\D/g, '');
       const url = p.length >= 10 ? `https://wa.me/91${p.slice(-10)}?text=${txt}` : `https://api.whatsapp.com/send?text=${txt}`;
       window.open(url, '_blank');
