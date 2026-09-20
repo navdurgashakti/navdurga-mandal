@@ -12,7 +12,7 @@
     header h1 { font-size: 1.25rem; font-weight: 700; }
     .header-addr { display: inline-block; margin-top: 5px; background: rgba(0,0,0,0.25); padding: 3px 10px; border-radius: 15px; font-size: 0.75rem; }
     nav { display: flex; justify-content: space-around; position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #ddd; padding: 10px 0; z-index: 100; }
-    nav button { background: none; border: none; font-size: 0.75rem; color: #666; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; }
+    nav button { background: none; border: none; font-size: 0.72rem; color: #666; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; }
     nav button.active { color: var(--primary); font-weight: bold; }
     .tab { display: none; padding: 14px; max-width: 550px; margin: 0 auto; }
     .tab.active { display: block; }
@@ -29,6 +29,10 @@
     .table th { background: #f5f5f5; }
     #receipt-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 200; padding: 20px; }
     .receipt-box { background: #fff; max-width: 400px; margin: 30px auto; border-radius: 10px; padding: 18px; border: 2px dashed var(--primary); }
+    
+    /* Share Specific */
+    .qr-container { text-align: center; margin: 12px auto; padding: 10px; background: #fafafa; border: 1px dashed #ddd; border-radius: 8px; }
+    .share-btn-group { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
   </style>
 </head>
 <body>
@@ -87,7 +91,42 @@
     </div>
   </main>
 
-  <!-- TAB 4: INFO & CONTACTS -->
+  <!-- TAB 4: SHARE (NEW) -->
+  <main id="tab-share" class="tab">
+    <div class="card" style="border-left-color: #25d366; text-align: center;">
+      <h3>📲 Share Mandal App</h3>
+      <p style="font-size: 0.85rem; color:#555;">Share with society members, relatives & devotees:</p>
+      
+      <!-- Generated QR Code for the Live URL -->
+      <div class="qr-container">
+        <p style="font-size:0.75rem; color:#666; margin-bottom:6px;">Scan to open on any mobile:</p>
+        <img id="share-qr-img" style="width:180px; height:180px; display:block; margin:0 auto;" src="" alt="App QR Code">
+        <a id="qr-download-link" class="btn" style="background:#333; font-size:0.75rem; padding:5px 10px; margin-top:8px;" download="NBMM_Pandal_QR.png" target="_blank">📥 Save QR Image</a>
+      </div>
+
+      <div class="share-btn-group">
+        <button class="btn" style="background:#25d366;" onclick="shareOnWhatsApp()">
+          💬 Share on WhatsApp
+        </button>
+        <button class="btn" style="background:#2980b9;" onclick="copyAppUrl()">
+          📋 Copy App Link
+        </button>
+        <button class="btn" style="background:#8e44ad;" onclick="triggerNativeShare()">
+          📤 More Sharing Options
+        </button>
+      </div>
+      <p id="copy-status" style="color:#2e7d32; font-size:0.8rem; margin-top:6px; display:none; font-weight:bold;">Link copied to clipboard!</p>
+    </div>
+
+    <div class="card">
+      <h3>Banner Notice Tip</h3>
+      <p style="font-size: 0.82rem; color: #555;">
+        You can download the QR code above and give it to your banner printer to place at the entrance gate of <strong>5th Lane, Sukhlaji Street</strong>.
+      </p>
+    </div>
+  </main>
+
+  <!-- TAB 5: INFO & CONTACTS -->
   <main id="tab-info" class="tab">
     <div class="card">
       <h3>Mandal Office & Contacts</h3>
@@ -111,7 +150,7 @@
     </div>
   </main>
 
-  <!-- TAB 5: ADMIN KHATA -->
+  <!-- TAB 6: ADMIN KHATA -->
   <main id="tab-admin" class="tab">
     <div id="login-box" class="card" style="text-align:center;">
       <h3>🔐 Committee Login</h3>
@@ -175,6 +214,7 @@
     <button class="active" onclick="goTab('schedule', this)">📅 Schedule</button>
     <button onclick="goTab('live', this)">🔴 Live</button>
     <button onclick="goTab('donate', this)">🙏 Daan</button>
+    <button onclick="goTab('share', this)">📤 Share</button>
     <button onclick="goTab('info', this)">📜 Info</button>
     <button onclick="goTab('admin', this)">🔐 Khata</button>
   </nav>
@@ -185,6 +225,43 @@
       document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
       document.getElementById('tab-' + id).classList.add('active');
       el.classList.add('active');
+    }
+
+    // Dynamic QR generation based on the active URL
+    function setupShareTab() {
+      const currentUrl = window.location.href;
+      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(currentUrl)}`;
+      const qrImg = document.getElementById('share-qr-img');
+      const qrDownload = document.getElementById('qr-download-link');
+      
+      if (qrImg) qrImg.src = qrUrl;
+      if (qrDownload) qrDownload.href = qrUrl;
+    }
+
+    function shareOnWhatsApp() {
+      const url = window.location.href;
+      const msg = `🚩 *NAVDURGA BALMITRA MANDAL* 🚩\n📍 5th Lane, Sukhlaji Street\n\nCheck out our official Mandal App for Navratri Utsav 2026!\n📅 Daily Aarti & Function Timings\n🔴 Pandal Live Darshan\n🙏 Online Pavitra Daan (UPI)\n🗺️ Pandal Location & Directions\n\n📲 *Open App Here:* ${url}\n📞 Helpline: 9820727275`;
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    function copyAppUrl() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        const s = document.getElementById('copy-status');
+        s.style.display = 'block';
+        setTimeout(() => { s.style.display = 'none'; }, 3000);
+      });
+    }
+
+    function triggerNativeShare() {
+      if (navigator.share) {
+        navigator.share({
+          title: 'Navdurga Balmitra Mandal',
+          text: 'Official Navratri Utsav 2026 App - 5th Lane Sukhlaji Street',
+          url: window.location.href
+        }).catch(() => {});
+      } else {
+        copyAppUrl();
+      }
     }
 
     const DAYS = [
@@ -226,7 +303,9 @@
         <p><strong>Prasad:</strong> ${x.pr}</p>
       `;
     }
+
     showDays();
+    setupShareTab();
 
     function login() {
       const u = document.getElementById('uid').value.trim();
@@ -310,10 +389,4 @@
 
     function waSend(x) {
       const txt = `🚩 *NAVDURGA BALMITRA MANDAL* 🚩%0A📍 5th Lane, Sukhlaji Street%0A%0A*DONATION RECEIPT*%0A──────────────────────%0A🧾 *Receipt:* ${x.rec}%0A👤 *Name:* ${x.name}%0A💰 *Amount:* ₹${x.amt}%0A💳 *Mode:* ${x.mode}%0A──────────────────────%0A🙏 Thank you for your support to Navratri Utsav 2026!`;
-      const p = (x.phone || '').replace(/\D/g, '');
-      const url = p.length >= 10 ? `https://wa.me/91${p.slice(-10)}?text=${txt}` : `https://api.whatsapp.com/send?text=${txt}`;
-      window.open(url, '_blank');
-    }
-  </script>
-</body>
-</html>
+      const p = (x.ph
