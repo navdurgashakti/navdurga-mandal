@@ -1,12 +1,15 @@
-self.addEventListener('install', (e) => {
+const CACHE_NAME = 'nbmm-cache-v1';
+
+self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-self.addEventListener('activate', (e) => {
-  e.waitUntil(clients.claim());
+self.addEventListener('activate', (event) => {
+  event.waitUntil(clients.claim());
 });
 
-self.addEventListener('fetch', (e) => {
-  // Passes network requests directly
-  e.respondWith(fetch(e.request));
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    fetch(event.request).catch(() => caches.match(event.request))
+  );
 });
