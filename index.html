@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Navdurga Balmitra Mandal</title>
-  <link rel="manifest" href="manifest.json?v=8">
-  <link rel="apple-touch-icon" href="icon.jpg?v=8">
-  <link rel="icon" type="image/jpeg" href="icon.jpg?v=8">
+  <link rel="manifest" href="manifest.json?v=9">
+  <link rel="apple-touch-icon" href="icon.jpg?v=9">
+  <link rel="icon" type="image/jpeg" href="icon.jpg?v=9">
   <style>
     :root { --primary: #b71c1c; --gold: #d4af37; --bg: #fffbf0; }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
@@ -256,10 +256,10 @@
   <section id="tab-share" class="tab">
     <div class="card" style="border-left-color: #25d366; text-align: center;">
       <h3>📲 Share Mandal App</h3>
-      <p style="font-size: 0.85rem; color:#555;">Scan QR code or click share to send via WhatsApp:</p>
+      <p style="font-size: 0.85rem; color:#555;">Scan QR code with phone camera to directly install the app:</p>
       <div class="qr-container" style="text-align:center; margin:12px 0;">
         <img id="share-qr-img" style="width:180px; height:180px; display:block; margin:0 auto;" src="" alt="App QR Code">
-        <a id="qr-download-link" class="btn" style="background:#333; font-size:0.75rem; padding:5px 10px; margin-top:8px;" download="NBMM_Pandal_QR.png" target="_blank">📥 Save QR Image</a>
+        <a id="qr-download-link" class="btn" style="background:#333; font-size:0.75rem; padding:5px 10px; margin-top:8px;" download="NBMM_Direct_Install_QR.png" target="_blank">📥 Save QR Image</a>
       </div>
       <div style="display:flex; flex-direction:column; gap:8px;">
         <button class="btn" style="background:#25d366;" onclick="shareOnWhatsApp()">💬 Share on WhatsApp</button>
@@ -305,7 +305,7 @@
 
     <div id="panel-box" style="display:none;">
       
-      <!-- ADMIN EVENT / SCHEDULE EDITOR (NEW) -->
+      <!-- ADMIN EVENT / SCHEDULE EDITOR -->
       <div class="card" style="border-left-color: #8e44ad;">
         <h3>📅 Edit Festival Schedule (All 10 Days)</h3>
         <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Update daily event details, puja, color, or prasad in real time:</p>
@@ -521,7 +521,12 @@
   </div>
 
   <script>
-    // 1-TAP INSTALL
+    // 1. REGISTER SERVICE WORKER
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+
+    // 2. DIRECT AUTO-INSTALL TRIGGER ON QR SCAN
     let deferredPrompt;
     const installBanner = document.getElementById('install-banner');
     const installBtn = document.getElementById('btn-install-app');
@@ -529,6 +534,20 @@
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
+
+      // Detect if user opened the page via QR scan link
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('install') === 'true') {
+        setTimeout(() => {
+          if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then(() => {
+              deferredPrompt = null;
+            });
+          }
+        }, 500);
+      }
+
       if (installBanner) installBanner.style.display = 'block';
     });
 
@@ -638,7 +657,7 @@
       `;
     }
 
-    // ADMIN SCHEDULE EDITOR FUNCTIONS
+    // ADMIN SCHEDULE EDITOR
     function loadAdminScheduleFields() {
       const idx = document.getElementById('adm-sched-day').value;
       const days = getScheduleDays();
@@ -759,20 +778,21 @@
       renderMediaDay(day);
     }
 
+    // SHARE TAB WITH AUTO-INSTALL QR
     function initShare() {
-      const u = window.location.href;
+      const u = 'https://ajbokadia1106-hue.github.io/?install=true';
       const qr = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(u);
       document.getElementById('share-qr-img').src = qr;
       document.getElementById('qr-download-link').href = qr;
     }
 
     function shareOnWhatsApp() {
-      const msg = '🚩 *NAVDURGA BALMITRA MANDAL* 🚩\n📍 NEW MUNICIPAL BLDG 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008\n\nCheck out our official Mandal App!\n📅 Aarti & Program Schedule\n📸 Day-wise Photos & Videos\n🔴 Live Darshan\n🙏 Online Pavitra Daan\n🗺️ Google Maps: https://goo.gl/maps/TxZFq3YUEzNL9uU58?g_st=ac\n\n📲 *Open & Install:* ' + window.location.href + '\n📞 Helpline: 9820727275';
+      const msg = '🚩 *NAVDURGA BALMITRA MANDAL* 🚩\n📍 NEW MUNICIPAL BLDG 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008\n\nCheck out our official Mandal App!\n📅 Aarti & Program Schedule\n📸 Day-wise Photos & Videos\n🔴 Live Darshan\n🙏 Online Pavitra Daan\n🗺️ Google Maps: https://goo.gl/maps/TxZFq3YUEzNL9uU58?g_st=ac\n\n📲 *Open & Install:* https://ajbokadia1106-hue.github.io/?install=true\n📞 Helpline: 9820727275';
       window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msg), '_blank');
     }
 
     function copyAppUrl() {
-      navigator.clipboard.writeText(window.location.href).then(() => {
+      navigator.clipboard.writeText('https://ajbokadia1106-hue.github.io/?install=true').then(() => {
         const s = document.getElementById('copy-status');
         s.style.display = 'block';
         setTimeout(() => s.style.display = 'none', 2500);
@@ -848,7 +868,7 @@
         const d = new Date();
         const item = {
           id: Date.now(),
-          rec: 'NBMM-'+ String(data.length + 1).padStart(4, '0'),
+          rec: 'NBMM-' + String(data.length + 1).padStart(4, '0'),
           type: document.getElementById('r-type').value,
           name: name,
           address: document.getElementById('r-address').value.trim() || 'Mumbai',
@@ -1042,3 +1062,4 @@
   </script>
 </body>
 </html>
+          
