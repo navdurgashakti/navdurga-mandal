@@ -151,7 +151,6 @@
     .pr-stamp-paid { border: 2px solid #27ae60; color: #27ae60; }
     .pr-stamp-due { border: 2px solid #c0392b; color: #c0392b; }
 
-    /* Print Isolation */
     @media print {
       body * { visibility: hidden; }
       #capture-receipt, #capture-receipt * { visibility: visible; }
@@ -548,13 +547,11 @@
       e.preventDefault();
       deferredPrompt = e;
 
-      // If scanned via QR link, open modal immediately
       if (isFromQR && qrModal) {
         qrModal.style.display = 'block';
       }
     });
 
-    // Directly triggers the official system confirmation dialog on tap
     if (installBtn) {
       installBtn.addEventListener('click', async () => {
         if (deferredPrompt) {
@@ -786,25 +783,41 @@
       renderMediaDay(day);
     }
 
-    // SHARE TAB CONFIGURED FOR REPO PATH
-    const REPO_APP_URL = 'https://ajbokadia1106-hue.github.io/NAVDURGA-BALMITRA-MANDAL-APPLICATION/?install=true';
+    // DYNAMIC URL RESOLUTION (PREVENTS ALL 404s)
+    function getCleanInstallUrl() {
+      const base = window.location.origin + window.location.pathname;
+      const cleanBase = base.endsWith('/') ? base : base + '/';
+      return cleanBase + '?install=true';
+    }
 
     function initShare() {
-      const qr = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(REPO_APP_URL);
-      document.getElementById('share-qr-img').src = qr;
-      document.getElementById('qr-download-link').href = qr;
+      const installUrl = getCleanInstallUrl();
+      const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(installUrl);
+      
+      const qrImg = document.getElementById('share-qr-img');
+      const dlLink = document.getElementById('qr-download-link');
+      
+      if (qrImg) qrImg.src = qrApiUrl;
+      if (dlLink) {
+        dlLink.href = qrApiUrl;
+        dlLink.target = '_blank';
+      }
     }
 
     function shareOnWhatsApp() {
-      const msg = '🚩 *NAVDURGA BALMITRA MANDAL* 🚩\n📍 NEW MUNICIPAL BLDG 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008\n\nCheck out our official Mandal App!\n📅 Aarti & Program Schedule\n📸 Day-wise Photos & Videos\n🔴 Live Darshan\n🙏 Online Pavitra Daan\n🗺️ Google Maps: https://goo.gl/maps/TxZFq3YUEzNL9uU58?g_st=ac\n\n📲 *Open & Install:* ' + REPO_APP_URL + '\n📞 Helpline: 9820727275';
+      const installUrl = getCleanInstallUrl();
+      const msg = '🚩 *NAVDURGA BALMITRA MANDAL* 🚩\n📍 NEW MUNICIPAL BLDG 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008\n\nCheck out our official Mandal App!\n📅 Aarti & Program Schedule\n📸 Day-wise Photos & Videos\n🔴 Live Darshan\n🙏 Online Pavitra Daan\n🗺️ Google Maps: https://goo.gl/maps/TxZFq3YUEzNL9uU58?g_st=ac\n\n📲 *Open & Install:* ' + installUrl + '\n📞 Helpline: 9820727275';
       window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msg), '_blank');
     }
 
     function copyAppUrl() {
-      navigator.clipboard.writeText(REPO_APP_URL).then(() => {
+      const installUrl = getCleanInstallUrl();
+      navigator.clipboard.writeText(installUrl).then(() => {
         const s = document.getElementById('copy-status');
-        s.style.display = 'block';
-        setTimeout(() => s.style.display = 'none', 2500);
+        if (s) {
+          s.style.display = 'block';
+          setTimeout(() => s.style.display = 'none', 2500);
+        }
       });
     }
 
@@ -1071,5 +1084,3 @@
   </script>
 </body>
 </html>
-   
-          
