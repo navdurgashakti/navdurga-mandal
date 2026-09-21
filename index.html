@@ -147,6 +147,12 @@
     .badge-paid { background: #e8f8f5; color: #27ae60; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; border: 1px solid #a3e4d7; display: inline-block; }
     .badge-unpaid { background: #fef9e7; color: #d35400; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; border: 1px solid #f9e79f; display: inline-block; }
 
+    /* Banking Row Card */
+    .bank-data-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-bottom: 1px dashed #eee; font-size: 0.82rem; }
+    .bank-data-row:last-child { border-bottom: none; }
+    .bank-data-lbl { color: #666; font-weight: 600; }
+    .bank-data-val { color: #111; font-weight: 800; }
+
     /* ==========================================================================
        TRI-LINGUAL RECEIPT STYLES
        ========================================================================== */
@@ -440,9 +446,9 @@
       <button class="active" onclick="switchSection('schedule', this)" id="nav-sched">📅 Daily Schedule</button>
       <button onclick="switchSection('media', this)" id="nav-media">📸 Photos & Videos</button>
       <button onclick="switchSection('live', this)" id="nav-live">🔴 Live Darshan</button>
-      <button onclick="switchSection('donate', this)" id="nav-donate">🙏 Pavitra Daan</button>
+      <button onclick="switchSection('donate', this)" id="nav-donate">🙏 Pavitra Daan & Bank</button>
       <button onclick="switchSection('share', this)" id="nav-share">📤 Share App / QR</button>
-      <button onclick="switchSection('info', this)" id="nav-info">📜 Aartis & Info</button>
+      <button onclick="switchSection('info', this)" id="nav-info">📜 Aartis & Social</button>
       <button onclick="switchSection('admin', this)" id="nav-admin">🔐 पावती पुस्तक (Khata)</button>
     </div>
   </aside>
@@ -455,6 +461,15 @@
       <div style="display:flex; gap:8px; margin-top:8px;">
         <a class="btn" style="background:#2e7d32; flex:1;" href="https://goo.gl/maps/TxZFq3YUEzNL9uU58?g_st=ac" target="_blank">🗺️ Google Maps</a>
         <a class="btn" style="background:#7a0006; flex:1;" href="tel:+919820727275">📞 Helpline</a>
+      </div>
+    </div>
+
+    <!-- QUICK SOCIAL ACCESS -->
+    <div class="card" style="border-left-color: #e1306c;">
+      <h3>🌟 Follow & Join Mandal Online</h3>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px;">
+        <a id="btn-insta-quick" class="btn" style="background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color:#fff;" href="https://instagram.com" target="_blank">📸 Instagram</a>
+        <a id="btn-wa-quick" class="btn" style="background:#25d366; color:#fff;" href="https://chat.whatsapp.com" target="_blank">💬 WhatsApp Group</a>
       </div>
     </div>
 
@@ -505,15 +520,67 @@
     </div>
   </section>
 
-  <!-- TAB 4: DAAN -->
+  <!-- TAB 4: DAAN, UPI & BANK DETAILS (EXPANDED) -->
   <section id="tab-donate" class="tab">
-    <div class="card" style="text-align:center;">
-      <h3 id="sec-daan-title">Pavitra Daan / Varthi</h3>
-      <p id="sec-daan-sub">Contribute to Navdurga Balmitra Mandal via UPI:</p>
-      <img style="width:160px; height:160px; margin:12px auto; display:block;" src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi://pay?pa=navdurgabalmitramandal@upi&pn=NavdurgaBalmitraMandal&cu=INR" alt="UPI QR">
-      <p style="font-weight:bold; margin-bottom:10px;">UPI ID: navdurgabalmitramandal@upi</p>
-      <a class="btn" href="upi://pay?pa=navdurgabalmitramandal@upi&pn=NavdurgaBalmitraMandal&cu=INR" id="btn-upi-pay">Pay via UPI App</a>
+    
+    <!-- UPI & SCAN QR CARD -->
+    <div class="card" style="text-align:center; border-left-color: #27ae60;">
+      <h3 id="sec-daan-title">🙏 Pavitra Daan / Varthi</h3>
+      <p id="sec-daan-sub">Scan QR Code to contribute to Navdurga Balmitra Mandal:</p>
+      
+      <div style="margin: 14px auto; text-align:center;">
+        <img id="daan-qr-img" style="width:190px; height:190px; margin:0 auto; display:block; border: 2px solid #7a0006; border-radius:10px; padding:6px; background:#fff; box-shadow:0 4px 10px rgba(0,0,0,0.1);" src="" alt="UPI QR">
+        <span style="font-size:0.75rem; color:#777; display:block; margin-top:4px;">(Google Pay, PhonePe, Paytm, BHIM)</span>
+      </div>
+
+      <div style="background:#fef9e7; border:1px dashed #d4af37; border-radius:8px; padding:10px; margin-bottom:12px;">
+        <span style="font-size:0.75rem; color:#666; font-weight:600;">OFFICIAL UPI ID:</span>
+        <p id="txt-upi-id" style="font-weight:900; color:#7a0006; font-size:1.05rem; margin:2px 0 6px;">navdurgabalmitramandal@upi</p>
+        <button class="btn" style="background:#2980b9; padding:6px 12px; font-size:0.75rem;" onclick="copyUpiId()">📋 Copy UPI ID</button>
+      </div>
+
+      <a class="btn" id="btn-upi-pay" style="background:#27ae60; width:100%; font-size:0.95rem; padding:12px;" href="upi://pay?pa=navdurgabalmitramandal@upi&pn=NavdurgaBalmitraMandal&cu=INR">⚡ Pay Directly via UPI App</a>
     </div>
+
+    <!-- OFFICIAL BANK ACCOUNT DETAILS CARD -->
+    <div class="card" style="border-left-color: #2980b9;">
+      <h3>🏛️ Mandal Bank Account Details (NEFT / IMPS)</h3>
+      <p style="font-size:0.8rem; color:#666; margin-bottom:10px;">Devotees can transfer seva contribution directly to the Mandal's bank account:</p>
+
+      <div style="background:#ffffff; border:1px solid #e1d5c1; border-radius:8px; overflow:hidden;">
+        <div class="bank-data-row">
+          <span class="bank-data-lbl">Account Name:</span>
+          <span class="bank-data-val" id="bnk-val-name">NAVDURGA BALMITRA MANDAL</span>
+        </div>
+        <div class="bank-data-row">
+          <span class="bank-data-lbl">Bank Name:</span>
+          <span class="bank-data-val" id="bnk-val-bank">STATE BANK OF INDIA</span>
+        </div>
+        <div class="bank-data-row">
+          <span class="bank-data-lbl">Account Number:</span>
+          <span class="bank-data-val" id="bnk-val-acc">123456789012</span>
+        </div>
+        <div class="bank-data-row">
+          <span class="bank-data-lbl">IFSC Code:</span>
+          <span class="bank-data-val" id="bnk-val-ifsc">SBIN0000000</span>
+        </div>
+        <div class="bank-data-row">
+          <span class="bank-data-lbl">Branch:</span>
+          <span class="bank-data-val" id="bnk-val-branch">MUMBAI MAIN BRANCH</span>
+        </div>
+        <div class="bank-data-row">
+          <span class="bank-data-lbl">Account Type:</span>
+          <span class="bank-data-val" id="bnk-val-type">Savings / Current Account</span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:8px; margin-top:10px;">
+        <button class="btn" style="background:#2980b9; flex:1; font-size:0.75rem;" onclick="copyBankAccount()">📋 Copy Acc No</button>
+        <button class="btn" style="background:#555; flex:1; font-size:0.75rem;" onclick="copyBankIFSC()">📋 Copy IFSC</button>
+      </div>
+      <p id="bank-copy-status" style="color:#2e7d32; font-size:0.75rem; text-align:center; margin-top:6px; display:none; font-weight:bold;">Copied to clipboard!</p>
+    </div>
+
   </section>
 
   <!-- TAB 5: SHARE -->
@@ -533,8 +600,40 @@
     </div>
   </section>
 
-  <!-- TAB 6: INFO, CONTACTS & AARTIS -->
+  <!-- TAB 6: INFO, CONTACTS, SOCIAL & AARTIS -->
   <section id="tab-info" class="tab">
+    
+    <!-- MANDAL SOCIAL & WHATSAPP CARD -->
+    <div class="card" style="border-left-color: #25d366;">
+      <h3>📱 Connect With Our Mandal</h3>
+      <p style="font-size:0.85rem; color:#555; margin-bottom:12px;">Stay connected with our official Mandal social media handles and group:</p>
+      
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <a id="link-insta-page" href="https://instagram.com" target="_blank" style="display:flex; align-items:center; justify-content:space-between; background:#fafafa; border:1px solid #ddd; padding:10px 14px; border-radius:8px; text-decoration:none; color:#111;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:1.6rem;">📸</span>
+            <div>
+              <div style="font-weight:700; font-size:0.95rem;">Follow on Instagram</div>
+              <div id="txt-insta-handle" style="font-size:0.75rem; color:#e1306c;">@navdurgabalmitramandal</div>
+            </div>
+          </div>
+          <span style="font-size:0.85rem; font-weight:700; color:#e1306c;">Visit ➔</span>
+        </a>
+
+        <a id="link-wa-group" href="https://chat.whatsapp.com" target="_blank" style="display:flex; align-items:center; justify-content:space-between; background:#fafafa; border:1px solid #ddd; padding:10px 14px; border-radius:8px; text-decoration:none; color:#111;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:1.6rem;">💬</span>
+            <div>
+              <div style="font-weight:700; font-size:0.95rem;">Join WhatsApp Group</div>
+              <div style="font-size:0.75rem; color:#25d366;">Official Devotees & Mandal Family</div>
+            </div>
+          </div>
+          <span style="font-size:0.85rem; font-weight:700; color:#25d366;">Join ➔</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- MANDAL CONTACTS -->
     <div class="card">
       <h3 id="sec-info-head">Mandal Office & Contacts</h3>
       <p>📍 NEW MUNICIPAL BUILDING 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008</p>
@@ -598,6 +697,67 @@
     <!-- ADMIN PANEL -->
     <div id="panel-box" style="display:none;">
 
+      <!-- BANK ACCOUNT & UPI CONTROLLER (NEW) -->
+      <div class="card" style="border-left-color: #27ae60;">
+        <h3>🏛️ Update Pavitra Daan, Bank & Barcode Details</h3>
+        <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Configure the official UPI ID, custom QR barcode image, and bank transfer details shown to devotees:</p>
+        
+        <label style="font-size:0.75rem; font-weight:600; color:#555;">Official UPI ID *</label>
+        <input type="text" id="adm-upi-id" class="input-box" placeholder="e.g. navdurgabalmitramandal@upi" />
+
+        <label style="font-size:0.75rem; font-weight:600; color:#555;">Custom UPI Barcode / QR Image Link (Optional)</label>
+        <input type="url" id="adm-qr-url" class="input-box" placeholder="Leave blank to auto-generate from UPI ID" />
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div>
+            <label style="font-size:0.75rem; font-weight:600; color:#555;">Account Holder Name</label>
+            <input type="text" id="adm-bank-name-holder" class="input-box" placeholder="e.g. NAVDURGA BALMITRA MANDAL" />
+          </div>
+          <div>
+            <label style="font-size:0.75rem; font-weight:600; color:#555;">Bank Name</label>
+            <input type="text" id="adm-bank-name" class="input-box" placeholder="e.g. State Bank of India" />
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div>
+            <label style="font-size:0.75rem; font-weight:600; color:#555;">Account Number</label>
+            <input type="text" id="adm-bank-acc" class="input-box" placeholder="e.g. 123456789012" />
+          </div>
+          <div>
+            <label style="font-size:0.75rem; font-weight:600; color:#555;">IFSC Code</label>
+            <input type="text" id="adm-bank-ifsc" class="input-box" placeholder="e.g. SBIN0000000" />
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div>
+            <label style="font-size:0.75rem; font-weight:600; color:#555;">Branch Name</label>
+            <input type="text" id="adm-bank-branch" class="input-box" placeholder="e.g. Sukhlaji Street / Mumbai" />
+          </div>
+          <div>
+            <label style="font-size:0.75rem; font-weight:600; color:#555;">Account Type</label>
+            <input type="text" id="adm-bank-type" class="input-box" placeholder="e.g. Savings / Current Account" />
+          </div>
+        </div>
+
+        <button class="btn" style="background:#27ae60; width:100%;" onclick="saveBankDetails()">💾 Save Bank & UPI Details (Syncs Across All Phones)</button>
+      </div>
+
+      <!-- INSTAGRAM & WHATSAPP GROUP MANAGER -->
+      <div class="card" style="border-left-color: #25d366;">
+        <h3>📱 Update Mandal Instagram & WhatsApp Links</h3>
+        <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Paste your official Instagram link/handle and WhatsApp group invite link:</p>
+        
+        <label style="font-size:0.75rem; font-weight:600; color:#555;">Instagram Account URL / Handle</label>
+        <input type="url" id="adm-insta-url" class="input-box" placeholder="e.g. https://instagram.com/navdurgabalmitramandal" />
+
+        <label style="font-size:0.75rem; font-weight:600; color:#555;">WhatsApp Group Invite Link</label>
+        <input type="url" id="adm-wa-url" class="input-box" placeholder="e.g. https://chat.whatsapp.com/Lxxxxx" />
+
+        <button class="btn" style="background:#25d366; width:100%;" onclick="saveSocialLinks()">💾 Save & Update Social Links Across All Devices</button>
+      </div>
+
       <!-- TRI-LINGUAL DONATION ENTRY FORM -->
       <div class="card" style="border-left-color:#7a0006;">
         <h3 id="form-title">🧾 पावती नोंदणी / New Digital Receipt</h3>
@@ -625,12 +785,12 @@
         </div>
 
         <label style="font-size:0.75rem; font-weight:600; color:#555;">श्री / सौ. देणगीदाराचे नाव / Donor Name *</label>
-        <input type="text" id="r-name" class="input-box" placeholder="e.g. श्रीमान दलपत प्रजापति / Shriman Dalpat Prajapati" />
+        <input type="text" id="r-name" class="input-box" placeholder="Enter Donor Name" />
 
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
           <div>
-            <label style="font-size:0.75rem; font-weight:600; color:#555;">स्वीकारले / Collector *</label>
-            <input type="text" id="r-collector" class="input-box" value="Mahendra Palgota" />
+            <label style="font-size:0.75rem; font-weight:600; color:#555;">स्वीकारले / Collected By *</label>
+            <input type="text" id="r-collector" class="input-box" placeholder="Enter Name Who Collected" />
           </div>
           <div>
             <label style="font-size:0.75rem; font-weight:600; color:#555;">मोबाईल / WhatsApp Phone</label>
@@ -751,14 +911,14 @@
   </section>
 
   <!-- ==========================================================================
-       MODAL: AUTHENTIC TRI-LINGUAL MARATHI / HINDI / ENGLISH RECEIPT WITH LOGO
+       MODAL: AUTHENTIC TRI-LINGUAL RECEIPT WITH LOGO
        ========================================================================== -->
   <div id="receipt-modal">
     <div class="modal-content-wrap">
       
       <div id="capture-receipt" class="mrc-card">
         
-        <!-- HEADER WITH MANDAL LOGO[span_2](start_span)[span_2](end_span) -->
+        <!-- HEADER WITH MANDAL LOGO[span_1](start_span)[span_1](end_span) -->
         <div class="mrc-header">
           <div class="mrc-top-meta">
             <span>स्थापना / Estd : 1992</span>
@@ -774,10 +934,10 @@
           <div style="font-size:0.62rem; color:#ffd1d1; margin-top:5px;">न्यू म्युनिसिपल इमारत, ७६ तेनामेंन्ट, ५वी गल्ली, कामाठीपुरा, मुंबई ४००००८</div>
         </div>
 
-        <!-- BODY[span_3](start_span)[span_3](end_span) -->
+        <!-- BODY[span_2](start_span)[span_2](end_span) -->
         <div class="mrc-body">
           
-          <!-- META ROW[span_4](start_span)[span_4](end_span) -->
+          <!-- META ROW[span_3](start_span)[span_3](end_span) -->
           <div class="mrc-meta-row">
             <div class="mrc-badge-box">
               <span class="mrc-badge-lbl">पावती नं. / Rec. No.</span>
@@ -789,29 +949,29 @@
             </div>
           </div>
 
-          <!-- DONOR ROW[span_5](start_span)[span_5](end_span) -->
+          <!-- DONOR ROW[span_4](start_span)[span_4](end_span) -->
           <div class="mrc-field-group">
             <span class="mrc-lbl">श्री / सौ. / Received From:</span>
-            <div class="mrc-val-lg" id="pr-name">श्रीमान दलपत प्रजापति - भंडारा</div>
+            <div class="mrc-val-lg" id="pr-name"></div>
           </div>
 
-          <!-- WORDS IN MARATHI, HINDI & ENGLISH[span_6](start_span)[span_6](end_span) -->
+          <!-- WORDS IN MARATHI, HINDI & ENGLISH[span_5](start_span)[span_5](end_span) -->
           <div class="mrc-field-group">
             <span class="mrc-lbl">यांच्याकडून अक्षरी रुपये / Amount in Words:</span>
-            <div class="mrc-words-mr" id="pr-words-mr">मराठी: एक हजार शंभर रुपये फक्त</div>
-            <div class="mrc-words-hi" id="pr-words-hi">हिंदी: एक हजार एक सौ रुपये मात्र</div>
-            <div class="mrc-words-en" id="pr-words-en">English: One Thousand One Hundred Rupees Only</div>
+            <div class="mrc-words-mr" id="pr-words-mr"></div>
+            <div class="mrc-words-hi" id="pr-words-hi"></div>
+            <div class="mrc-words-en" id="pr-words-en"></div>
           </div>
 
-          <!-- PURPOSE & COLLECTOR ROW[span_7](start_span)[span_7](end_span) -->
+          <!-- PURPOSE & COLLECTOR ROW[span_6](start_span)[span_6](end_span) -->
           <div class="mrc-field-group">
             <span class="mrc-lbl">वर्गणी दाखल / Towards & Collected By:</span>
             <div style="font-size:0.92rem; font-weight:700; color:#333;">
-              <span id="pr-category-txt">भंडारा</span> • स्वीकारले / By : <span id="pr-collector-txt" style="color:#7a0006;">Mahendra Palgota</span>
+              <span id="pr-category-txt">भंडारा</span> • स्वीकारले / By : <span id="pr-collector-txt" style="color:#7a0006;"></span>
             </div>
           </div>
 
-          <!-- PAYMENT MODE PILLS[span_8](start_span)[span_8](end_span) -->
+          <!-- PAYMENT MODE PILLS[span_7](start_span)[span_7](end_span) -->
           <div class="mrc-mode-row">
             <span class="mrc-lbl" style="margin-right:4px;">माध्यम / Mode:</span>
             <span class="mrc-mode-pill" id="pill-cash">रोख / Cash</span>
@@ -819,7 +979,7 @@
             <span class="mrc-mode-pill" id="pill-due">बाकी / Due</span>
           </div>
 
-          <!-- AMOUNT BANNER, THANKS & QR CODE[span_9](start_span)[span_9](end_span) -->
+          <!-- AMOUNT BANNER, THANKS & QR CODE[span_8](start_span)[span_8](end_span) -->
           <div class="mrc-amount-section">
             <div class="mrc-amt-banner">
               <span class="mrc-amt-banner-lbl">रक्कम / Amount</span>
@@ -840,7 +1000,7 @@
             </div>
           </div>
 
-          <!-- SIGNATURES[span_10](start_span)[span_10](end_span) -->
+          <!-- SIGNATURES[span_9](start_span)[span_9](end_span) -->
           <div class="mrc-footer-signatures">
             <div class="mrc-sign-col">
               <div class="mrc-sign-name">&nbsp;</div>
@@ -848,7 +1008,7 @@
             </div>
             <div style="color:var(--gold); font-size:1rem;">✦</div>
             <div class="mrc-sign-col">
-              <div class="mrc-sign-name" id="pr-sign-president">Mahendra Palgota</div>
+              <div class="mrc-sign-name" id="pr-sign-president">NBMM MEMBERS</div>
               <div class="mrc-sign-title">अध्यक्ष / President</div>
             </div>
           </div>
@@ -915,6 +1075,21 @@
     ];
 
     const DEFAULT_AUTH = { uid: "NBMM", pin: "NBMM1137@" };
+    const DEFAULT_SOCIAL = {
+      insta: "https://instagram.com/navdurgabalmitramandal",
+      wa: "https://chat.whatsapp.com"
+    };
+
+    const DEFAULT_BANK = {
+      upi: "navdurgabalmitramandal@upi",
+      qrImg: "",
+      holder: "NAVDURGA BALMITRA MANDAL",
+      bank: "STATE BANK OF INDIA",
+      acc: "123456789012",
+      ifsc: "SBIN0000000",
+      branch: "SUKHLAJI STREET, MUMBAI",
+      type: "Savings / Current Account"
+    };
 
     let cachedSchedule = JSON.parse(localStorage.getItem('nbmm_schedule_custom') || 'null') || DEFAULT_DAYS;
     let cachedMedia = JSON.parse(localStorage.getItem('nbmm_media') || '{}');
@@ -922,6 +1097,8 @@
     let cachedAarties = JSON.parse(localStorage.getItem('nbmm_aarties') || 'null') || DEFAULT_AARTIES;
     let cachedAuth = JSON.parse(localStorage.getItem('nbmm_credentials') || 'null') || DEFAULT_AUTH;
     let cachedLiveStream = localStorage.getItem('nbmm_live_url') || '';
+    let cachedSocial = JSON.parse(localStorage.getItem('nbmm_social') || 'null') || DEFAULT_SOCIAL;
+    let cachedBank = JSON.parse(localStorage.getItem('nbmm_bank_details') || 'null') || DEFAULT_BANK;
     let currentLang = localStorage.getItem('nbmm_lang') || 'mr';
 
     // Real-Time Listeners
@@ -992,10 +1169,178 @@
         const admInput = document.getElementById('adm-live-url');
         if (admInput) admInput.value = val;
       });
+
+      db.ref('social_links').on('value', (snap) => {
+        const val = snap.val();
+        if (val) {
+          cachedSocial = val;
+          localStorage.setItem('nbmm_social', JSON.stringify(val));
+          renderSocialLinks();
+        }
+      });
+
+      // Synchronize Bank & UPI details in real time
+      db.ref('bank_details').on('value', (snap) => {
+        const val = snap.val();
+        if (val) {
+          cachedBank = val;
+          localStorage.setItem('nbmm_bank_details', JSON.stringify(val));
+          renderBankDetails();
+        }
+      });
     }
 
     // -------------------------------------------------------------
-    // 2. LANGUAGE TRANSLATION ENGINE
+    // 2. BANK, UPI & BARCODE ENGINE (NEW)
+    // -------------------------------------------------------------
+    function renderBankDetails() {
+      const b = cachedBank || DEFAULT_BANK;
+      const upiId = b.upi || DEFAULT_BANK.upi;
+
+      // Update Devotee View
+      document.getElementById('txt-upi-id').innerText = upiId;
+      document.getElementById('btn-upi-pay').href = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=NavdurgaBalmitraMandal&cu=INR`;
+
+      // Render QR Barcode (Custom uploaded or generated via UPI ID)
+      const qrImg = document.getElementById('daan-qr-img');
+      if (b.qrImg && b.qrImg.trim()) {
+        qrImg.src = b.qrImg.trim();
+      } else {
+        qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(`upi://pay?pa=${upiId}&pn=NavdurgaBalmitraMandal&cu=INR`)}`;
+      }
+
+      // Bank Row Data
+      document.getElementById('bnk-val-name').innerText = b.holder || DEFAULT_BANK.holder;
+      document.getElementById('bnk-val-bank').innerText = b.bank || DEFAULT_BANK.bank;
+      document.getElementById('bnk-val-acc').innerText = b.acc || DEFAULT_BANK.acc;
+      document.getElementById('bnk-val-ifsc').innerText = b.ifsc || DEFAULT_BANK.ifsc;
+      document.getElementById('bnk-val-branch').innerText = b.branch || DEFAULT_BANK.branch;
+      document.getElementById('bnk-val-type').innerText = b.type || DEFAULT_BANK.type;
+
+      // Preload admin inputs
+      const admUpi = document.getElementById('adm-upi-id');
+      const admQr = document.getElementById('adm-qr-url');
+      const admHolder = document.getElementById('adm-bank-name-holder');
+      const admBank = document.getElementById('adm-bank-name');
+      const admAcc = document.getElementById('adm-bank-acc');
+      const admIfsc = document.getElementById('adm-bank-ifsc');
+      const admBranch = document.getElementById('adm-bank-branch');
+      const admType = document.getElementById('adm-bank-type');
+
+      if (admUpi) admUpi.value = upiId;
+      if (admQr) admQr.value = b.qrImg || '';
+      if (admHolder) admHolder.value = b.holder || '';
+      if (admBank) admBank.value = b.bank || '';
+      if (admAcc) admAcc.value = b.acc || '';
+      if (admIfsc) admIfsc.value = b.ifsc || '';
+      if (admBranch) admBranch.value = b.branch || '';
+      if (admType) admType.value = b.type || '';
+    }
+
+    function saveBankDetails() {
+      const upi = document.getElementById('adm-upi-id').value.trim();
+      const qrImg = document.getElementById('adm-qr-url').value.trim();
+      const holder = document.getElementById('adm-bank-name-holder').value.trim();
+      const bank = document.getElementById('adm-bank-name').value.trim();
+      const acc = document.getElementById('adm-bank-acc').value.trim();
+      const ifsc = document.getElementById('adm-bank-ifsc').value.trim();
+      const branch = document.getElementById('adm-bank-branch').value.trim();
+      const type = document.getElementById('adm-bank-type').value.trim();
+
+      if (!upi) {
+        alert('Please enter a valid UPI ID.');
+        return;
+      }
+
+      cachedBank = { upi, qrImg, holder, bank, acc, ifsc, branch, type };
+      localStorage.setItem('nbmm_bank_details', JSON.stringify(cachedBank));
+      if (db) db.ref('bank_details').set(cachedBank);
+
+      renderBankDetails();
+      alert('Bank details & UPI QR updated across all phones!');
+    }
+
+    function copyUpiId() {
+      const id = (cachedBank && cachedBank.upi) ? cachedBank.upi : DEFAULT_BANK.upi;
+      navigator.clipboard.writeText(id).then(() => {
+        alert('UPI ID copied: ' + id);
+      });
+    }
+
+    function copyBankAccount() {
+      const acc = (cachedBank && cachedBank.acc) ? cachedBank.acc : DEFAULT_BANK.acc;
+      navigator.clipboard.writeText(acc).then(() => {
+        showBankCopyMsg('Account number copied: ' + acc);
+      });
+    }
+
+    function copyBankIFSC() {
+      const ifsc = (cachedBank && cachedBank.ifsc) ? cachedBank.ifsc : DEFAULT_BANK.ifsc;
+      navigator.clipboard.writeText(ifsc).then(() => {
+        showBankCopyMsg('IFSC code copied: ' + ifsc);
+      });
+    }
+
+    function showBankCopyMsg(msg) {
+      const s = document.getElementById('bank-copy-status');
+      if (s) {
+        s.innerText = msg;
+        s.style.display = 'block';
+        setTimeout(() => s.style.display = 'none', 3000);
+      }
+    }
+
+    // -------------------------------------------------------------
+    // 3. SOCIAL MEDIA & WHATSAPP ENGINE
+    // -------------------------------------------------------------
+    function renderSocialLinks() {
+      const instaLink = document.getElementById('link-insta-page');
+      const instaQuick = document.getElementById('btn-insta-quick');
+      const waLink = document.getElementById('link-wa-group');
+      const waQuick = document.getElementById('btn-wa-quick');
+      const instaText = document.getElementById('txt-insta-handle');
+      
+      const instaUrl = cachedSocial.insta || DEFAULT_SOCIAL.insta;
+      const waUrl = cachedSocial.wa || DEFAULT_SOCIAL.wa;
+
+      if (instaLink) instaLink.href = instaUrl;
+      if (instaQuick) instaQuick.href = instaUrl;
+      if (waLink) waLink.href = waUrl;
+      if (waQuick) waQuick.href = waUrl;
+
+      try {
+        const parts = instaUrl.split('instagram.com/')[1] || '';
+        const user = parts.split('/')[0].split('?')[0];
+        if (user && instaText) {
+          instaText.innerText = '@' + user;
+        }
+      } catch(e) {}
+
+      const admInsta = document.getElementById('adm-insta-url');
+      const admWa = document.getElementById('adm-wa-url');
+      if (admInsta) admInsta.value = instaUrl;
+      if (admWa) admWa.value = waUrl;
+    }
+
+    function saveSocialLinks() {
+      const insta = document.getElementById('adm-insta-url').value.trim();
+      const wa = document.getElementById('adm-wa-url').value.trim();
+
+      if (!insta || !wa) {
+        alert('Please provide both Instagram and WhatsApp group links.');
+        return;
+      }
+
+      cachedSocial = { insta, wa };
+      localStorage.setItem('nbmm_social', JSON.stringify(cachedSocial));
+      if (db) db.ref('social_links').set(cachedSocial);
+
+      renderSocialLinks();
+      alert('Instagram & WhatsApp group links updated across all phones!');
+    }
+
+    // -------------------------------------------------------------
+    // 4. LANGUAGE TRANSLATION ENGINE
     // -------------------------------------------------------------
     const I18N = {
       en: {
@@ -1004,9 +1349,9 @@
         navSched: "📅 Daily Schedule",
         navMedia: "📸 Photos & Videos",
         navLive: "🔴 Live Darshan",
-        navDonate: "🙏 Pavitra Daan",
+        navDonate: "🙏 Pavitra Daan & Bank",
         navShare: "📤 Share App / QR",
-        navInfo: "📜 Aartis & Info",
+        navInfo: "📜 Aartis & Social",
         navAdmin: "🔐 Receipt Book (Khata)",
         pandalTitle: "Pandal Address & Helpdesk",
         selectDay: "Select Festival Day",
@@ -1017,8 +1362,8 @@
         liveSub: "Watch Aarti live from our Sukhlaji Street pandal:",
         liveOffHead: "Pandal Live Stream Offline",
         liveOffDesc: "The live broadcast is currently offline.<br><strong>Subah Aarti:</strong> 7:30 AM | <strong>Sandhya Aarti:</strong> 7:30 PM",
-        daanTitle: "Pavitra Daan / Varthi",
-        daanSub: "Contribute to Navdurga Balmitra Mandal via UPI:",
+        daanTitle: "🙏 Pavitra Daan / Seva",
+        daanSub: "Contribute to Navdurga Balmitra Mandal via UPI or Bank:",
         shareTitle: "📲 Share Mandal App",
         shareSub: "Scan this QR code with any camera to install the app:",
         aartiHead: "🕉️ Devi Aarties & Stutis"
@@ -1029,9 +1374,9 @@
         navSched: "📅 दैनिक कार्यक्रम (Schedule)",
         navMedia: "📸 फोटो और वीडियो (Media)",
         navLive: "🔴 लाइव दर्शन (Live)",
-        navDonate: "🙏 पवित्र दान (Donation)",
+        navDonate: "🙏 पवित्र दान व बैंक खाता",
         navShare: "📤 ऐप शेयर / QR कोड",
-        navInfo: "📜 आरतियां व संपर्क",
+        navInfo: "📜 आरतियां व सोशल",
         navAdmin: "🔐 पावती पुस्तक (खाता)",
         pandalTitle: "पंडाल का पता व सहायता केंद्र",
         selectDay: "त्योहार का दिन चुनें",
@@ -1042,8 +1387,8 @@
         liveSub: "शुक्लाजी स्ट्रीट पंडाल से सीधा लाइव प्रसारण देखें:",
         liveOffHead: "लाइव प्रसारण अभी बंद है",
         liveOffDesc: "लाइव प्रसारण अभी सक्रिय नहीं है।<br><strong>सुबह की आरती:</strong> 7:30 AM | <strong>संध्या आरती:</strong> 7:30 PM",
-        daanTitle: "पवित्र दान / वरथी",
-        daanSub: "नवदुर्गा बाल मित्र मंडल को UPI द्वारा सहयोग करें:",
+        daanTitle: "🙏 पवित्र दान व बैंक विवरण",
+        daanSub: "नवदुर्गा बाल मित्र मंडल को UPI या बैंक खाते द्वारा सहयोग करें:",
         shareTitle: "📲 मंडल ऐप शेयर करें",
         shareSub: "ऐप डाउनलोड और इंस्टॉल करने के लिए QR कोड स्कैन करें:",
         aartiHead: "🕉️ देवी आरतियां व स्तुति"
@@ -1054,9 +1399,9 @@
         navSched: "📅 दैनंदिन कार्यक्रम पत्रिका",
         navMedia: "📸 फोटो व व्हिडिओ दालन",
         navLive: "🔴 थेट प्रक्षेपण (Live Darshan)",
-        navDonate: "🙏 पवित्र दान / वर्गणी",
+        navDonate: "🙏 पवित्र दान व बँक खाते",
         navShare: "📤 ॲप शेअर / QR कोड",
-        navInfo: "📜 देवीच्या आरत्या व माहिती",
+        navInfo: "📜 आरत्या व सोशल ग्रुप",
         navAdmin: "🔐 पावती पुस्तक (खतावणी)",
         pandalTitle: "मंडप पत्ता व मदत केंद्र",
         selectDay: "उत्सवाचा दिवस निवडा",
@@ -1067,8 +1412,8 @@
         liveSub: "शुक्लाजी स्ट्रीट मंडपातून थेट आरतीचे दर्शन घ्या:",
         liveOffHead: "थेट प्रक्षेपण सध्या बंद आहे",
         liveOffDesc: "लाईव्ह आरती प्रक्षेपण सध्या सुरू नाही.<br><strong>सकाळची आरती:</strong> 7:30 AM | <strong>संध्याकाळची आरती:</strong> 7:30 PM",
-        daanTitle: "पवित्र दान / वर्गणी",
-        daanSub: "नवदुर्गा बाल मित्र मंडळास UPI द्वारे सहकार्य करा:",
+        daanTitle: "🙏 पवित्र दान व बँक तपशील",
+        daanSub: "नवदुर्गा बाल मित्र मंडळास UPI किंवा बँकेद्वारे सहकार्य करा:",
         shareTitle: "📲 मंडळाचे ॲप शेअर करा",
         shareSub: "ॲप इन्स्टॉल करण्यासाठी हा QR कोड स्कॅन करा:",
         aartiHead: "🕉️ देवीच्या आरत्या व स्तुती"
@@ -1111,7 +1456,7 @@
     }
 
     // -------------------------------------------------------------
-    // 3. NUMBER CONVERTERS
+    // 5. NUMBER CONVERTERS
     // -------------------------------------------------------------
     function numberToMarathiWords(n) {
       n = parseInt(n);
@@ -1185,7 +1530,7 @@
     }
 
     // -------------------------------------------------------------
-    // 4. GUARANTEED 1-TAP INSTALL
+    // 6. GUARANTEED 1-TAP INSTALL
     // -------------------------------------------------------------
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').catch(() => {});
@@ -1215,14 +1560,14 @@
           await deferredPrompt.userChoice;
           deferredPrompt = null;
         } else {
-          alert("📲 Install Mandal App:\n1. Tap the browser menu (⋮ or Share)\n2. Tap 'Add to Home screen' or 'Install App'");
+          alert("📲 Install Mandal App:\n1. Tap browser menu (⋮ or Share)\n2. Tap 'Add to Home screen' or 'Install App'");
           qrModal.style.display = 'none';
         }
       });
     }
 
     // -------------------------------------------------------------
-    // 5. NAVIGATION & DRAWER
+    // 7. NAVIGATION & DRAWER
     // -------------------------------------------------------------
     function openDrawer() {
       document.getElementById('side-drawer').style.left = '0px';
@@ -1245,7 +1590,7 @@
     }
 
     // -------------------------------------------------------------
-    // 6. LIVE DARSHAN ENGINE
+    // 8. LIVE DARSHAN ENGINE
     // -------------------------------------------------------------
     function extractYouTubeEmbed(url) {
       if (!url) return '';
@@ -1294,7 +1639,7 @@
     }
 
     // -------------------------------------------------------------
-    // 7. AARTI VIEWER & ADMIN MANAGER
+    // 9. AARTI VIEWER & ADMIN MANAGER
     // -------------------------------------------------------------
     let selectedAartiIdx = 0;
 
@@ -1384,7 +1729,7 @@
     }
 
     // -------------------------------------------------------------
-    // 8. SCHEDULE & MEDIA
+    // 10. SCHEDULE & MEDIA
     // -------------------------------------------------------------
     function initDays() {
       const b = document.getElementById('day-bar');
@@ -1512,7 +1857,7 @@
     }
 
     // -------------------------------------------------------------
-    // 9. SHARE TAB & DYNAMIC URL
+    // 11. SHARE TAB & DYNAMIC URL
     // -------------------------------------------------------------
     function getCleanInstallUrl() {
       let base = window.location.origin + window.location.pathname;
@@ -1529,7 +1874,7 @@
 
     function shareOnWhatsApp() {
       const installUrl = getCleanInstallUrl();
-      const msg = '🚩 *नवदुर्गा बाल मित्र मंडल | NAVDURGA BALMITRA MANDAL* 🚩\n📍 शुक्लाजी स्ट्रीट, कामाठीपुरा, मुंबई ४००००८ (Sukhlaji Street, Mumbai 400008)\n\nआमच्या मंडळाचे अधिकृत ॲप डाऊनलोड करा / Download our official App:\n📅 दैनंदिन कार्यक्रम / Festival Schedule\n🕉️ देवीच्या आरत्या / Devi Aarties\n📸 फोटो व व्हिडिओ / Photos & Videos\n🔴 थेट दर्शन / Live Darshan\n🙏 ऑनलाईन पावती व वर्गणी / Digital Receipts & UPI\n🗺️ Google Maps: https://goo.gl/maps/TxZFq3YUEzNL9uU58?g_st=ac\n\n📲 *इन्स्टॉल करा / Install Now:* ' + installUrl + '\n📞 Helpline: 9820727275';
+      const msg = '🚩 *नवदुर्गा बाल मित्र मंडल | NAVDURGA BALMITRA MANDAL* 🚩\n📍 शुक्लाजी स्ट्रीट, कामाठीपुरा, मुंबई ४००००८ (Sukhlaji Street, Mumbai 400008)\n\nआमच्या मंडळाचे अधिकृत ॲप डाऊनलोड करा / Download our official App:\n📅 दैनंदिन कार्यक्रम / Festival Schedule\n🕉️ देवीच्या आरत्या / Devi Aarties\n📸 फोटो व व्हिडिओ / Photos & Videos\n🔴 थेट दर्शन / Live Darshan\n🙏 ऑनलाईन पावती व बँक तपशील / Digital Receipts & UPI\n🗺️ Google Maps: https://goo.gl/maps/TxZFq3YUEzNL9uU58?g_st=ac\n\n📲 *इन्स्टॉल करा / Install Now:* ' + installUrl + '\n📞 Helpline: 9820727275';
       window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msg), '_blank');
     }
 
@@ -1545,7 +1890,7 @@
     }
 
     // -------------------------------------------------------------
-    // 10. AUTHENTICATION & SETTINGS
+    // 12. AUTHENTICATION & SETTINGS
     // -------------------------------------------------------------
     function toggleForgotBox(show) {
       document.getElementById('login-box').style.display = show ? 'none' : 'block';
@@ -1610,6 +1955,8 @@
         loadAdminScheduleFields();
         loadAdminMediaFields();
         renderAdminAartiList();
+        renderSocialLinks();
+        renderBankDetails();
         renderRows();
       }
     }
@@ -1632,6 +1979,8 @@
         loadAdminScheduleFields();
         loadAdminMediaFields();
         renderAdminAartiList();
+        renderSocialLinks();
+        renderBankDetails();
         renderRows();
       } else {
         document.getElementById('err').style.display = 'block';
@@ -1649,13 +1998,13 @@
     }
 
     // -------------------------------------------------------------
-    // 11. KHATA & TRI-LINGUAL RECEIPT LOGIC
+    // 13. KHATA & DYNAMIC COLLECTOR RECEIPT LOGIC
     // -------------------------------------------------------------
     function saveRecord() {
       const name = document.getElementById('r-name').value.trim();
       const amt = parseFloat(document.getElementById('r-amt').value);
       const category = document.getElementById('r-category').value;
-      const collector = document.getElementById('r-collector').value.trim() || 'Mahendra Palgota';
+      const collector = document.getElementById('r-collector').value.trim() || 'Committee Member';
       const mode = document.getElementById('r-mode').value;
       const type = document.getElementById('r-type').value;
       const phone = document.getElementById('r-phone').value.trim();
@@ -1729,7 +2078,7 @@
       document.getElementById('r-category').value = item.category || 'भंडारा (Bhandara)';
       document.getElementById('r-type').value = item.type || 'Income';
       document.getElementById('r-name').value = item.name;
-      document.getElementById('r-collector').value = item.collector || 'Mahendra Palgota';
+      document.getElementById('r-collector').value = item.collector || '';
       document.getElementById('r-phone').value = item.phone || '';
       document.getElementById('r-mode').value = item.mode || 'रोख / Cash';
       document.getElementById('r-amt').value = item.amt;
@@ -1744,6 +2093,7 @@
     function cancelEdit() {
       document.getElementById('edit-id').value = '';
       document.getElementById('r-name').value = '';
+      document.getElementById('r-collector').value = '';
       document.getElementById('r-amt').value = '';
       document.getElementById('r-phone').value = '';
       document.getElementById('form-title').innerText = '🧾 पावती नोंदणी / New Digital Receipt';
@@ -1777,7 +2127,7 @@
         tr.innerHTML = `
           <td>
             <strong>${x.name}</strong><br>
-            <small style="color:#777;">#${x.rec} • ${x.category || 'वर्गणी'}</small>
+            <small style="color:#777;">#${x.rec} • ${x.category || 'वर्गणी'} • ${x.collector ? 'By: ' + x.collector : ''}</small>
           </td>
           <td>
             <span class="${isPaid ? 'badge-paid' : 'badge-unpaid'}">
@@ -1803,7 +2153,7 @@
     }
 
     // -------------------------------------------------------------
-    // 12. POPULATE TRI-LINGUAL RECEIPT MODAL
+    // 14. POPULATE TRI-LINGUAL RECEIPT MODAL
     // -------------------------------------------------------------
     function openReceiptModal(item) {
       document.getElementById('pr-rec').innerText = item.rec;
@@ -1815,8 +2165,8 @@
       document.getElementById('pr-words-en').innerText = `English: ${item.wordsEn || numberToWords(item.amt)}`;
       
       document.getElementById('pr-category-txt').innerText = item.category || 'भंडारा / Bhandara';
-      document.getElementById('pr-collector-txt').innerText = item.collector || 'Mahendra Palgota';
-      document.getElementById('pr-sign-president').innerText = item.collector || 'Mahendra Palgota';
+      document.getElementById('pr-collector-txt').innerText = item.collector || 'Committee Member';
+      document.getElementById('pr-sign-president').innerText = 'NBMM MEMBERS';
       document.getElementById('pr-amt').innerText = item.amt;
 
       // Mode Badge Highlight
@@ -1853,20 +2203,22 @@
     }
 
     function waSend(x) {
-      const txt = `🚩 *नवदुर्गा बाल मित्र मंडल | NAVDURGA BALMITRA MANDAL* 🚩%0A📍 शुक्लाजी स्ट्रीट, कामाठीपुरा, मुंबई ४००००८%0A(स्थापना / Estd : 1992)%0A%0A*अधिकृत देणगी पावती / Digital Donation Receipt*%0A──────────────────────%0A🧾 *पावती क्र. / Rec No:* ${x.rec}%0A📅 *दिनांक / Date:* ${x.dateStr || ''}%0A👤 *नाव / Donor:* ${x.name}%0A🏷️ *वर्गणी दाखल / Towards:* ${x.category || 'भंडारा'}%0A💰 *रक्कम / Amount:* ₹${x.amt}/-%0A📝 *मराठी अक्षरी:* ${x.wordsMr || ''}%0A📝 *हिंदी अक्षरी:* ${x.wordsHi || ''}%0A🔤 *In Words:* ${x.wordsEn || ''}%0A💳 *माध्यम / Mode:* ${x.mode || 'Cash'}%0A✍️ *स्वीकारले / Collector:* ${x.collector || 'Mahendra Palgota'}%0A──────────────────────%0A॥ *धन्यवाद | THANK YOU* ॥%0Aआपल्या सहकार्याबद्दल मनःपूर्वक आभार ! 🙏`;
+      const txt = `🚩 *नवदुर्गा बाल मित्र मंडल | NAVDURGA BALMITRA MANDAL* 🚩%0A📍 शुक्लाजी स्ट्रीट, कामाठीपुरा, मुंबई ४००००८%0A(स्थापना / Estd : 1992)%0A%0A*अधिकृत देणगी पावती / Digital Donation Receipt*%0A──────────────────────%0A🧾 *पावती क्र. / Rec No:* ${x.rec}%0A📅 *दिनांक / Date:* ${x.dateStr || ''}%0A👤 *नाव / Donor:* ${x.name}%0A🏷️ *वर्गणी दाखल / Towards:* ${x.category || 'भंडारा'}%0A💰 *रक्कम / Amount:* ₹${x.amt}/-%0A📝 *मराठी अक्षरी:* ${x.wordsMr || ''}%0A📝 *हिंदी अक्षरी:* ${x.wordsHi || ''}%0A🔤 *In Words:* ${x.wordsEn || ''}%0A💳 *माध्यम / Mode:* ${x.mode || 'Cash'}%0A✍️ *स्वीकारले / Collector:* ${x.collector || 'Committee Member'}%0A👥 *अध्यक्ष / Authority:* NBMM MEMBERS%0A──────────────────────%0A॥ *धन्यवाद | THANK YOU* ॥%0Aआपल्या सहकार्याबद्दल मनःपूर्वक आभार ! 🙏`;
       const p = (x.phone || '').replace(/\D/g, '');
       const url = p.length >= 10 ? `https://wa.me/91${p.slice(-10)}?text=${txt}` : `https://api.whatsapp.com/send?text=${txt}`;
       window.open(url, '_blank');
     }
 
     // -------------------------------------------------------------
-    // 13. BOOTSTRAP
+    // 15. BOOTSTRAP
     // -------------------------------------------------------------
     setLanguage(currentLang);
     initDays();
     initMediaDays();
     renderAartiTabs();
     initShare();
+    renderSocialLinks();
+    renderBankDetails();
     renderLiveStream(cachedLiveStream);
     checkLogin();
   </script>
