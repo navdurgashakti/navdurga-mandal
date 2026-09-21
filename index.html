@@ -155,7 +155,7 @@
     }
   </style>
 
-  <!-- FIREBASE COMPAT SDK FOR DIRECT BROWSER SYNC -->
+  <!-- FIREBASE SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 </head>
@@ -200,7 +200,7 @@
       <button onclick="switchSection('live', this)">🔴 Live Darshan</button>
       <button onclick="switchSection('donate', this)">🙏 Pavitra Daan</button>
       <button onclick="switchSection('share', this)">📤 Share App / QR</button>
-      <button onclick="switchSection('info', this)">📜 Info & Contacts</button>
+      <button onclick="switchSection('info', this)">📜 Aartis & Info</button>
       <button onclick="switchSection('admin', this)">🔐 Committee Khata</button>
     </div>
   </aside>
@@ -280,7 +280,7 @@
     </div>
   </section>
 
-  <!-- TAB 6: INFO & CONTACTS -->
+  <!-- TAB 6: INFO, CONTACTS & AARTIS -->
   <section id="tab-info" class="tab">
     <div class="card">
       <h3>Mandal Office & Contacts</h3>
@@ -291,30 +291,94 @@
         <a class="btn" style="background:#2e7d32; width:100%; margin-top:6px;" href="tel:+919820727275">📲 Tap to Call Helpline</a>
       </div>
     </div>
-    <div class="card">
-      <h3>Jai Ambe Gauri (Aarti)</h3>
-      <p style="white-space: pre-line; line-height: 1.7; font-size: 0.85rem;">
-        जय अम्बे गौरी, मैया जय श्यामा गौरी।
-        तुमको निशिदिन ध्यावत, हरि ब्रह्मा शिवरी॥
-        मांग सिंदूर विराजत, टीको मृगमद को।
-        उज्ज्वल से दोउ नैना, चंद्रबदन नीको॥
-        जय अम्बे गौरी...
-      </p>
+
+    <!-- DYNAMIC AARTIS SECTION -->
+    <div class="card" style="border-left-color: #d35400;">
+      <h3>🕉️ Devi Aarties & Stutis</h3>
+      <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">Select an Aarti to read lyrics:</p>
+      <div class="day-bar" id="aarti-tabs-bar"></div>
+      <div id="aarti-content-view" style="margin-top:10px; background:#fffdf7; border:1px solid #f9e2b0; border-radius:8px; padding:12px;"></div>
     </div>
   </section>
 
   <!-- TAB 7: KHATA (ADMIN) -->
   <section id="tab-admin" class="tab">
+    
+    <!-- LOGIN BOX -->
     <div id="login-box" class="card" style="text-align:center;">
       <h3>🔐 Committee Login</h3>
-      <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">Enter credentials (session is remembered):</p>
+      <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">Enter committee credentials:</p>
       <input type="text" id="uid" class="input-box" placeholder="User ID" />
       <input type="password" id="pin" class="input-box" placeholder="Password" />
       <button class="btn" style="width:100%;" onclick="doLogin()">Login & Save</button>
       <p id="err" style="color:red; font-size:0.75rem; margin-top:6px; display:none;">Invalid ID or Password</p>
+      
+      <div style="margin-top:14px; border-top:1px solid #eee; padding-top:10px;">
+        <a href="javascript:void(0)" onclick="toggleForgotBox(true)" style="font-size:0.8rem; color:var(--primary); text-decoration:none; font-weight:600;">
+          🔑 Forgot Password / Reset Access?
+        </a>
+      </div>
     </div>
 
+    <!-- FORGOT / RESET PASSWORD CARD -->
+    <div id="forgot-box" class="card" style="display:none; border-left-color:#e67e22;">
+      <h3>🔑 Reset Committee Password</h3>
+      <p style="font-size:0.8rem; color:#555; margin-bottom:10px;">
+        To verify you are an authorized committee member, enter the registered Mandal Helpline number:
+      </p>
+
+      <label style="font-size:0.75rem; font-weight:600; color:#555;">Mandal Helpline Number *</label>
+      <input type="tel" id="recov-phone" class="input-box" placeholder="e.g. 9820727275" />
+
+      <label style="font-size:0.75rem; font-weight:600; color:#555;">New User ID *</label>
+      <input type="text" id="recov-uid" class="input-box" placeholder="e.g. NBMM" />
+
+      <label style="font-size:0.75rem; font-weight:600; color:#555;">New Password *</label>
+      <input type="password" id="recov-pin" class="input-box" placeholder="Enter new password" />
+
+      <div style="display:flex; gap:8px;">
+        <button class="btn" style="background:#e67e22; flex:1;" onclick="doResetPassword()">🔄 Reset & Update Across All Phones</button>
+        <button class="btn" style="background:#777;" onclick="toggleForgotBox(false)">Cancel</button>
+      </div>
+    </div>
+
+    <!-- ADMIN PANEL -->
     <div id="panel-box" style="display:none;">
+
+      <!-- SETTINGS & CHANGE PASSWORD CARD -->
+      <div class="card" style="border-left-color: #2980b9;">
+        <h3>⚙️ Settings & Change Password</h3>
+        <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Change User ID and Password (instantly updates across all committee phones):</p>
+        
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div>
+            <label style="font-size:0.75rem; font-weight:600; color:#555;">User ID</label>
+            <input type="text" id="set-uid" class="input-box" placeholder="User ID" />
+          </div>
+          <div>
+            <label style="font-size:0.75rem; font-weight:600; color:#555;">New Password</label>
+            <input type="password" id="set-pin" class="input-box" placeholder="New Password" />
+          </div>
+        </div>
+        <button class="btn" style="background:#2980b9; width:100%;" onclick="updateSettingsPassword()">💾 Save New Credentials</button>
+      </div>
+
+      <!-- AARTI MANAGER -->
+      <div class="card" style="border-left-color: #e67e22;">
+        <h3>🕉️ Add / Manage Festival Aarties</h3>
+        <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Add new Aartis or Bhajans to sync live on all devotees' phones:</p>
+        
+        <label style="font-size:0.75rem; font-weight:600; color:#555;">Aarti Title *</label>
+        <input type="text" id="adm-aarti-title" class="input-box" placeholder="e.g. Ambe Tu Hai Jagdambe Kali" />
+
+        <label style="font-size:0.75rem; font-weight:600; color:#555;">Aarti Lyrics / Path *</label>
+        <textarea id="adm-aarti-lyrics" class="input-box" rows="5" placeholder="Enter full Aarti lyrics here..."></textarea>
+
+        <button class="btn" style="background:#e67e22; width:100%; margin-bottom:12px;" onclick="saveNewAarti()">➕ Add Aarti (Sync Across All Phones)</button>
+        
+        <h4 style="font-size:0.82rem; color:#444; margin-bottom:6px;">Current Mandal Aartis:</h4>
+        <div id="adm-aarti-list"></div>
+      </div>
       
       <!-- ADMIN EVENT / SCHEDULE EDITOR -->
       <div class="card" style="border-left-color: #8e44ad;">
@@ -553,7 +617,6 @@
       console.warn("Firebase Init fallback:", err);
     }
 
-    // Default Fallback Schedule
     const DEFAULT_DAYS = [
       { d: "Day 1", dt: "Oct 11", devi: "Maa Shailputri", clr: "Orange", p: "Kalash Sthapana (8 AM) & Opening Aarti", pr: "Peda & Sheera" },
       { d: "Day 2", dt: "Oct 12", devi: "Maa Brahmacharini", clr: "White", p: "Traditional Garba Night", pr: "Kheer" },
@@ -567,11 +630,28 @@
       { d: "Day 10", dt: "Oct 20", devi: "Vijayadashami", clr: "Gold", p: "Ravan Dahan & Visarjan Procession", pr: "Jalebi Fafda" }
     ];
 
+    const DEFAULT_AARTIES = [
+      {
+        id: "aarti_1",
+        title: "Jai Ambe Gauri",
+        lyrics: "जय अम्बे गौरी, मैया जय श्यामा गौरी।\nतुमको निशिदिन ध्यावत, हरि ब्रह्मा शिवरी॥\n\nमांग सिंदूर विराजत, टीको मृगमद को।\nउज्ज्वल से दोउ नैना, चंद्रबदन नीको॥\n\nकनक समान कलेवर, रक्ताम्बर राजै।\nरक्तपुष्प गल माला, कंठन पर साजै॥\n\nकेहरि वाहन राजत, खड्ग खप्परधारी।\nसुर-नर-मुनिजन सेवत, तिनके दुःखहारी॥\n\nकानन कुण्डल शोभित, नासाग्रे मोती।\nकोटिक चंद्र दिवाकर, सम राजत ज्योती॥\n\nशूंभ-निशूंभ बिदारे, महिषासुर घाती।\nधूम्र विलोचन नैना, निशदिन मदमाती॥\n\nचौंसठ योगिनी गावत, नृत्य करत भैरु।\nबाजत ताल मृदंगा, अरु बाजत डमरू॥\n\nभुजा चार अति शोभित, वरमुद्रा धारी।\nमनवांछित फल पावत, सेवत नर नारी॥\n\nकंचन थाल विराजत, अगर कपूर बाती।\nश्री मालकेतु में राजत, कोटि रतन ज्योती॥\n\nश्री अम्बेजी की आरती, जो कोई नर गावै।\nकहत शिवानन्द स्वामी, सुख-सम्पत्ति पावै॥"
+      },
+      {
+        id: "aarti_2",
+        title: "Durga Aarti (Jagjanani)",
+        lyrics: "जगजननी जय जय माँ, जगजननी जय जय।\nभयहारिनि भवतारिनि, भवभामिनि जय जय॥\n\nतू ही सत्व-रज-तममय, शब्दब्रह्मरूपा।\nभारती विद्या तू ही, गुणमयी अनूपा॥\n\nकरुणासिंधु दयामयि, जननी तू सबकी।\nपालक संहारक तू, स्वामी तू सबकी॥\n\nअम्बे तू है जगदम्बे काली, जय दुर्गे खप्पर वाली।\nतेरे ही गुण गावें भारती, ओ मैया हम सब उतारे तेरी आरती॥"
+      }
+    ];
+
+    const DEFAULT_AUTH = { uid: "NBMM", pin: "NBMM1137@" };
+
     let cachedSchedule = JSON.parse(localStorage.getItem('nbmm_schedule_custom') || 'null') || DEFAULT_DAYS;
     let cachedMedia = JSON.parse(localStorage.getItem('nbmm_media') || '{}');
     let cachedEntries = JSON.parse(localStorage.getItem('nbmm_entries') || '[]');
+    let cachedAarties = JSON.parse(localStorage.getItem('nbmm_aarties') || 'null') || DEFAULT_AARTIES;
+    let cachedAuth = JSON.parse(localStorage.getItem('nbmm_credentials') || 'null') || DEFAULT_AUTH;
 
-    // Listen to Schedule changes in real time across all phones
+    // Real-Time Listeners
     if (db) {
       db.ref('schedule').on('value', (snap) => {
         const val = snap.val();
@@ -583,7 +663,6 @@
         }
       });
 
-      // Listen to Day-wise Media Links across all phones
       db.ref('media').on('value', (snap) => {
         const val = snap.val();
         if (val) {
@@ -593,11 +672,9 @@
         }
       });
 
-      // Listen to Khata Entries in real time across all phones
       db.ref('entries').on('value', (snap) => {
         const val = snap.val();
         if (val) {
-          // Convert Firebase dictionary to sorted array
           const arr = Object.values(val);
           arr.sort((a, b) => b.id - a.id);
           cachedEntries = arr;
@@ -608,39 +685,66 @@
         }
         renderRows();
       });
+
+      db.ref('aarties').on('value', (snap) => {
+        const val = snap.val();
+        if (val) {
+          cachedAarties = Object.values(val);
+          localStorage.setItem('nbmm_aarties', JSON.stringify(cachedAarties));
+        } else {
+          cachedAarties = DEFAULT_AARTIES;
+          localStorage.setItem('nbmm_aarties', JSON.stringify(DEFAULT_AARTIES));
+        }
+        renderAartiTabs();
+        renderAdminAartiList();
+      });
+
+      // Synchronize Admin Credentials across all devices
+      db.ref('auth_creds').on('value', (snap) => {
+        const val = snap.val();
+        if (val && val.uid && val.pin) {
+          cachedAuth = val;
+          localStorage.setItem('nbmm_credentials', JSON.stringify(val));
+          const setU = document.getElementById('set-uid');
+          const setP = document.getElementById('set-pin');
+          if (setU) setU.value = val.uid;
+          if (setP) setP.value = val.pin;
+        }
+      });
     }
 
     // -------------------------------------------------------------
-    // 2. SERVICE WORKER & 1-TAP INSTALL
+    // 2. GUARANTEED 1-TAP INSTALL MODAL LOGIC
     // -------------------------------------------------------------
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').catch(() => {});
     }
 
-    let deferredPrompt;
+    let deferredPrompt = null;
     const qrModal = document.getElementById('qr-install-modal');
     const installBtn = document.getElementById('btn-modal-install');
     const urlParams = new URLSearchParams(window.location.search);
     const isFromQR = (urlParams.get('install') === 'true');
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-
-      if (isFromQR && qrModal) {
-        qrModal.style.display = 'block';
-      }
     });
+
+    if (isFromQR && !isStandalone && qrModal) {
+      qrModal.style.display = 'block';
+    }
 
     if (installBtn) {
       installBtn.addEventListener('click', async () => {
         if (deferredPrompt) {
           qrModal.style.display = 'none';
           deferredPrompt.prompt();
-          const { outcome } = await deferredPrompt.userChoice;
+          await deferredPrompt.userChoice;
           deferredPrompt = null;
         } else {
-          alert("To install this Mandal App:\n1. Tap your browser's menu (⋮ or Share icon)\n2. Tap 'Add to Home screen' or 'Install App'");
+          alert("📲 To Install Mandal App:\n\n1. Tap the 3 dots menu (⋮) at top-right (or Share icon on iPhone)\n2. Tap 'Add to Home screen' or 'Install App'");
           qrModal.style.display = 'none';
         }
       });
@@ -651,7 +755,7 @@
     });
 
     // -------------------------------------------------------------
-    // 3. NAVIGATION & HELPERS
+    // 3. NAVIGATION & DRAWER
     // -------------------------------------------------------------
     function openDrawer() {
       document.getElementById('side-drawer').style.left = '0px';
@@ -697,7 +801,105 @@
     }
 
     // -------------------------------------------------------------
-    // 4. SCHEDULE & MEDIA (REAL-TIME SYNCED)
+    // 4. AARTI MANAGEMENT & DEVOTEE VIEWER
+    // -------------------------------------------------------------
+    let selectedAartiIdx = 0;
+
+    function renderAartiTabs() {
+      const bar = document.getElementById('aarti-tabs-bar');
+      if (!bar) return;
+      bar.innerHTML = '';
+
+      if (cachedAarties.length === 0) {
+        document.getElementById('aarti-content-view').innerHTML = '<p style="color:#777; font-size:0.85rem;">No Aartis added yet.</p>';
+        return;
+      }
+
+      if (selectedAartiIdx >= cachedAarties.length) {
+        selectedAartiIdx = 0;
+      }
+
+      cachedAarties.forEach((a, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'day-btn ' + (idx === selectedAartiIdx ? 'active' : '');
+        btn.innerText = '🪔 ' + a.title;
+        btn.onclick = function() {
+          document.querySelectorAll('#aarti-tabs-bar .day-btn').forEach(k => k.classList.remove('active'));
+          btn.classList.add('active');
+          selectedAartiIdx = idx;
+          showAarti(idx);
+        };
+        bar.appendChild(btn);
+      });
+
+      showAarti(selectedAartiIdx);
+    }
+
+    function showAarti(idx) {
+      const a = cachedAarties[idx];
+      if (!a) return;
+      document.getElementById('aarti-content-view').innerHTML = `
+        <h4 style="color:var(--primary); font-size:1.05rem; margin-bottom:8px; border-bottom:1px dashed #d4af37; padding-bottom:4px;">${a.title}</h4>
+        <p style="white-space: pre-line; line-height: 1.8; font-size: 0.88rem; color:#222; font-weight:500;">${a.lyrics}</p>
+      `;
+    }
+
+    function saveNewAarti() {
+      const title = document.getElementById('adm-aarti-title').value.trim();
+      const lyrics = document.getElementById('adm-aarti-lyrics').value.trim();
+
+      if (!title || !lyrics) {
+        alert('Please enter both an Aarti title and the lyrics.');
+        return;
+      }
+
+      const id = 'aarti_' + Date.now();
+      const newAarti = { id, title, lyrics };
+
+      cachedAarties.push(newAarti);
+      localStorage.setItem('nbmm_aarties', JSON.stringify(cachedAarties));
+
+      if (db) {
+        db.ref('aarties/' + id).set(newAarti);
+      }
+
+      document.getElementById('adm-aarti-title').value = '';
+      document.getElementById('adm-aarti-lyrics').value = '';
+      alert(`"${title}" added & synced to all devotees' phones!`);
+      renderAartiTabs();
+      renderAdminAartiList();
+    }
+
+    function deleteAarti(id) {
+      if (!confirm('Delete this Aarti across all phones?')) return;
+      cachedAarties = cachedAarties.filter(x => x.id !== id);
+      localStorage.setItem('nbmm_aarties', JSON.stringify(cachedAarties));
+
+      if (db) {
+        db.ref('aarties/' + id).remove();
+      }
+      renderAartiTabs();
+      renderAdminAartiList();
+    }
+
+    function renderAdminAartiList() {
+      const box = document.getElementById('adm-aarti-list');
+      if (!box) return;
+      box.innerHTML = '';
+
+      cachedAarties.forEach(a => {
+        const div = document.createElement('div');
+        div.style = 'display:flex; justify-content:space-between; align-items:center; background:#f5f5f5; padding:8px 10px; border-radius:6px; margin-bottom:6px; font-size:0.85rem;';
+        div.innerHTML = `
+          <span><strong>🪔 ${a.title}</strong></span>
+          <button class="btn" style="background:#c0392b; padding:4px 8px; font-size:0.7rem;" onclick="deleteAarti('${a.id}')">🗑️ Delete</button>
+        `;
+        box.appendChild(div);
+      });
+    }
+
+    // -------------------------------------------------------------
+    // 5. SCHEDULE & MEDIA (REAL-TIME SYNCED)
     // -------------------------------------------------------------
     function initDays() {
       const b = document.getElementById('day-bar');
@@ -844,7 +1046,7 @@
     }
 
     // -------------------------------------------------------------
-    // 5. SHARE TAB & SELF-HEALING URL
+    // 6. SHARE TAB & DYNAMIC URL
     // -------------------------------------------------------------
     function getCleanInstallUrl() {
       let base = window.location.origin + window.location.pathname;
@@ -863,7 +1065,7 @@
 
     function shareOnWhatsApp() {
       const installUrl = getCleanInstallUrl();
-      const msg = '🚩 *NAVDURGA BALMITRA MANDAL* 🚩\n📍 NEW MUNICIPAL BLDG 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008\n\nCheck out our official Mandal App!\n📅 Aarti & Program Schedule\n📸 Day-wise Photos & Videos\n🔴 Live Darshan\n🙏 Online Pavitra Daan\n🗺️ Google Maps: https://goo.gl/maps/TxZFq3YUEzNL9uU58?g_st=ac\n\n📲 *Open & Install:* ' + installUrl + '\n📞 Helpline: 9820727275';
+      const msg = '🚩 *NAVDURGA BALMITRA MANDAL* 🚩\n📍 NEW MUNICIPAL BLDG 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008\n\nCheck out our official Mandal App!\n📅 Aarti & Program Schedule\n🕉️ Read Devi Aarties & Stutis\n📸 Day-wise Photos & Videos\n🔴 Live Darshan\n🙏 Online Pavitra Daan\n🗺️ Google Maps: https://goo.gl/maps/TxZFq3YUEzNL9uU58?g_st=ac\n\n📲 *Open & Install:* ' + installUrl + '\n📞 Helpline: 9820727275';
       window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msg), '_blank');
     }
 
@@ -879,14 +1081,78 @@
     }
 
     // -------------------------------------------------------------
-    // 6. COMMITTEE KHATA (REAL-TIME CLOUD DATABASE)
+    // 7. COMMITTEE AUTHENTICATION, SETTINGS & PASSWORD RECOVERY
     // -------------------------------------------------------------
+    function toggleForgotBox(show) {
+      document.getElementById('login-box').style.display = show ? 'none' : 'block';
+      document.getElementById('forgot-box').style.display = show ? 'block' : 'none';
+      if (show) {
+        document.getElementById('recov-phone').value = '';
+        document.getElementById('recov-uid').value = cachedAuth.uid;
+        document.getElementById('recov-pin').value = '';
+      }
+    }
+
+    function doResetPassword() {
+      const phoneInput = document.getElementById('recov-phone').value.replace(/\D/g, '');
+      const newU = document.getElementById('recov-uid').value.trim();
+      const newP = document.getElementById('recov-pin').value.trim();
+
+      // Authorized Mandal Helpline Security Check
+      if (!phoneInput.endsWith('9820727275')) {
+        alert('Verification Failed: Phone number does not match registered Mandal Helpline.');
+        return;
+      }
+
+      if (!newU || !newP) {
+        alert('Please provide a valid User ID and new Password.');
+        return;
+      }
+
+      cachedAuth = { uid: newU, pin: newP };
+      localStorage.setItem('nbmm_credentials', JSON.stringify(cachedAuth));
+
+      if (db) {
+        db.ref('auth_creds').set(cachedAuth);
+      }
+
+      alert('Password successfully reset! You can now log in with your new credentials.');
+      toggleForgotBox(false);
+      document.getElementById('uid').value = newU;
+      document.getElementById('pin').value = newP;
+    }
+
+    function updateSettingsPassword() {
+      const newU = document.getElementById('set-uid').value.trim();
+      const newP = document.getElementById('set-pin').value.trim();
+
+      if (!newU || !newP) {
+        alert('User ID and Password cannot be blank.');
+        return;
+      }
+
+      cachedAuth = { uid: newU, pin: newP };
+      localStorage.setItem('nbmm_credentials', JSON.stringify(cachedAuth));
+
+      if (db) {
+        db.ref('auth_creds').set(cachedAuth);
+      }
+
+      alert('Credentials updated successfully across all phones!');
+    }
+
     function checkLogin() {
       if (localStorage.getItem('nbmm_auth') === '1') {
         document.getElementById('login-box').style.display = 'none';
+        document.getElementById('forgot-box').style.display = 'none';
         document.getElementById('panel-box').style.display = 'block';
+        
+        document.getElementById('set-uid').value = cachedAuth.uid;
+        document.getElementById('set-pin').value = cachedAuth.pin;
+
         loadAdminScheduleFields();
         loadAdminMediaFields();
+        renderAdminAartiList();
         renderRows();
       }
     }
@@ -894,13 +1160,20 @@
     function doLogin() {
       const u = document.getElementById('uid').value.trim();
       const p = document.getElementById('pin').value.trim();
-      if (u === 'NBMM' && p === 'NBMM1137@') {
+
+      if (u === cachedAuth.uid && p === cachedAuth.pin) {
         localStorage.setItem('nbmm_auth', '1');
         document.getElementById('login-box').style.display = 'none';
+        document.getElementById('forgot-box').style.display = 'none';
         document.getElementById('panel-box').style.display = 'block';
         document.getElementById('err').style.display = 'none';
+
+        document.getElementById('set-uid').value = cachedAuth.uid;
+        document.getElementById('set-pin').value = cachedAuth.pin;
+
         loadAdminScheduleFields();
         loadAdminMediaFields();
+        renderAdminAartiList();
         renderRows();
       } else {
         document.getElementById('err').style.display = 'block';
@@ -911,6 +1184,7 @@
       localStorage.removeItem('nbmm_auth');
       document.getElementById('panel-box').style.display = 'none';
       document.getElementById('login-box').style.display = 'block';
+      document.getElementById('forgot-box').style.display = 'none';
       document.getElementById('uid').value = '';
       document.getElementById('pin').value = '';
       cancelEdit();
@@ -1078,7 +1352,7 @@
     }
 
     // -------------------------------------------------------------
-    // 7. RECEIPT MODAL & WHATSAPP
+    // 8. RECEIPT MODAL
     // -------------------------------------------------------------
     function openReceiptModal(item) {
       const isPaid = (item.status !== 'Not Paid');
@@ -1148,10 +1422,11 @@
     }
 
     // -------------------------------------------------------------
-    // 8. INITIAL BOOT
+    // 9. INITIAL BOOT
     // -------------------------------------------------------------
     initDays();
     initMediaDays();
+    renderAartiTabs();
     initShare();
     checkLogin();
   </script>
