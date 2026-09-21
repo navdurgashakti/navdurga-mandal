@@ -578,9 +578,20 @@
     </div>
   </section>
 
-  <!-- TAB 4: DAAN, UPI & BANK DETAILS -->
+  <!-- TAB 4: DAAN, UPI, BANK DETAILS & DEVOTEE RECEIPT LOOKUP -->
   <section id="tab-donate" class="tab">
     
+    <!-- DEVOTEE RECEIPT LOOKUP (FEATURE 3) -->
+    <div class="card" style="border-left-color: #f39c12;">
+      <h3>🔍 पावती शोधा / Find My Receipt</h3>
+      <p style="font-size:0.8rem; color:#555; margin-bottom:8px;">Enter your 10-digit mobile number or Receipt number to download/print your official receipt:</p>
+      <div style="display:flex; gap:6px;">
+        <input type="text" id="devotee-search-input" class="input-box" style="margin:0;" placeholder="Phone Number or Receipt No" />
+        <button class="btn" style="background:#f39c12; color:#000; font-weight:bold; white-space:nowrap;" onclick="findDevoteeReceipt()">Search 🔎</button>
+      </div>
+      <div id="devotee-search-results" style="margin-top:10px;"></div>
+    </div>
+
     <!-- UPI & SCAN QR CARD -->
     <div class="card" style="text-align:center; border-left-color: #27ae60;">
       <h3 id="sec-daan-title">🙏 Pavitra Daan / Varthi</h3>
@@ -764,7 +775,7 @@
         <button class="admin-sub-btn" id="asb-settings" onclick="switchAdminSubTab('settings')">⚙️ सुरक्षा व इतर</button>
       </div>
 
-      <!-- SUB-TAB 1: RECEIPTS & REGISTER -->
+      <!-- SUB-TAB 1: RECEIPTS, REGISTER, SEARCH & EXCEL EXPORT -->
       <div id="asv-receipts" class="admin-sub-view active">
         
         <!-- DONATION ENTRY FORM -->
@@ -828,17 +839,25 @@
           </div>
         </div>
 
-        <!-- REGISTER LEDGER -->
+        <!-- REGISTER LEDGER WITH FILTER & EXPORT (FEATURES 1 & 2) -->
         <div class="card">
-          <h3>📋 पावती पुस्तक / Ledger (Live Cloud Sync 🟢)</h3>
-          <p>
-            <strong>एकूण जमा (Income):</strong> ₹<span id="tot-in" style="color:#2e7d32;">0</span> | 
-            <strong>बाकी (Due):</strong> ₹<span id="tot-pending" style="color:#d35400;">0</span>
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+            <h3>📋 पावती पुस्तक / Ledger</h3>
+            <button class="btn" style="background:#27ae60; font-size:0.75rem; padding:6px 10px;" onclick="exportLedgerToExcel()">📊 Export Excel / CSV</button>
+          </div>
+
+          <p style="font-size:0.8rem; margin-bottom:8px;">
+            <strong>एकूण जमा:</strong> ₹<span id="tot-in" style="color:#2e7d32;">0</span> | 
+            <strong>बाकी:</strong> ₹<span id="tot-pending" style="color:#d35400;">0</span> | 
+            <strong>शिल्लक:</strong> ₹<strong id="tot-bal" style="color:var(--primary);">0</strong>
           </p>
-          <p>
-            <strong>खर्च (Expense):</strong> ₹<span id="tot-ex" style="color:#c0392b;">0</span> | 
-            <strong>शिल्लक (Balance):</strong> ₹<strong id="tot-bal" style="color:var(--primary);">0</strong>
-          </p>
+
+          <!-- LIVE SEARCH BAR -->
+          <div style="position:relative; margin-bottom:10px;">
+            <input type="text" id="admin-search-input" class="input-box" style="margin:0; padding-left:32px;" placeholder="Search by donor name, #rec, or mode..." oninput="renderRows()" />
+            <span style="position:absolute; left:10px; top:50%; transform:translateY(-50%); font-size:0.85rem; color:#777;">🔍</span>
+          </div>
+
           <table class="table">
             <thead><tr><th>पावती / नाव</th><th>माध्यम</th><th>₹</th><th>कृती</th></tr></thead>
             <tbody id="rec-rows"></tbody>
@@ -911,7 +930,7 @@
       <!-- SUB-TAB 4: SCHEDULE, REGULAR TIMINGS & MEDIA -->
       <div id="asv-schedule" class="admin-sub-view">
         
-        <!-- REGULAR TIMINGS EDITOR (NEW) -->
+        <!-- REGULAR TIMINGS EDITOR -->
         <div class="card" style="border-left-color: #e67e22;">
           <h3>⏰ Edit Regular Daily Timings (नियमित वेळ)</h3>
           <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Update daily Aarti and program timings shown on the front screen:</p>
@@ -938,7 +957,7 @@
             </div>
           </div>
 
-          <button class="btn" style="background:#e67e22; width:100%;" onclick="saveRegularTimings()">💾 Save Regular Timings (Syncs on All Devices)</button>
+          <button class="btn" style="background:#e67e22; width:100%;" onclick="saveRegularTimings()">💾 Save Regular Timings</button>
         </div>
 
         <!-- 10-DAY SCHEDULE EDITOR -->
@@ -974,7 +993,7 @@
         </div>
       </div>
 
-      <!-- SUB-TAB 5:SETTINGS, SOCIAL & AARTIS -->
+      <!-- SUB-TAB 5: SETTINGS, SOCIAL & AARTIS -->
       <div id="asv-settings" class="admin-sub-view">
         
         <!-- SOCIAL MEDIA LINKS -->
@@ -1319,7 +1338,78 @@
     }
 
     // -------------------------------------------------------------
-    // 2. REGULAR TIMINGS CONTROLLER (NEW)
+    // 2. FEATURE 1: EXPORT LEDGER TO EXCEL / CSV
+    // -------------------------------------------------------------
+    function exportLedgerToExcel() {
+      if (!cachedEntries || cachedEntries.length === 0) {
+        alert("No entries to export yet!");
+        return;
+      }
+
+      let csv = "Receipt No,Date,Donor Name,Category,Mode,Amount,Status,Collector,Phone\n";
+      cachedEntries.forEach(x => {
+        const isPaid = !x.mode.includes('Due') && !x.mode.includes('बाकी');
+        const cleanName = (x.name || '').replace(/"/g, '""');
+        const cleanCat = (x.category || '').replace(/"/g, '""');
+        const cleanCollector = (x.collector || '').replace(/"/g, '""');
+        const cleanMode = (x.mode || '').replace(/"/g, '""');
+        
+        csv += `"${x.rec}","${x.dateStr || ''}","${cleanName}","${cleanCat}","${cleanMode}",${x.amt},"${isPaid ? 'Paid' : 'Due'}","${cleanCollector}","${x.phone || ''}"\n`;
+      });
+
+      const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `NBMM_Khata_Ledger_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // -------------------------------------------------------------
+    // 3. FEATURE 3: DEVOTEE RECEIPT SELF-LOOKUP
+    // -------------------------------------------------------------
+    function findDevoteeReceipt() {
+      const q = (document.getElementById('devotee-search-input').value || '').trim().toLowerCase();
+      const resultsDiv = document.getElementById('devotee-search-results');
+      resultsDiv.innerHTML = '';
+
+      if (!q) {
+        alert('Please enter your phone number or receipt number.');
+        return;
+      }
+
+      const matched = cachedEntries.filter(x => {
+        const phone = (x.phone || '').replace(/\D/g, '');
+        const rec = String(x.rec).toLowerCase();
+        return (phone && phone.includes(q.replace(/\D/g, ''))) || rec === q;
+      });
+
+      if (matched.length === 0) {
+        resultsDiv.innerHTML = '<p style="color:#c0392b; font-size:0.8rem; font-weight:bold;">No receipt found matching your search. Please check the number or contact Mandal helpdesk.</p>';
+        return;
+      }
+
+      let html = '<div style="display:flex; flex-direction:column; gap:6px;">';
+      matched.forEach(item => {
+        const isPaid = !item.mode.includes('Due') && !item.mode.includes('बाकी');
+        html += `
+          <div style="background:#fff; border:1px solid #ddd; border-left:4px solid #7a0006; padding:8px 10px; border-radius:6px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-weight:bold; font-size:0.88rem; color:#111;">${item.name}</div>
+              <div style="font-size:0.72rem; color:#666;">Receipt #${item.rec} • ₹${item.amt}/- • ${item.category || 'भंडारा'}</div>
+            </div>
+            <button class="btn" style="background:#7a0006; font-size:0.72rem; padding:6px 10px;" onclick='openReceiptModal(${JSON.stringify(item)})'>🧾 View Receipt</button>
+          </div>
+        `;
+      });
+      html += '</div>';
+      resultsDiv.innerHTML = html;
+    }
+
+    // -------------------------------------------------------------
+    // 4. REGULAR TIMINGS CONTROLLER
     // -------------------------------------------------------------
     function renderRegularTimings() {
       const t = cachedTimings || DEFAULT_TIMINGS;
@@ -1328,7 +1418,6 @@
       const garba = t.garba || DEFAULT_TIMINGS.garba;
       const prasad = t.prasad || DEFAULT_TIMINGS.prasad;
 
-      // Devotee Displays
       const elSubah = document.getElementById('dsp-subah-aarti');
       const elSandhya = document.getElementById('dsp-sandhya-aarti');
       const elGarba = document.getElementById('dsp-garba-time');
@@ -1339,7 +1428,6 @@
       if (elGarba) elGarba.innerText = garba;
       if (elPrasad) elPrasad.innerText = prasad;
 
-      // Admin Inputs Preload
       const inSubah = document.getElementById('adm-subah-aarti');
       const inSandhya = document.getElementById('adm-sandhya-aarti');
       const inGarba = document.getElementById('adm-garba-time');
@@ -1366,7 +1454,7 @@
     }
 
     // -------------------------------------------------------------
-    // 3. KHATA SUB-TAB BIFURCATION CONTROLLER
+    // 5. KHATA SUB-TAB BIFURCATION CONTROLLER
     // -------------------------------------------------------------
     function switchAdminSubTab(tabName) {
       document.querySelectorAll('.admin-sub-btn').forEach(btn => btn.classList.remove('active'));
@@ -1380,7 +1468,7 @@
     }
 
     // -------------------------------------------------------------
-    // 4. BANK, UPI & BARCODE ENGINE
+    // 6. BANK, UPI & BARCODE ENGINE
     // -------------------------------------------------------------
     function renderBankDetails() {
       const b = cachedBank || DEFAULT_BANK;
@@ -1476,7 +1564,7 @@
     }
 
     // -------------------------------------------------------------
-    // 5. SOCIAL MEDIA & WHATSAPP ENGINE
+    // 7. SOCIAL MEDIA & WHATSAPP ENGINE
     // -------------------------------------------------------------
     function renderSocialLinks() {
       const instaLink = document.getElementById('link-insta-page');
@@ -1525,7 +1613,7 @@
     }
 
     // -------------------------------------------------------------
-    // 6. LANGUAGE TRANSLATION ENGINE
+    // 8. LANGUAGE TRANSLATION ENGINE
     // -------------------------------------------------------------
     const I18N = {
       en: {
@@ -1641,7 +1729,7 @@
     }
 
     // -------------------------------------------------------------
-    // 7. NUMBER CONVERTERS
+    // 9. NUMBER CONVERTERS
     // -------------------------------------------------------------
     function numberToMarathiWords(n) {
       n = parseInt(n);
@@ -1715,7 +1803,7 @@
     }
 
     // -------------------------------------------------------------
-    // 8. GUARANTEED 1-TAP INSTALL
+    // 10. GUARANTEED 1-TAP INSTALL
     // -------------------------------------------------------------
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').catch(() => {});
@@ -1752,7 +1840,7 @@
     }
 
     // -------------------------------------------------------------
-    // 9. NAVIGATION & DRAWER
+    // 11. NAVIGATION & DRAWER
     // -------------------------------------------------------------
     function openDrawer() {
       document.getElementById('side-drawer').style.left = '0px';
@@ -1775,7 +1863,7 @@
     }
 
     // -------------------------------------------------------------
-    // 10. LIVE DARSHAN ENGINE
+    // 12. LIVE DARSHAN ENGINE
     // -------------------------------------------------------------
     function extractYouTubeEmbed(url) {
       if (!url) return '';
@@ -1824,7 +1912,7 @@
     }
 
     // -------------------------------------------------------------
-    // 11. AARTI VIEWER & ADMIN MANAGER
+    // 13. AARTI VIEWER & ADMIN MANAGER
     // -------------------------------------------------------------
     let selectedAartiIdx = 0;
 
@@ -1914,7 +2002,7 @@
     }
 
     // -------------------------------------------------------------
-    // 12. SCHEDULE & MEDIA
+    // 14. SCHEDULE & MEDIA
     // -------------------------------------------------------------
     function initDays() {
       const b = document.getElementById('day-bar');
@@ -2042,7 +2130,7 @@
     }
 
     // -------------------------------------------------------------
-    // 13. SHARE TAB & DYNAMIC URL
+    // 15. SHARE TAB & DYNAMIC URL
     // -------------------------------------------------------------
     function getCleanInstallUrl() {
       let base = window.location.origin + window.location.pathname;
@@ -2075,7 +2163,7 @@
     }
 
     // -------------------------------------------------------------
-    // 14. AUTHENTICATION & SETTINGS
+    // 16. AUTHENTICATION & SETTINGS
     // -------------------------------------------------------------
     function toggleForgotBox(show) {
       document.getElementById('login-box').style.display = show ? 'none' : 'block';
@@ -2185,7 +2273,7 @@
     }
 
     // -------------------------------------------------------------
-    // 15. KHATA & DYNAMIC COLLECTOR RECEIPT LOGIC
+    // 17. KHATA & DYNAMIC COLLECTOR RECEIPT LOGIC
     // -------------------------------------------------------------
     function saveRecord() {
       const name = document.getElementById('r-name').value.trim();
@@ -2299,10 +2387,16 @@
       renderRows();
     }
 
+    // -------------------------------------------------------------
+    // 18. FEATURE 2: FILTER & RENDER LEDGER TABLE
+    // -------------------------------------------------------------
     function renderRows() {
       let incPaid = 0, incPending = 0, exp = 0;
       const tb = document.getElementById('rec-rows');
       tb.innerHTML = '';
+
+      const searchInput = document.getElementById('admin-search-input');
+      const q = searchInput ? searchInput.value.trim().toLowerCase() : '';
       
       cachedEntries.forEach(x => {
         const isPaid = !x.mode.includes('Due') && !x.mode.includes('बाकी');
@@ -2310,6 +2404,20 @@
           if (isPaid) incPaid += x.amt; else incPending += x.amt;
         } else {
           exp += x.amt;
+        }
+
+        // Search Filter Evaluation
+        if (q) {
+          const matchName = (x.name || '').toLowerCase().includes(q);
+          const matchRec = String(x.rec).toLowerCase().includes(q);
+          const matchCat = (x.category || '').toLowerCase().includes(q);
+          const matchMode = (x.mode || '').toLowerCase().includes(q);
+          const matchCollector = (x.collector || '').toLowerCase().includes(q);
+          const matchPhone = (x.phone || '').toLowerCase().includes(q);
+
+          if (!matchName && !matchRec && !matchCat && !matchMode && !matchCollector && !matchPhone) {
+            return;
+          }
         }
 
         const tr = document.createElement('tr');
@@ -2342,7 +2450,7 @@
     }
 
     // -------------------------------------------------------------
-    // 16. POPULATE TRI-LINGUAL RECEIPT MODAL
+    // 19. POPULATE TRI-LINGUAL RECEIPT MODAL
     // -------------------------------------------------------------
     function openReceiptModal(item) {
       document.getElementById('pr-rec').innerText = item.rec;
@@ -2361,7 +2469,7 @@
       // Mode Badge Highlight
       const pCash = document.getElementById('pill-cash');
       const pUpi = document.getElementById('pill-upi');
-      const pDue = document.getElementById('pill-due');
+   const pDue = document.getElementById('pill-due');
 
       pCash.classList.remove('active');
       pUpi.classList.remove('active');
@@ -2399,7 +2507,7 @@
     }
 
     // -------------------------------------------------------------
-    // 17. BOOTSTRAP
+    // 20. BOOTSTRAP
     // -------------------------------------------------------------
     setLanguage(currentLang);
     initDays();
