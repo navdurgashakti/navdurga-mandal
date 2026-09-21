@@ -154,6 +154,10 @@
       #capture-receipt { position: absolute; left: 0; top: 0; width: 100%; border: 3px solid #000; box-shadow: none; }
     }
   </style>
+
+  <!-- FIREBASE COMPAT SDK FOR DIRECT BROWSER SYNC -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 </head>
 <body>
 
@@ -433,7 +437,7 @@
 
       <!-- COMMITTEE LEDGER -->
       <div class="card">
-        <h3>📋 Committee Ledger</h3>
+        <h3>📋 Committee Ledger (Live Cloud Sync 🟢)</h3>
         <p>
           <strong>Total Collected (Paid):</strong> ₹<span id="tot-in" style="color:#2e7d32;">0</span> | 
           <strong>Pending (Due):</strong> ₹<span id="tot-pending" style="color:#d35400;">0</span>
@@ -528,12 +532,91 @@
   </div>
 
   <script>
-    // 1. REGISTER SERVICE WORKER DYNAMICALLY
+    // -------------------------------------------------------------
+    // 1. FIREBASE INITIALIZATION & REAL-TIME SYNC ENGINE
+    // -------------------------------------------------------------
+    const firebaseConfig = {
+      apiKey: "AIzaSyDGlzOKivwNehIUzwIMCd2VLgdkGorkUxk",
+      authDomain: "nbmm-khata.firebaseapp.com",
+      databaseURL: "https://nbmm-khata-default-rtdb.firebaseio.com",
+      projectId: "nbmm-khata",
+      storageBucket: "nbmm-khata.firebasestorage.app",
+      messagingSenderId: "662450628091",
+      appId: "1:662450628091:web:8382bccf517c243cfed75e"
+    };
+
+    let db;
+    try {
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.database();
+    } catch (err) {
+      console.warn("Firebase Init fallback:", err);
+    }
+
+    // Default Fallback Schedule
+    const DEFAULT_DAYS = [
+      { d: "Day 1", dt: "Oct 11", devi: "Maa Shailputri", clr: "Orange", p: "Kalash Sthapana (8 AM) & Opening Aarti", pr: "Peda & Sheera" },
+      { d: "Day 2", dt: "Oct 12", devi: "Maa Brahmacharini", clr: "White", p: "Traditional Garba Night", pr: "Kheer" },
+      { d: "Day 3", dt: "Oct 13", devi: "Maa Chandraghanta", clr: "Red", p: "Balmitra Kids Drawing Contest (6 PM)", pr: "Boondi" },
+      { d: "Day 4", dt: "Oct 14", devi: "Maa Kushmanda", clr: "Royal Blue", p: "Dhol Tasha & Youth Dandiya", pr: "Fruit Salad" },
+      { d: "Day 5", dt: "Oct 15", devi: "Maa Skandamata", clr: "Yellow", p: "Mahila Mandal Traditional Dress Night", pr: "Ladoo" },
+      { d: "Day 6", dt: "Oct 16", devi: "Maa Katyayani", clr: "Green", p: "Bhajan Sandhya (6:30 PM)", pr: "Halwa Puri" },
+      { d: "Day 7", dt: "Oct 17", devi: "Maa Kalaratri", clr: "Grey", p: "Mata Ki Chowki & All-Night Jaagran", pr: "Kala Chana" },
+      { d: "Day 8", dt: "Oct 18", devi: "Maa Mahagauri", clr: "Purple", p: "Maha Ashtami Havan (10 AM) & Grand Aarti", pr: "Maha Bhog" },
+      { d: "Day 9", dt: "Oct 19", devi: "Maa Siddhidatri", clr: "Peacock Green", p: "Kanya Pujan (11 AM) & Prizegiving", pr: "Prasad Feast" },
+      { d: "Day 10", dt: "Oct 20", devi: "Vijayadashami", clr: "Gold", p: "Ravan Dahan & Visarjan Procession", pr: "Jalebi Fafda" }
+    ];
+
+    let cachedSchedule = JSON.parse(localStorage.getItem('nbmm_schedule_custom') || 'null') || DEFAULT_DAYS;
+    let cachedMedia = JSON.parse(localStorage.getItem('nbmm_media') || '{}');
+    let cachedEntries = JSON.parse(localStorage.getItem('nbmm_entries') || '[]');
+
+    // Listen to Schedule changes in real time across all phones
+    if (db) {
+      db.ref('schedule').on('value', (snap) => {
+        const val = snap.val();
+        if (val && Array.isArray(val)) {
+          cachedSchedule = val;
+          localStorage.setItem('nbmm_schedule_custom', JSON.stringify(val));
+          initDays();
+          initMediaDays();
+        }
+      });
+
+      // Listen to Day-wise Media Links across all phones
+      db.ref('media').on('value', (snap) => {
+        const val = snap.val();
+        if (val) {
+          cachedMedia = val;
+          localStorage.setItem('nbmm_media', JSON.stringify(val));
+          initMediaDays();
+        }
+      });
+
+      // Listen to Khata Entries in real time across all phones
+      db.ref('entries').on('value', (snap) => {
+        const val = snap.val();
+        if (val) {
+          // Convert Firebase dictionary to sorted array
+          const arr = Object.values(val);
+          arr.sort((a, b) => b.id - a.id);
+          cachedEntries = arr;
+          localStorage.setItem('nbmm_entries', JSON.stringify(arr));
+        } else {
+          cachedEntries = [];
+          localStorage.setItem('nbmm_entries', JSON.stringify([]));
+        }
+        renderRows();
+      });
+    }
+
+    // -------------------------------------------------------------
+    // 2. SERVICE WORKER & 1-TAP INSTALL
+    // -------------------------------------------------------------
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').catch(() => {});
     }
 
-    // 2. DETECT QR SCAN & HANDLE NATIVE 1-TAP INSTALL
     let deferredPrompt;
     const qrModal = document.getElementById('qr-install-modal');
     const installBtn = document.getElementById('btn-modal-install');
@@ -567,7 +650,9 @@
       if (qrModal) qrModal.style.display = 'none';
     });
 
-    // DRAWER LOGIC
+    // -------------------------------------------------------------
+    // 3. NAVIGATION & HELPERS
+    // -------------------------------------------------------------
     function openDrawer() {
       document.getElementById('side-drawer').style.left = '0px';
       document.getElementById('drawer-overlay').style.display = 'block';
@@ -611,30 +696,13 @@
       return inWords(num).trim() + ' Rupees Only';
     }
 
-    // DEFAULT SCHEDULE
-    const DEFAULT_DAYS = [
-      { d: "Day 1", dt: "Oct 11", devi: "Maa Shailputri", clr: "Orange", p: "Kalash Sthapana (8 AM) & Opening Aarti", pr: "Peda & Sheera" },
-      { d: "Day 2", dt: "Oct 12", devi: "Maa Brahmacharini", clr: "White", p: "Traditional Garba Night", pr: "Kheer" },
-      { d: "Day 3", dt: "Oct 13", devi: "Maa Chandraghanta", clr: "Red", p: "Balmitra Kids Drawing Contest (6 PM)", pr: "Boondi" },
-      { d: "Day 4", dt: "Oct 14", devi: "Maa Kushmanda", clr: "Royal Blue", p: "Dhol Tasha & Youth Dandiya", pr: "Fruit Salad" },
-      { d: "Day 5", dt: "Oct 15", devi: "Maa Skandamata", clr: "Yellow", p: "Mahila Mandal Traditional Dress Night", pr: "Ladoo" },
-      { d: "Day 6", dt: "Oct 16", devi: "Maa Katyayani", clr: "Green", p: "Bhajan Sandhya (6:30 PM)", pr: "Halwa Puri" },
-      { d: "Day 7", dt: "Oct 17", devi: "Maa Kalaratri", clr: "Grey", p: "Mata Ki Chowki & All-Night Jaagran", pr: "Kala Chana" },
-      { d: "Day 8", dt: "Oct 18", devi: "Maa Mahagauri", clr: "Purple", p: "Maha Ashtami Havan (10 AM) & Grand Aarti", pr: "Maha Bhog" },
-      { d: "Day 9", dt: "Oct 19", devi: "Maa Siddhidatri", clr: "Peacock Green", p: "Kanya Pujan (11 AM) & Prizegiving", pr: "Prasad Feast" },
-      { d: "Day 10", dt: "Oct 20", devi: "Vijayadashami", clr: "Gold", p: "Ravan Dahan & Visarjan Procession", pr: "Jalebi Fafda" }
-    ];
-
-    function getScheduleDays() {
-      const stored = localStorage.getItem('nbmm_schedule_custom');
-      return stored ? JSON.parse(stored) : DEFAULT_DAYS;
-    }
-
+    // -------------------------------------------------------------
+    // 4. SCHEDULE & MEDIA (REAL-TIME SYNCED)
+    // -------------------------------------------------------------
     function initDays() {
-      const days = getScheduleDays();
       const b = document.getElementById('day-bar');
       b.innerHTML = '';
-      days.forEach((x, i) => {
+      cachedSchedule.forEach((x, i) => {
         const btn = document.createElement('button');
         btn.className = 'day-btn ' + (i === 0 ? 'active' : '');
         btn.innerText = x.d + ' (' + x.dt + ')';
@@ -649,8 +717,7 @@
     }
 
     function renderDay(i) {
-      const days = getScheduleDays();
-      const x = days[i];
+      const x = cachedSchedule[i] || DEFAULT_DAYS[i];
       document.getElementById('day-view').innerHTML = `
         <h4 style="color:var(--primary);">${x.d} (${x.dt}) - Color: ${x.clr}</h4>
         <p><strong>Puja:</strong> ${x.devi}</p>
@@ -659,11 +726,9 @@
       `;
     }
 
-    // ADMIN SCHEDULE EDITOR
     function loadAdminScheduleFields() {
       const idx = document.getElementById('adm-sched-day').value;
-      const days = getScheduleDays();
-      const x = days[idx];
+      const x = cachedSchedule[idx] || DEFAULT_DAYS[idx];
       document.getElementById('adm-sched-dt').value = x.dt || '';
       document.getElementById('adm-sched-clr').value = x.clr || '';
       document.getElementById('adm-sched-devi').value = x.devi || '';
@@ -673,9 +738,7 @@
 
     function saveScheduleDay() {
       const idx = parseInt(document.getElementById('adm-sched-day').value);
-      const days = getScheduleDays();
-
-      days[idx] = {
+      cachedSchedule[idx] = {
         d: `Day ${idx + 1}`,
         dt: document.getElementById('adm-sched-dt').value.trim(),
         clr: document.getElementById('adm-sched-clr').value.trim(),
@@ -684,31 +747,32 @@
         pr: document.getElementById('adm-sched-prasad').value.trim()
       };
 
-      localStorage.setItem('nbmm_schedule_custom', JSON.stringify(days));
-      alert(`Day ${idx + 1} schedule updated successfully!`);
+      localStorage.setItem('nbmm_schedule_custom', JSON.stringify(cachedSchedule));
+      if (db) {
+        db.ref('schedule').set(cachedSchedule);
+      }
+      alert(`Day ${idx + 1} schedule saved & updated across all phones!`);
       initDays();
       initMediaDays();
     }
 
     function resetScheduleDefaults() {
-      if (!confirm('Reset all 10 festival days back to default schedule?')) return;
-      localStorage.removeItem('nbmm_schedule_custom');
+      if (!confirm('Reset all 10 festival days back to default schedule across all phones?')) return;
+      cachedSchedule = DEFAULT_DAYS;
+      localStorage.setItem('nbmm_schedule_custom', JSON.stringify(DEFAULT_DAYS));
+      if (db) {
+        db.ref('schedule').set(DEFAULT_DAYS);
+      }
       initDays();
       initMediaDays();
       loadAdminScheduleFields();
       alert('Festival schedule reset to defaults.');
     }
 
-    // DAY-WISE MEDIA GALLERY
-    function getMediaData() {
-      return JSON.parse(localStorage.getItem('nbmm_media') || '{}');
-    }
-
     function initMediaDays() {
-      const days = getScheduleDays();
       const mb = document.getElementById('media-day-bar');
       mb.innerHTML = '';
-      days.forEach((x, i) => {
+      cachedSchedule.forEach((x, i) => {
         const btn = document.createElement('button');
         btn.className = 'day-btn ' + (i === 0 ? 'active' : '');
         btn.innerText = x.d + ' (' + x.dt + ')';
@@ -723,10 +787,8 @@
     }
 
     function renderMediaDay(idx) {
-      const days = getScheduleDays();
-      const x = days[idx];
-      const media = getMediaData();
-      const current = media[idx] || {};
+      const x = cachedSchedule[idx] || DEFAULT_DAYS[idx];
+      const current = cachedMedia[idx] || {};
 
       let html = `
         <div style="background:#fffaf0; border:1px solid #fce8cc; padding:14px; border-radius:8px;">
@@ -762,8 +824,7 @@
 
     function loadAdminMediaFields() {
       const day = document.getElementById('adm-media-day').value;
-      const media = getMediaData();
-      const current = media[day] || {};
+      const current = cachedMedia[day] || {};
       document.getElementById('adm-photo-link').value = current.photo || '';
       document.getElementById('adm-video-link').value = current.video || '';
     }
@@ -773,14 +834,18 @@
       const photo = document.getElementById('adm-photo-link').value.trim();
       const video = document.getElementById('adm-video-link').value.trim();
 
-      const media = getMediaData();
-      media[day] = { photo, video };
-      localStorage.setItem('nbmm_media', JSON.stringify(media));
-      alert(`Media links for Day ${parseInt(day) + 1} updated successfully!`);
+      cachedMedia[day] = { photo, video };
+      localStorage.setItem('nbmm_media', JSON.stringify(cachedMedia));
+      if (db) {
+        db.ref('media/' + day).set({ photo, video });
+      }
+      alert(`Media links for Day ${parseInt(day) + 1} updated on all phones!`);
       renderMediaDay(day);
     }
 
-    // DYNAMIC SELF-HEALING URL RESOLUTION (PREVENTS 404 ERRORS)
+    // -------------------------------------------------------------
+    // 5. SHARE TAB & SELF-HEALING URL
+    // -------------------------------------------------------------
     function getCleanInstallUrl() {
       let base = window.location.origin + window.location.pathname;
       if (!base.endsWith('/')) {
@@ -792,7 +857,6 @@
     function initShare() {
       const installUrl = getCleanInstallUrl();
       const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(installUrl);
-      
       const qrImg = document.getElementById('share-qr-img');
       if (qrImg) qrImg.src = qrApiUrl;
     }
@@ -814,7 +878,9 @@
       });
     }
 
-    // AUTO-LOGIN LOGIC
+    // -------------------------------------------------------------
+    // 6. COMMITTEE KHATA (REAL-TIME CLOUD DATABASE)
+    // -------------------------------------------------------------
     function checkLogin() {
       if (localStorage.getItem('nbmm_auth') === '1') {
         document.getElementById('login-box').style.display = 'none';
@@ -844,13 +910,10 @@
     function doLogout() {
       localStorage.removeItem('nbmm_auth');
       document.getElementById('panel-box').style.display = 'none';
+      document.getElementById('login-box').style.display = 'block';
       document.getElementById('uid').value = '';
       document.getElementById('pin').value = '';
       cancelEdit();
-    }
-
-    function getStorage() {
-      return JSON.parse(localStorage.getItem('nbmm_entries') || '[]');
     }
 
     function saveRecord() {
@@ -862,27 +925,34 @@
       }
 
       const editId = document.getElementById('edit-id').value;
-      const data = getStorage();
 
       if (editId) {
-        const idx = data.findIndex(x => x.id == editId);
+        const idx = cachedEntries.findIndex(x => x.id == editId);
         if (idx !== -1) {
-          data[idx].type = document.getElementById('r-type').value;
-          data[idx].name = name;
-          data[idx].address = document.getElementById('r-address').value.trim();
-          data[idx].phone = document.getElementById('r-phone').value.trim();
-          data[idx].status = document.getElementById('r-status').value;
-          data[idx].mode = document.getElementById('r-mode').value;
-          data[idx].ref = document.getElementById('r-ref').value.trim();
-          data[idx].amt = amt;
-          localStorage.setItem('nbmm_entries', JSON.stringify(data));
+          const updatedItem = {
+            ...cachedEntries[idx],
+            type: document.getElementById('r-type').value,
+            name: name,
+            address: document.getElementById('r-address').value.trim(),
+            phone: document.getElementById('r-phone').value.trim(),
+            status: document.getElementById('r-status').value,
+            mode: document.getElementById('r-mode').value,
+            ref: document.getElementById('r-ref').value.trim(),
+            amt: amt
+          };
+          cachedEntries[idx] = updatedItem;
+          localStorage.setItem('nbmm_entries', JSON.stringify(cachedEntries));
+          if (db) {
+            db.ref('entries/' + editId).set(updatedItem);
+          }
         }
         cancelEdit();
       } else {
         const d = new Date();
+        const newId = Date.now();
         const item = {
-          id: Date.now(),
-          rec: 'NBMM-' + String(data.length + 1).padStart(4, '0'),
+          id: newId,
+          rec: 'NBMM-' + String(cachedEntries.length + 1).padStart(4, '0'),
           type: document.getElementById('r-type').value,
           name: name,
           address: document.getElementById('r-address').value.trim() || 'Mumbai',
@@ -893,8 +963,11 @@
           amt: amt,
           dateStr: d.toLocaleDateString('en-IN') + ' ' + d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
         };
-        data.unshift(item);
-        localStorage.setItem('nbmm_entries', JSON.stringify(data));
+        cachedEntries.unshift(item);
+        localStorage.setItem('nbmm_entries', JSON.stringify(cachedEntries));
+        if (db) {
+          db.ref('entries/' + newId).set(item);
+        }
         cancelEdit();
         if (item.type === 'Income') openReceiptModal(item);
       }
@@ -902,8 +975,7 @@
     }
 
     function editRow(id) {
-      const data = getStorage();
-      const item = data.find(x => x.id == id);
+      const item = cachedEntries.find(x => x.id == id);
       if (!item) return;
 
       document.getElementById('edit-id').value = item.id;
@@ -940,29 +1012,33 @@
     }
 
     function deleteRow(id) {
-      if (!confirm('Delete this entry?')) return;
-      let data = getStorage().filter(x => x.id != id);
-      localStorage.setItem('nbmm_entries', JSON.stringify(data));
+      if (!confirm('Delete this entry across all phones?')) return;
+      cachedEntries = cachedEntries.filter(x => x.id != id);
+      localStorage.setItem('nbmm_entries', JSON.stringify(cachedEntries));
+      if (db) {
+        db.ref('entries/' + id).remove();
+      }
       renderRows();
     }
 
     function toggleStatus(id) {
-      let data = getStorage();
-      const idx = data.findIndex(x => x.id == id);
+      const idx = cachedEntries.findIndex(x => x.id == id);
       if (idx !== -1) {
-        data[idx].status = (data[idx].status === 'Not Paid') ? 'Paid' : 'Not Paid';
-        localStorage.setItem('nbmm_entries', JSON.stringify(data));
+        cachedEntries[idx].status = (cachedEntries[idx].status === 'Not Paid') ? 'Paid' : 'Not Paid';
+        localStorage.setItem('nbmm_entries', JSON.stringify(cachedEntries));
+        if (db) {
+          db.ref('entries/' + id + '/status').set(cachedEntries[idx].status);
+        }
         renderRows();
       }
     }
 
     function renderRows() {
-      const data = getStorage();
       let incPaid = 0, incPending = 0, exp = 0;
       const tb = document.getElementById('rec-rows');
       tb.innerHTML = '';
       
-      data.forEach(x => {
+      cachedEntries.forEach(x => {
         const isPaid = (x.status !== 'Not Paid');
         if (x.type === 'Income') {
           if (isPaid) incPaid += x.amt; else incPending += x.amt;
@@ -1001,6 +1077,9 @@
       document.getElementById('tot-bal').innerText = (incPaid - exp);
     }
 
+    // -------------------------------------------------------------
+    // 7. RECEIPT MODAL & WHATSAPP
+    // -------------------------------------------------------------
     function openReceiptModal(item) {
       const isPaid = (item.status !== 'Not Paid');
 
@@ -1068,7 +1147,9 @@
       window.open(url, '_blank');
     }
 
-    // INITIALIZATION
+    // -------------------------------------------------------------
+    // 8. INITIAL BOOT
+    // -------------------------------------------------------------
     initDays();
     initMediaDays();
     initShare();
