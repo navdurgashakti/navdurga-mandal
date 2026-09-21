@@ -199,7 +199,37 @@
     .admin-sub-view { display: none; }
     .admin-sub-view.active { display: block; }
 
-    /* Banking Row Card */
+    /* Category Dashboard Cards */
+    .cat-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .cat-stat-card {
+      background: #fffdf8;
+      border: 1px solid #ebd8bd;
+      border-top: 3px solid var(--primary);
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+    }
+    .cat-stat-card h4 { font-size: 0.78rem; color: #444; margin-bottom: 4px; }
+    .cat-stat-card .cat-amt-paid { color: #2e7d32; font-weight: 800; font-size: 0.95rem; }
+    .cat-stat-card .cat-amt-due { color: #d35400; font-size: 0.7rem; font-weight: 600; display: block; }
+
+    .device-session-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      border: 1px solid #e0d0b0;
+      padding: 9px 12px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
     .bank-data-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-bottom: 1px dashed #eee; font-size: 0.82rem; }
     .bank-data-row:last-child { border-bottom: none; }
     .bank-data-lbl { color: #666; font-weight: 600; }
@@ -581,7 +611,7 @@
   <!-- TAB 4: DAAN, UPI, BANK DETAILS & DEVOTEE RECEIPT LOOKUP -->
   <section id="tab-donate" class="tab">
     
-    <!-- DEVOTEE RECEIPT LOOKUP (FEATURE 3) -->
+    <!-- DEVOTEE RECEIPT LOOKUP -->
     <div class="card" style="border-left-color: #f39c12;">
       <h3>🔍 पावती शोधा / Find My Receipt</h3>
       <p style="font-size:0.8rem; color:#555; margin-bottom:8px;">Enter your 10-digit mobile number or Receipt number to download/print your official receipt:</p>
@@ -772,12 +802,15 @@
         <button class="admin-sub-btn" id="asb-bank" onclick="switchAdminSubTab('bank')">🏛️ बँक व UPI</button>
         <button class="admin-sub-btn" id="asb-live" onclick="switchAdminSubTab('live')">🔴 थेट दर्शन</button>
         <button class="admin-sub-btn" id="asb-schedule" onclick="switchAdminSubTab('schedule')">📅 कार्यक्रम</button>
-        <button class="admin-sub-btn" id="asb-settings" onclick="switchAdminSubTab('settings')">⚙️ सुरक्षा व इतर</button>
+        <button class="admin-sub-btn" id="asb-settings" onclick="switchAdminSubTab('settings')">⚙️ सुरक्षा व उपकरणे</button>
       </div>
 
-      <!-- SUB-TAB 1: RECEIPTS, REGISTER, SEARCH & EXCEL EXPORT -->
+      <!-- SUB-TAB 1: RECEIPTS, CATEGORY BREAKDOWN & REGISTER -->
       <div id="asv-receipts" class="admin-sub-view active">
         
+        <!-- CATEGORY-WISE TOTALS SUMMARY CARDS (NEW) -->
+        <div class="cat-stat-grid" id="category-summary-cards"></div>
+
         <!-- DONATION ENTRY FORM -->
         <div class="card" style="border-left-color:#7a0006;">
           <h3 id="form-title">🧾 पावती नोंदणी / New Digital Receipt</h3>
@@ -839,7 +872,7 @@
           </div>
         </div>
 
-        <!-- REGISTER LEDGER WITH FILTER & EXPORT (FEATURES 1 & 2) -->
+        <!-- REGISTER LEDGER WITH FILTER, EXPORT & CATEGORY SWITCHER -->
         <div class="card">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
             <h3>📋 पावती पुस्तक / Ledger</h3>
@@ -851,6 +884,17 @@
             <strong>बाकी:</strong> ₹<span id="tot-pending" style="color:#d35400;">0</span> | 
             <strong>शिल्लक:</strong> ₹<strong id="tot-bal" style="color:var(--primary);">0</strong>
           </p>
+
+          <!-- CATEGORY FILTER BUTTONS -->
+          <div class="day-bar" style="margin-bottom:8px;">
+            <button class="day-btn active" id="btn-cat-all" onclick="filterByCat('all')">सर्व (All)</button>
+            <button class="day-btn" id="btn-cat-bhandara" onclick="filterByCat('भंडारा')">🍲 भंडारा</button>
+            <button class="day-btn" id="btn-cat-vargani" onclick="filterByCat('वर्गणी')">🚩 वर्गणी</button>
+            <button class="day-btn" id="btn-cat-aarti" onclick="filterByCat('आरती')">🪔 आरती</button>
+            <button class="day-btn" id="btn-cat-prasad" onclick="filterByCat('महाप्रसाद')">🍬 महाप्रसाद</button>
+            <button class="day-btn" id="btn-cat-decor" onclick="filterByCat('सजावट')">🌸 सजावट</button>
+            <button class="day-btn" id="btn-cat-other" onclick="filterByCat('इतर')">📦 इतर</button>
+          </div>
 
           <!-- LIVE SEARCH BAR -->
           <div style="position:relative; margin-bottom:10px;">
@@ -993,9 +1037,26 @@
         </div>
       </div>
 
-      <!-- SUB-TAB 5: SETTINGS, SOCIAL & AARTIS -->
+      <!-- SUB-TAB 5: SETTINGS, SOCIAL, SESSIONS & AARTIS -->
       <div id="asv-settings" class="admin-sub-view">
         
+        <!-- ACTIVE SESSIONS & DEVICE ACCESS -->
+        <div class="card" style="border-left-color: #e74c3c;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <h3>📱 सक्रिय उपकरणे / Active Logged-In Mobiles</h3>
+            <span id="active-device-count" style="background:#e74c3c; color:#fff; font-size:0.7rem; padding:2px 8px; border-radius:10px; font-weight:bold;">0 Active</span>
+          </div>
+          <p style="font-size:0.75rem; color:#555; margin-bottom:10px;">
+            The phones currently logged into Committee Khata are listed below. You can revoke access from any individual device at any time:
+          </p>
+
+          <div id="device-session-list"></div>
+
+          <button class="btn" style="background:#c0392b; width:100%; font-size:0.78rem; padding:8px;" onclick="revokeAllSessions()">
+            ⚠️ सर्व इतर उपकरणांमधून लॉगआउट करा (Sign Out All Other Devices)
+          </button>
+        </div>
+
         <!-- SOCIAL MEDIA LINKS -->
         <div class="card" style="border-left-color: #25d366;">
           <h3>📱 Update Instagram & WhatsApp Links</h3>
@@ -1049,7 +1110,7 @@
       
       <div id="capture-receipt" class="mrc-card">
         
-        <!-- HEADER WITH MANDAL LOGO[span_0](start_span)[span_0](end_span) -->
+        <!-- HEADER WITH MANDAL LOGO[span_2](start_span)[span_2](end_span) -->
         <div class="mrc-header">
           <div class="mrc-top-meta">
             <span>स्थापना / Estd : 1992</span>
@@ -1065,10 +1126,10 @@
           <div style="font-size:0.62rem; color:#ffd1d1; margin-top:5px;">न्यू म्युनिसिपल इमारत, ७६ तेनामेंन्ट, ५वी गल्ली, कामाठीपुरा, मुंबई ४००००८</div>
         </div>
 
-        <!-- BODY[span_1](start_span)[span_1](end_span) -->
+        <!-- BODY[span_3](start_span)[span_3](end_span) -->
         <div class="mrc-body">
           
-          <!-- META ROW[span_2](start_span)[span_2](end_span) -->
+          <!-- META ROW[span_4](start_span)[span_4](end_span) -->
           <div class="mrc-meta-row">
             <div class="mrc-badge-box">
               <span class="mrc-badge-lbl">पावती नं. / Rec. No.</span>
@@ -1080,13 +1141,13 @@
             </div>
           </div>
 
-          <!-- DONOR ROW[span_3](start_span)[span_3](end_span) -->
+          <!-- DONOR ROW[span_5](start_span)[span_5](end_span) -->
           <div class="mrc-field-group">
             <span class="mrc-lbl">श्री / सौ. / Received From:</span>
             <div class="mrc-val-lg" id="pr-name"></div>
           </div>
 
-          <!-- WORDS IN MARATHI, HINDI & ENGLISH[span_4](start_span)[span_4](end_span) -->
+          <!-- WORDS IN MARATHI, HINDI & ENGLISH[span_6](start_span)[span_6](end_span) -->
           <div class="mrc-field-group">
             <span class="mrc-lbl">यांच्याकडून अक्षरी रुपये / Amount in Words:</span>
             <div class="mrc-words-mr" id="pr-words-mr"></div>
@@ -1094,7 +1155,7 @@
             <div class="mrc-words-en" id="pr-words-en"></div>
           </div>
 
-          <!-- PURPOSE & COLLECTOR ROW[span_5](start_span)[span_5](end_span) -->
+          <!-- PURPOSE & COLLECTOR ROW[span_7](start_span)[span_7](end_span) -->
           <div class="mrc-field-group">
             <span class="mrc-lbl">वर्गणी दाखल / Towards & Collected By:</span>
             <div style="font-size:0.92rem; font-weight:700; color:#333;">
@@ -1102,7 +1163,7 @@
             </div>
           </div>
 
-          <!-- PAYMENT MODE PILLS[span_6](start_span)[span_6](end_span) -->
+          <!-- PAYMENT MODE PILLS[span_8](start_span)[span_8](end_span) -->
           <div class="mrc-mode-row">
             <span class="mrc-lbl" style="margin-right:4px;">माध्यम / Mode:</span>
             <span class="mrc-mode-pill" id="pill-cash">रोख / Cash</span>
@@ -1110,7 +1171,7 @@
             <span class="mrc-mode-pill" id="pill-due">बाकी / Due</span>
           </div>
 
-          <!-- AMOUNT BANNER, THANKS & QR CODE[span_7](start_span)[span_7](end_span) -->
+          <!-- AMOUNT BANNER, THANKS & QR CODE[span_9](start_span)[span_9](end_span) -->
           <div class="mrc-amount-section">
             <div class="mrc-amt-banner">
               <span class="mrc-amt-banner-lbl">रक्कम / Amount</span>
@@ -1131,7 +1192,7 @@
             </div>
           </div>
 
-          <!-- SIGNATURES[span_8](start_span)[span_8](end_span) -->
+          <!-- SIGNATURES[span_10](start_span)[span_10](end_span) -->
           <div class="mrc-footer-signatures">
             <div class="mrc-sign-col">
               <div class="mrc-sign-name">&nbsp;</div>
@@ -1238,7 +1299,15 @@
     let cachedLiveStream = localStorage.getItem('nbmm_live_url') || '';
     let cachedSocial = JSON.parse(localStorage.getItem('nbmm_social') || 'null') || DEFAULT_SOCIAL;
     let cachedBank = JSON.parse(localStorage.getItem('nbmm_bank_details') || 'null') || DEFAULT_BANK;
+    let cachedSessions = {};
+    let currentSelectedCategory = 'all';
     let currentLang = localStorage.getItem('nbmm_lang') || 'mr';
+
+    let myDeviceId = localStorage.getItem('nbmm_device_id');
+    if (!myDeviceId) {
+      myDeviceId = 'dev_' + Math.random().toString(36).substring(2, 10) + '_' + Date.now();
+      localStorage.setItem('nbmm_device_id', myDeviceId);
+    }
 
     // Real-Time Listeners
     if (db) {
@@ -1335,10 +1404,172 @@
           renderBankDetails();
         }
       });
+
+      db.ref('active_sessions').on('value', (snap) => {
+        const val = snap.val() || {};
+        cachedSessions = val;
+        
+        if (localStorage.getItem('nbmm_auth') === '1') {
+          if (!val[myDeviceId]) {
+            alert('Your session has been logged out or revoked remotely.');
+            doLogout(true);
+            return;
+          }
+        }
+        renderDeviceSessions();
+      });
     }
 
     // -------------------------------------------------------------
-    // 2. FEATURE 1: EXPORT LEDGER TO EXCEL / CSV
+    // 2. CATEGORY-WISE SECTION FILTER & TOTALS CALCULATION (NEW)
+    // -------------------------------------------------------------
+    function filterByCat(catKey) {
+      currentSelectedCategory = catKey;
+      document.querySelectorAll('#asv-receipts .day-btn').forEach(b => b.classList.remove('active'));
+
+      const map = {
+        'all': 'btn-cat-all',
+        'भंडारा': 'btn-cat-bhandara',
+        'वर्गणी': 'btn-cat-vargani',
+        'आरती': 'btn-cat-aarti',
+        'महाप्रसाद': 'btn-cat-prasad',
+        'सजावट': 'btn-cat-decor',
+        'इतर': 'btn-cat-other'
+      };
+
+      const btnId = map[catKey] || 'btn-cat-all';
+      const b = document.getElementById(btnId);
+      if (b) b.classList.add('active');
+
+      renderRows();
+    }
+
+    function renderCategoryBreakdownCards() {
+      const container = document.getElementById('category-summary-cards');
+      if (!container) return;
+
+      const categories = [
+        { label: '🍲 भंडारा (Bhandara)', key: 'भंडारा' },
+        { label: '🚩 वर्गणी (Vargani)', key: 'वर्गणी' },
+        { label: '🪔 आरती (Aarti Seva)', key: 'आरती' },
+        { label: '🍬 महाप्रसाद (Prasad)', key: 'महाप्रसाद' },
+        { label: '🌸 सजावट (Decoration)', key: 'सजावट' },
+        { label: '📦 इतर (Other)', key: 'इतर' }
+      ];
+
+      let html = '';
+      categories.forEach(c => {
+        let paid = 0, due = 0;
+        cachedEntries.forEach(x => {
+          if (x.type === 'Income' && (x.category || '').includes(c.key)) {
+            const isPaid = !x.mode.includes('Due') && !x.mode.includes('बाकी');
+            if (isPaid) paid += x.amt; else due += x.amt;
+          }
+        });
+
+        html += `
+          <div class="cat-stat-card">
+            <h4>${c.label}</h4>
+            <div class="cat-amt-paid">₹${paid}</div>
+            <span class="cat-amt-due">बाकी: ₹${due}</span>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    // -------------------------------------------------------------
+    // 3. ACTIVE DEVICE SESSIONS & REMOTE REVOCATION ENGINE
+    // -------------------------------------------------------------
+    function getDeviceName() {
+      const ua = navigator.userAgent;
+      let os = "Mobile Device";
+      if (/android/i.test(ua)) os = "Android Phone";
+      else if (/iPhone|iPad|iPod/i.test(ua)) os = "Apple iPhone / iOS";
+      else if (/Windows/i.test(ua)) os = "Windows PC";
+      else if (/Mac/i.test(ua)) os = "Macbook / macOS";
+
+      let browser = "Browser";
+      if (/chrome|crios/i.test(ua)) browser = "Chrome";
+      else if (/firefox|fxios/i.test(ua)) browser = "Firefox";
+      else if (/safari/i.test(ua)) browser = "Safari";
+
+      return `${os} (${browser})`;
+    }
+
+    function registerDeviceSession() {
+      if (!db) return;
+      const d = new Date();
+      const sessionData = {
+        deviceId: myDeviceId,
+        deviceInfo: getDeviceName(),
+        loginTime: d.toLocaleDateString('en-IN') + ' ' + d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
+        lastActive: Date.now()
+      };
+      db.ref('active_sessions/' + myDeviceId).set(sessionData);
+    }
+
+    function renderDeviceSessions() {
+      const listDiv = document.getElementById('device-session-list');
+      const countBadge = document.getElementById('active-device-count');
+      if (!listDiv) return;
+
+      const keys = Object.keys(cachedSessions);
+      if (countBadge) countBadge.innerText = `${keys.length} Active`;
+
+      if (keys.length === 0) {
+        listDiv.innerHTML = '<p style="font-size:0.8rem; color:#777;">No active devices registered.</p>';
+        return;
+      }
+
+      let html = '';
+      keys.forEach(k => {
+        const item = cachedSessions[k];
+        const isMe = (k === myDeviceId);
+        html += `
+          <div class="device-session-item" style="${isMe ? 'border-color:#27ae60; background:#fafffa;' : ''}">
+            <div>
+              <div style="font-weight:700; font-size:0.88rem; color:#111;">
+                📱 ${item.deviceInfo || 'Mobile'} ${isMe ? '<span style="color:#27ae60; font-size:0.7rem; font-weight:bold;">(हे उपकरण / This Phone)</span>' : ''}
+              </div>
+              <div style="font-size:0.7rem; color:#666;">लॉगिन: ${item.loginTime || ''}</div>
+            </div>
+            <div>
+              ${isMe ? 
+                '<span style="font-size:0.72rem; color:#27ae60; font-weight:bold; padding:4px 8px; background:#e8f8f5; border-radius:4px;">सक्रिय / Active</span>' : 
+                `<button class="btn" style="background:#c0392b; font-size:0.7rem; padding:4px 9px;" onclick="revokeSession('${k}')">🚫 Access काढा</button>`
+              }
+            </div>
+          </div>
+        `;
+      });
+      listDiv.innerHTML = html;
+    }
+
+    function revokeSession(deviceId) {
+      if (!confirm('Are you sure you want to remove committee access from this mobile phone?')) return;
+      if (db) {
+        db.ref('active_sessions/' + deviceId).remove();
+      }
+      alert('Access revoked. That phone will be logged out immediately.');
+    }
+
+    function revokeAllSessions() {
+      if (!confirm('This will sign out ALL committee phones except this one. Proceed?')) return;
+      if (db) {
+        const updates = {};
+        updates['active_sessions'] = {};
+        if (cachedSessions[myDeviceId]) {
+          updates['active_sessions/' + myDeviceId] = cachedSessions[myDeviceId];
+        }
+        db.ref().update(updates);
+      }
+      alert('All other devices have been logged out.');
+    }
+
+    // -------------------------------------------------------------
+    // 4. EXPORT LEDGER TO EXCEL / CSV
     // -------------------------------------------------------------
     function exportLedgerToExcel() {
       if (!cachedEntries || cachedEntries.length === 0) {
@@ -1368,7 +1599,7 @@
     }
 
     // -------------------------------------------------------------
-    // 3. FEATURE 3: DEVOTEE RECEIPT SELF-LOOKUP
+    // 5. DEVOTEE RECEIPT SELF-LOOKUP
     // -------------------------------------------------------------
     function findDevoteeReceipt() {
       const q = (document.getElementById('devotee-search-input').value || '').trim().toLowerCase();
@@ -1393,7 +1624,6 @@
 
       let html = '<div style="display:flex; flex-direction:column; gap:6px;">';
       matched.forEach(item => {
-        const isPaid = !item.mode.includes('Due') && !item.mode.includes('बाकी');
         html += `
           <div style="background:#fff; border:1px solid #ddd; border-left:4px solid #7a0006; padding:8px 10px; border-radius:6px; display:flex; justify-content:space-between; align-items:center;">
             <div>
@@ -1409,7 +1639,7 @@
     }
 
     // -------------------------------------------------------------
-    // 4. REGULAR TIMINGS CONTROLLER
+    // 6. REGULAR TIMINGS CONTROLLER
     // -------------------------------------------------------------
     function renderRegularTimings() {
       const t = cachedTimings || DEFAULT_TIMINGS;
@@ -1454,7 +1684,7 @@
     }
 
     // -------------------------------------------------------------
-    // 5. KHATA SUB-TAB BIFURCATION CONTROLLER
+    // 7. KHATA SUB-TAB BIFURCATION CONTROLLER
     // -------------------------------------------------------------
     function switchAdminSubTab(tabName) {
       document.querySelectorAll('.admin-sub-btn').forEach(btn => btn.classList.remove('active'));
@@ -1468,7 +1698,7 @@
     }
 
     // -------------------------------------------------------------
-    // 6. BANK, UPI & BARCODE ENGINE
+    // 8. BANK, UPI & BARCODE ENGINE
     // -------------------------------------------------------------
     function renderBankDetails() {
       const b = cachedBank || DEFAULT_BANK;
@@ -1564,7 +1794,7 @@
     }
 
     // -------------------------------------------------------------
-    // 7. SOCIAL MEDIA & WHATSAPP ENGINE
+    // 9. SOCIAL MEDIA & WHATSAPP ENGINE
     // -------------------------------------------------------------
     function renderSocialLinks() {
       const instaLink = document.getElementById('link-insta-page');
@@ -1613,7 +1843,7 @@
     }
 
     // -------------------------------------------------------------
-    // 8. LANGUAGE TRANSLATION ENGINE
+    // 10. LANGUAGE TRANSLATION ENGINE
     // -------------------------------------------------------------
     const I18N = {
       en: {
@@ -1729,7 +1959,7 @@
     }
 
     // -------------------------------------------------------------
-    // 9. NUMBER CONVERTERS
+    // 11. NUMBER CONVERTERS
     // -------------------------------------------------------------
     function numberToMarathiWords(n) {
       n = parseInt(n);
@@ -1803,7 +2033,7 @@
     }
 
     // -------------------------------------------------------------
-    // 10. GUARANTEED 1-TAP INSTALL
+    // 12. GUARANTEED 1-TAP INSTALL
     // -------------------------------------------------------------
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').catch(() => {});
@@ -1840,7 +2070,7 @@
     }
 
     // -------------------------------------------------------------
-    // 11. NAVIGATION & DRAWER
+    // 13. NAVIGATION & DRAWER
     // -------------------------------------------------------------
     function openDrawer() {
       document.getElementById('side-drawer').style.left = '0px';
@@ -1863,7 +2093,7 @@
     }
 
     // -------------------------------------------------------------
-    // 12. LIVE DARSHAN ENGINE
+    // 14. LIVE DARSHAN ENGINE
     // -------------------------------------------------------------
     function extractYouTubeEmbed(url) {
       if (!url) return '';
@@ -1912,7 +2142,7 @@
     }
 
     // -------------------------------------------------------------
-    // 13. AARTI VIEWER & ADMIN MANAGER
+    // 15. AARTI VIEWER & ADMIN MANAGER
     // -------------------------------------------------------------
     let selectedAartiIdx = 0;
 
@@ -2002,7 +2232,7 @@
     }
 
     // -------------------------------------------------------------
-    // 14. SCHEDULE & MEDIA
+    // 16. SCHEDULE & MEDIA
     // -------------------------------------------------------------
     function initDays() {
       const b = document.getElementById('day-bar');
@@ -2130,7 +2360,7 @@
     }
 
     // -------------------------------------------------------------
-    // 15. SHARE TAB & DYNAMIC URL
+    // 17. SHARE TAB & DYNAMIC URL
     // -------------------------------------------------------------
     function getCleanInstallUrl() {
       let base = window.location.origin + window.location.pathname;
@@ -2163,7 +2393,7 @@
     }
 
     // -------------------------------------------------------------
-    // 16. AUTHENTICATION & SETTINGS
+    // 18. AUTHENTICATION & SETTINGS
     // -------------------------------------------------------------
     function toggleForgotBox(show) {
       document.getElementById('login-box').style.display = show ? 'none' : 'block';
@@ -2231,7 +2461,11 @@
         renderSocialLinks();
         renderBankDetails();
         renderRegularTimings();
+        renderDeviceSessions();
+        renderCategoryBreakdownCards();
         renderRows();
+
+        registerDeviceSession();
       }
     }
 
@@ -2250,30 +2484,40 @@
         document.getElementById('set-pin').value = cachedAuth.pin;
         document.getElementById('adm-live-url').value = cachedLiveStream;
 
+        registerDeviceSession();
+
         loadAdminScheduleFields();
         loadAdminMediaFields();
         renderAdminAartiList();
         renderSocialLinks();
         renderBankDetails();
         renderRegularTimings();
+        renderDeviceSessions();
+        renderCategoryBreakdownCards();
         renderRows();
       } else {
         document.getElementById('err').style.display = 'block';
       }
     }
 
-    function doLogout() {
+    function doLogout(silent) {
       localStorage.removeItem('nbmm_auth');
+      if (db) {
+        db.ref('active_sessions/' + myDeviceId).remove();
+      }
       document.getElementById('panel-box').style.display = 'none';
       document.getElementById('login-box').style.display = 'block';
       document.getElementById('forgot-box').style.display = 'none';
       document.getElementById('uid').value = '';
       document.getElementById('pin').value = '';
       cancelEdit();
+      if (!silent) {
+        alert('Signed out successfully.');
+      }
     }
 
     // -------------------------------------------------------------
-    // 17. KHATA & DYNAMIC COLLECTOR RECEIPT LOGIC
+    // 19. KHATA & DYNAMIC COLLECTOR RECEIPT LOGIC
     // -------------------------------------------------------------
     function saveRecord() {
       const name = document.getElementById('r-name').value.trim();
@@ -2388,7 +2632,7 @@
     }
 
     // -------------------------------------------------------------
-    // 18. FEATURE 2: FILTER & RENDER LEDGER TABLE
+    // 20. FILTER & RENDER LEDGER TABLE (CATEGORY-AWARE)
     // -------------------------------------------------------------
     function renderRows() {
       let incPaid = 0, incPending = 0, exp = 0;
@@ -2406,7 +2650,14 @@
           exp += x.amt;
         }
 
-        // Search Filter Evaluation
+        // 1. Category Section Filter Check
+        if (currentSelectedCategory !== 'all') {
+          if (!(x.category || '').includes(currentSelectedCategory)) {
+            return;
+          }
+        }
+
+        // 2. Text Search Query Check
         if (q) {
           const matchName = (x.name || '').toLowerCase().includes(q);
           const matchRec = String(x.rec).toLowerCase().includes(q);
@@ -2424,7 +2675,7 @@
         tr.innerHTML = `
           <td>
             <strong>${x.name}</strong><br>
-            <small style="color:#777;">#${x.rec} • ${x.category || 'वर्गणी'} • ${x.collector ? 'By: ' + x.collector : ''}</small>
+            <small style="color:#777;">#${x.rec} • <span style="color:#7a0006; font-weight:600;">${x.category || 'वर्गणी'}</span> • ${x.collector ? 'By: ' + x.collector : ''}</small>
           </td>
           <td>
             <span class="${isPaid ? 'badge-paid' : 'badge-unpaid'}">
@@ -2447,10 +2698,12 @@
       document.getElementById('tot-pending').innerText = incPending;
       document.getElementById('tot-ex').innerText = exp;
       document.getElementById('tot-bal').innerText = (incPaid - exp);
+
+      renderCategoryBreakdownCards();
     }
 
     // -------------------------------------------------------------
-    // 19. POPULATE TRI-LINGUAL RECEIPT MODAL
+    // 21. POPULATE TRI-LINGUAL RECEIPT MODAL
     // -------------------------------------------------------------
     function openReceiptModal(item) {
       document.getElementById('pr-rec').innerText = item.rec;
@@ -2466,10 +2719,9 @@
       document.getElementById('pr-sign-president').innerText = 'NBMM MEMBERS';
       document.getElementById('pr-amt').innerText = item.amt;
 
-      // Mode Badge Highlight
       const pCash = document.getElementById('pill-cash');
       const pUpi = document.getElementById('pill-upi');
-   const pDue = document.getElementById('pill-due');
+      const pDue = document.getElementById('pill-due');
 
       pCash.classList.remove('active');
       pUpi.classList.remove('active');
@@ -2483,11 +2735,9 @@
         pCash.classList.add('active');
       }
 
-      // Verification QR Code
       const verifyData = `https://nbmm.org/verify?rec=${item.rec}&amt=${item.amt}&name=${encodeURIComponent(item.name)}`;
       document.getElementById('pr-qr-code').src = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' + encodeURIComponent(verifyData);
 
-      // WhatsApp Forward
       document.getElementById('btn-wa-direct').onclick = function() {
         waSend(item);
       };
@@ -2507,7 +2757,7 @@
     }
 
     // -------------------------------------------------------------
-    // 20. BOOTSTRAP
+    // 22. BOOTSTRAP
     // -------------------------------------------------------------
     setLanguage(currentLang);
     initDays();
