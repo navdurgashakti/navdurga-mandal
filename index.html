@@ -586,15 +586,19 @@
     </div>
   </section>
 
-  <!-- TAB 3: LIVE DARSHAN -->
+  <!-- TAB 3: LIVE DARSHAN (UPGRADED WITH DIRECT LINK BACKUP) -->
   <section id="tab-live" class="tab">
-    <div class="card" style="border-left-color: #c0392b;">
+    <div class="card" style="border-left-color: #c0392b; text-align: center;">
       <h3 id="sec-live-title">🔴 Live Darshan & Aarti</h3>
       <p style="font-size:0.85rem; color:#555; margin-bottom:12px;" id="sec-live-sub">Watch live Aarti and darshan direct from our Sukhlaji Street pandal:</p>
       
-      <div id="live-player-container" style="display:none; position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
+      <div id="live-player-container" style="display:none; position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); margin-bottom: 10px;">
         <iframe id="live-video-iframe" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
+
+      <a id="btn-yt-direct-fallback" class="btn" style="background:#c0392b; width:100%; margin-top:8px; display:none;" href="#" target="_blank">
+        ▶️ Open Directly on YouTube App
+      </a>
 
       <div id="live-offline-container" style="background:#fff8e7; border:1px dashed #d4af37; border-radius:8px; padding:20px; text-align:center;">
         <span style="font-size:2rem;">🪔</span>
@@ -682,7 +686,7 @@
 
   </section>
 
-  <!-- TAB 5: SHARE -->
+  <!-- TAB 5:SHARE -->
   <section id="tab-share" class="tab">
     <div class="card" style="border-left-color: #25d366; text-align: center;">
       <h3 id="sec-share-title">📲 Share Mandal App</h3>
@@ -808,7 +812,7 @@
       <!-- SUB-TAB 1: RECEIPTS, CATEGORY BREAKDOWN & REGISTER -->
       <div id="asv-receipts" class="admin-sub-view active">
         
-        <!-- CATEGORY-WISE TOTALS SUMMARY CARDS (NEW) -->
+        <!-- CATEGORY-WISE TOTALS SUMMARY CARDS -->
         <div class="cat-stat-grid" id="category-summary-cards"></div>
 
         <!-- DONATION ENTRY FORM -->
@@ -1110,7 +1114,7 @@
       
       <div id="capture-receipt" class="mrc-card">
         
-        <!-- HEADER WITH MANDAL LOGO[span_2](start_span)[span_2](end_span) -->
+        <!-- HEADER WITH MANDAL LOGO[span_0](start_span)[span_0](end_span) -->
         <div class="mrc-header">
           <div class="mrc-top-meta">
             <span>स्थापना / Estd : 1992</span>
@@ -1126,10 +1130,10 @@
           <div style="font-size:0.62rem; color:#ffd1d1; margin-top:5px;">न्यू म्युनिसिपल इमारत, ७६ तेनामेंन्ट, ५वी गल्ली, कामाठीपुरा, मुंबई ४००००८</div>
         </div>
 
-        <!-- BODY[span_3](start_span)[span_3](end_span) -->
+        <!-- BODY[span_1](start_span)[span_1](end_span) -->
         <div class="mrc-body">
           
-          <!-- META ROW[span_4](start_span)[span_4](end_span) -->
+          <!-- META ROW[span_2](start_span)[span_2](end_span) -->
           <div class="mrc-meta-row">
             <div class="mrc-badge-box">
               <span class="mrc-badge-lbl">पावती नं. / Rec. No.</span>
@@ -1141,13 +1145,13 @@
             </div>
           </div>
 
-          <!-- DONOR ROW[span_5](start_span)[span_5](end_span) -->
+          <!-- DONOR ROW[span_3](start_span)[span_3](end_span) -->
           <div class="mrc-field-group">
             <span class="mrc-lbl">श्री / सौ. / Received From:</span>
             <div class="mrc-val-lg" id="pr-name"></div>
           </div>
 
-          <!-- WORDS IN MARATHI, HINDI & ENGLISH[span_6](start_span)[span_6](end_span) -->
+          <!-- WORDS IN MARATHI, HINDI & ENGLISH[span_4](start_span)[span_4](end_span) -->
           <div class="mrc-field-group">
             <span class="mrc-lbl">यांच्याकडून अक्षरी रुपये / Amount in Words:</span>
             <div class="mrc-words-mr" id="pr-words-mr"></div>
@@ -1155,7 +1159,7 @@
             <div class="mrc-words-en" id="pr-words-en"></div>
           </div>
 
-          <!-- PURPOSE & COLLECTOR ROW[span_7](start_span)[span_7](end_span) -->
+          <!-- PURPOSE & COLLECTOR ROW[span_5](start_span)[span_5](end_span) -->
           <div class="mrc-field-group">
             <span class="mrc-lbl">वर्गणी दाखल / Towards & Collected By:</span>
             <div style="font-size:0.92rem; font-weight:700; color:#333;">
@@ -1163,7 +1167,7 @@
             </div>
           </div>
 
-          <!-- PAYMENT MODE PILLS[span_8](start_span)[span_8](end_span) -->
+          <!-- PAYMENT MODE PILLS[span_6](start_span)[span_6](end_span) -->
           <div class="mrc-mode-row">
             <span class="mrc-lbl" style="margin-right:4px;">माध्यम / Mode:</span>
             <span class="mrc-mode-pill" id="pill-cash">रोख / Cash</span>
@@ -1171,7 +1175,7 @@
             <span class="mrc-mode-pill" id="pill-due">बाकी / Due</span>
           </div>
 
-          <!-- AMOUNT BANNER, THANKS & QR CODE[span_9](start_span)[span_9](end_span) -->
+          <!-- AMOUNT BANNER, THANKS & QR CODE[span_7](start_span)[span_7](end_span) -->
           <div class="mrc-amount-section">
             <div class="mrc-amt-banner">
               <span class="mrc-amt-banner-lbl">रक्कम / Amount</span>
@@ -1192,7 +1196,7 @@
             </div>
           </div>
 
-          <!-- SIGNATURES[span_10](start_span)[span_10](end_span) -->
+          <!-- SIGNATURES[span_8](start_span)[span_8](end_span) -->
           <div class="mrc-footer-signatures">
             <div class="mrc-sign-col">
               <div class="mrc-sign-name">&nbsp;</div>
@@ -1421,7 +1425,69 @@
     }
 
     // -------------------------------------------------------------
-    // 2. CATEGORY-WISE SECTION FILTER & TOTALS CALCULATION (NEW)
+    // 2. LIVE STREAM ENGINE (ROBUST EMBED & DIRECT FALLBACK)
+    // -------------------------------------------------------------
+    function extractYouTubeId(url) {
+      if (!url) return '';
+      url = url.trim();
+      
+      if (/^[\w-]{11}$/.test(url)) return url;
+      
+      const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|live|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+      const match = url.match(regExp);
+      return (match && match[1]) ? match[1] : '';
+    }
+
+    function renderLiveStream(url) {
+      const container = document.getElementById('live-player-container');
+      const offline = document.getElementById('live-offline-container');
+      const iframe = document.getElementById('live-video-iframe');
+      const directBtn = document.getElementById('btn-yt-direct-fallback');
+      
+      const videoId = extractYouTubeId(url);
+
+      if (videoId) {
+        iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1&rel=0`;
+        container.style.display = 'block';
+        offline.style.display = 'none';
+
+        if (directBtn) {
+          directBtn.href = `https://www.youtube.com/watch?v=${videoId}`;
+          directBtn.style.display = 'inline-flex';
+        }
+      } else {
+        iframe.src = '';
+        container.style.display = 'none';
+        offline.style.display = 'block';
+        if (directBtn) directBtn.style.display = 'none';
+      }
+    }
+
+    function saveLiveStream() {
+      const url = document.getElementById('adm-live-url').value.trim();
+      if (!url) {
+        alert('Please paste a valid YouTube Live link.');
+        return;
+      }
+      cachedLiveStream = url;
+      localStorage.setItem('nbmm_live_url', url);
+      if (db) db.ref('live_stream').set(url);
+      renderLiveStream(url);
+      alert('Live broadcast started across all phones!');
+    }
+
+    function clearLiveStream() {
+      if (!confirm('End live stream for all devotees?')) return;
+      cachedLiveStream = '';
+      localStorage.removeItem('nbmm_live_url');
+      document.getElementById('adm-live-url').value = '';
+      if (db) db.ref('live_stream').set('');
+      renderLiveStream('');
+      alert('Live stream ended.');
+    }
+
+    // -------------------------------------------------------------
+    // 3. CATEGORY-WISE SECTION FILTER & TOTALS CALCULATION
     // -------------------------------------------------------------
     function filterByCat(catKey) {
       currentSelectedCategory = catKey;
@@ -1480,7 +1546,7 @@
     }
 
     // -------------------------------------------------------------
-    // 3. ACTIVE DEVICE SESSIONS & REMOTE REVOCATION ENGINE
+    // 4. ACTIVE DEVICE SESSIONS & REMOTE REVOCATION ENGINE
     // -------------------------------------------------------------
     function getDeviceName() {
       const ua = navigator.userAgent;
@@ -1569,7 +1635,7 @@
     }
 
     // -------------------------------------------------------------
-    // 4. EXPORT LEDGER TO EXCEL / CSV
+    // 5. EXPORT LEDGER TO EXCEL / CSV
     // -------------------------------------------------------------
     function exportLedgerToExcel() {
       if (!cachedEntries || cachedEntries.length === 0) {
@@ -1599,7 +1665,7 @@
     }
 
     // -------------------------------------------------------------
-    // 5. DEVOTEE RECEIPT SELF-LOOKUP
+    // 6. DEVOTEE RECEIPT SELF-LOOKUP
     // -------------------------------------------------------------
     function findDevoteeReceipt() {
       const q = (document.getElementById('devotee-search-input').value || '').trim().toLowerCase();
@@ -1639,7 +1705,7 @@
     }
 
     // -------------------------------------------------------------
-    // 6. REGULAR TIMINGS CONTROLLER
+    // 7. REGULAR TIMINGS CONTROLLER
     // -------------------------------------------------------------
     function renderRegularTimings() {
       const t = cachedTimings || DEFAULT_TIMINGS;
@@ -1684,7 +1750,7 @@
     }
 
     // -------------------------------------------------------------
-    // 7. KHATA SUB-TAB BIFURCATION CONTROLLER
+    // 8. KHATA SUB-TAB BIFURCATION CONTROLLER
     // -------------------------------------------------------------
     function switchAdminSubTab(tabName) {
       document.querySelectorAll('.admin-sub-btn').forEach(btn => btn.classList.remove('active'));
@@ -1698,7 +1764,7 @@
     }
 
     // -------------------------------------------------------------
-    // 8. BANK, UPI & BARCODE ENGINE
+    // 9. BANK, UPI & BARCODE ENGINE
     // -------------------------------------------------------------
     function renderBankDetails() {
       const b = cachedBank || DEFAULT_BANK;
@@ -1794,7 +1860,7 @@
     }
 
     // -------------------------------------------------------------
-    // 9. SOCIAL MEDIA & WHATSAPP ENGINE
+    // 10. SOCIAL MEDIA & WHATSAPP ENGINE
     // -------------------------------------------------------------
     function renderSocialLinks() {
       const instaLink = document.getElementById('link-insta-page');
@@ -1843,7 +1909,7 @@
     }
 
     // -------------------------------------------------------------
-    // 10. LANGUAGE TRANSLATION ENGINE
+    // 11. LANGUAGE TRANSLATION ENGINE
     // -------------------------------------------------------------
     const I18N = {
       en: {
@@ -1959,7 +2025,7 @@
     }
 
     // -------------------------------------------------------------
-    // 11. NUMBER CONVERTERS
+    // 12. NUMBER CONVERTERS
     // -------------------------------------------------------------
     function numberToMarathiWords(n) {
       n = parseInt(n);
@@ -2033,7 +2099,7 @@
     }
 
     // -------------------------------------------------------------
-    // 12. GUARANTEED 1-TAP INSTALL
+    // 13. GUARANTEED 1-TAP INSTALL
     // -------------------------------------------------------------
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').catch(() => {});
@@ -2070,7 +2136,7 @@
     }
 
     // -------------------------------------------------------------
-    // 13. NAVIGATION & DRAWER
+    // 14. NAVIGATION & DRAWER
     // -------------------------------------------------------------
     function openDrawer() {
       document.getElementById('side-drawer').style.left = '0px';
@@ -2090,55 +2156,6 @@
       if (btn) btn.classList.add('active');
       closeDrawer();
       window.scrollTo(0, 0);
-    }
-
-    // -------------------------------------------------------------
-    // 14. LIVE DARSHAN ENGINE
-    // -------------------------------------------------------------
-    function extractYouTubeEmbed(url) {
-      if (!url) return '';
-      const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|live\/|watch\?.+&v=))([\w-]{11})/);
-      return match ? `https://www.youtube.com/embed/${match[1]}?autoplay=1` : '';
-    }
-
-    function renderLiveStream(url) {
-      const container = document.getElementById('live-player-container');
-      const offline = document.getElementById('live-offline-container');
-      const iframe = document.getElementById('live-video-iframe');
-      const embedUrl = extractYouTubeEmbed(url);
-
-      if (embedUrl) {
-        iframe.src = embedUrl;
-        container.style.display = 'block';
-        offline.style.display = 'none';
-      } else {
-        iframe.src = '';
-        container.style.display = 'none';
-        offline.style.display = 'block';
-      }
-    }
-
-    function saveLiveStream() {
-      const url = document.getElementById('adm-live-url').value.trim();
-      if (!url) {
-        alert('Please paste a valid YouTube Live link.');
-        return;
-      }
-      cachedLiveStream = url;
-      localStorage.setItem('nbmm_live_url', url);
-      if (db) db.ref('live_stream').set(url);
-      renderLiveStream(url);
-      alert('Live broadcast started across all phones!');
-    }
-
-    function clearLiveStream() {
-      if (!confirm('End live stream for all devotees?')) return;
-      cachedLiveStream = '';
-      localStorage.removeItem('nbmm_live_url');
-      document.getElementById('adm-live-url').value = '';
-      if (db) db.ref('live_stream').set('');
-      renderLiveStream('');
-      alert('Live stream ended.');
     }
 
     // -------------------------------------------------------------
@@ -2650,14 +2667,12 @@
           exp += x.amt;
         }
 
-        // 1. Category Section Filter Check
         if (currentSelectedCategory !== 'all') {
           if (!(x.category || '').includes(currentSelectedCategory)) {
             return;
           }
         }
 
-        // 2. Text Search Query Check
         if (q) {
           const matchName = (x.name || '').toLowerCase().includes(q);
           const matchRec = String(x.rec).toLowerCase().includes(q);
