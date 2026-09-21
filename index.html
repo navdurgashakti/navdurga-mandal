@@ -510,7 +510,7 @@
     </div>
   </aside>
 
-  <!-- TAB 1: SCHEDULE -->
+  <!-- TAB 1: SCHEDULE & REGULAR TIMINGS -->
   <section id="tab-schedule" class="tab active">
     <div class="card" style="border-left-color: #2e7d32;">
       <h3 id="sec-pandal-title">Pandal Address & Helpdesk</h3>
@@ -536,12 +536,13 @@
       <div id="day-view" style="background:#fffaf0; border:1px solid #fce8cc; padding:10px; border-radius:8px;"></div>
     </div>
 
+    <!-- DYNAMIC REGULAR TIMINGS -->
     <div class="card">
       <h3 id="sec-timings-title">Regular Timings</h3>
-      <p><strong>Subah Aarti (सकाळ):</strong> 7:30 AM</p>
-      <p><strong>Sandhya Aarti (संध्याकाळ):</strong> 7:30 PM</p>
-      <p><strong>Garba & Dandiya (रास गरबा):</strong> 8:30 PM – 10:00 PM</p>
-      <p><strong>Maha Prasad (महाप्रसाद):</strong> 10:00 PM onwards</p>
+      <p><strong>Subah Aarti (सकाळ):</strong> <span id="dsp-subah-aarti">7:30 AM</span></p>
+      <p><strong>Sandhya Aarti (संध्याकाळ):</strong> <span id="dsp-sandhya-aarti">7:30 PM</span></p>
+      <p><strong>Garba & Dandiya (रास गरबा):</strong> <span id="dsp-garba-time">8:30 PM – 10:00 PM</span></p>
+      <p><strong>Maha Prasad (महाप्रसाद):</strong> <span id="dsp-prasad-time">10:00 PM onwards</span></p>
     </div>
   </section>
 
@@ -894,7 +895,7 @@
         </div>
       </div>
 
-      <!-- SUB-TAB 3:LIVE STREAM -->
+      <!-- SUB-TAB 3: LIVE STREAM -->
       <div id="asv-live" class="admin-sub-view">
         <div class="card" style="border-left-color: #c0392b;">
           <h3>🔴 Manage Live Darshan Stream</h3>
@@ -907,10 +908,40 @@
         </div>
       </div>
 
-      <!-- SUB-TAB 4: SCHEDULE & MEDIA -->
+      <!-- SUB-TAB 4: SCHEDULE, REGULAR TIMINGS & MEDIA -->
       <div id="asv-schedule" class="admin-sub-view">
         
-        <!-- SCHEDULE EDITOR -->
+        <!-- REGULAR TIMINGS EDITOR (NEW) -->
+        <div class="card" style="border-left-color: #e67e22;">
+          <h3>⏰ Edit Regular Daily Timings (नियमित वेळ)</h3>
+          <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Update daily Aarti and program timings shown on the front screen:</p>
+          
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">Subah Aarti Time (सकाळ)</label>
+              <input type="text" id="adm-subah-aarti" class="input-box" placeholder="e.g. 7:30 AM" />
+            </div>
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">Sandhya Aarti Time (संध्याकाळ)</label>
+              <input type="text" id="adm-sandhya-aarti" class="input-box" placeholder="e.g. 7:30 PM" />
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">Garba & Dandiya (रास गरबा)</label>
+              <input type="text" id="adm-garba-time" class="input-box" placeholder="e.g. 8:30 PM – 10:00 PM" />
+            </div>
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">Maha Prasad (महाप्रसाद)</label>
+              <input type="text" id="adm-prasad-time" class="input-box" placeholder="e.g. 10:00 PM onwards" />
+            </div>
+          </div>
+
+          <button class="btn" style="background:#e67e22; width:100%;" onclick="saveRegularTimings()">💾 Save Regular Timings (Syncs on All Devices)</button>
+        </div>
+
+        <!-- 10-DAY SCHEDULE EDITOR -->
         <div class="card" style="border-left-color: #8e44ad;">
           <h3>📅 Edit Festival Schedule (All 10 Days)</h3>
           <select id="adm-sched-day" class="input-box" onchange="loadAdminScheduleFields()">
@@ -943,7 +974,7 @@
         </div>
       </div>
 
-      <!-- SUB-TAB 5: SETTINGS, SOCIAL & AARTIS -->
+      <!-- SUB-TAB 5:SETTINGS, SOCIAL & AARTIS -->
       <div id="asv-settings" class="admin-sub-view">
         
         <!-- SOCIAL MEDIA LINKS -->
@@ -999,7 +1030,7 @@
       
       <div id="capture-receipt" class="mrc-card">
         
-        <!-- HEADER WITH MANDAL LOGO[span_1](start_span)[span_1](end_span) -->
+        <!-- HEADER WITH MANDAL LOGO[span_0](start_span)[span_0](end_span) -->
         <div class="mrc-header">
           <div class="mrc-top-meta">
             <span>स्थापना / Estd : 1992</span>
@@ -1015,10 +1046,10 @@
           <div style="font-size:0.62rem; color:#ffd1d1; margin-top:5px;">न्यू म्युनिसिपल इमारत, ७६ तेनामेंन्ट, ५वी गल्ली, कामाठीपुरा, मुंबई ४००००८</div>
         </div>
 
-        <!-- BODY[span_2](start_span)[span_2](end_span) -->
+        <!-- BODY[span_1](start_span)[span_1](end_span) -->
         <div class="mrc-body">
           
-          <!-- META ROW[span_3](start_span)[span_3](end_span) -->
+          <!-- META ROW[span_2](start_span)[span_2](end_span) -->
           <div class="mrc-meta-row">
             <div class="mrc-badge-box">
               <span class="mrc-badge-lbl">पावती नं. / Rec. No.</span>
@@ -1030,13 +1061,13 @@
             </div>
           </div>
 
-          <!-- DONOR ROW[span_4](start_span)[span_4](end_span) -->
+          <!-- DONOR ROW[span_3](start_span)[span_3](end_span) -->
           <div class="mrc-field-group">
             <span class="mrc-lbl">श्री / सौ. / Received From:</span>
             <div class="mrc-val-lg" id="pr-name"></div>
           </div>
 
-          <!-- WORDS IN MARATHI, HINDI & ENGLISH[span_5](start_span)[span_5](end_span) -->
+          <!-- WORDS IN MARATHI, HINDI & ENGLISH[span_4](start_span)[span_4](end_span) -->
           <div class="mrc-field-group">
             <span class="mrc-lbl">यांच्याकडून अक्षरी रुपये / Amount in Words:</span>
             <div class="mrc-words-mr" id="pr-words-mr"></div>
@@ -1044,7 +1075,7 @@
             <div class="mrc-words-en" id="pr-words-en"></div>
           </div>
 
-          <!-- PURPOSE & COLLECTOR ROW[span_6](start_span)[span_6](end_span) -->
+          <!-- PURPOSE & COLLECTOR ROW[span_5](start_span)[span_5](end_span) -->
           <div class="mrc-field-group">
             <span class="mrc-lbl">वर्गणी दाखल / Towards & Collected By:</span>
             <div style="font-size:0.92rem; font-weight:700; color:#333;">
@@ -1052,7 +1083,7 @@
             </div>
           </div>
 
-          <!-- PAYMENT MODE PILLS[span_7](start_span)[span_7](end_span) -->
+          <!-- PAYMENT MODE PILLS[span_6](start_span)[span_6](end_span) -->
           <div class="mrc-mode-row">
             <span class="mrc-lbl" style="margin-right:4px;">माध्यम / Mode:</span>
             <span class="mrc-mode-pill" id="pill-cash">रोख / Cash</span>
@@ -1060,7 +1091,7 @@
             <span class="mrc-mode-pill" id="pill-due">बाकी / Due</span>
           </div>
 
-          <!-- AMOUNT BANNER, THANKS & QR CODE[span_8](start_span)[span_8](end_span) -->
+          <!-- AMOUNT BANNER, THANKS & QR CODE[span_7](start_span)[span_7](end_span) -->
           <div class="mrc-amount-section">
             <div class="mrc-amt-banner">
               <span class="mrc-amt-banner-lbl">रक्कम / Amount</span>
@@ -1081,7 +1112,7 @@
             </div>
           </div>
 
-          <!-- SIGNATURES[span_9](start_span)[span_9](end_span) -->
+          <!-- SIGNATURES[span_8](start_span)[span_8](end_span) -->
           <div class="mrc-footer-signatures">
             <div class="mrc-sign-col">
               <div class="mrc-sign-name">&nbsp;</div>
@@ -1142,6 +1173,13 @@
       { d: "Day 10", dt: "Oct 20", devi: "Vijayadashami (विजयादशमी)", clr: "Gold (सोनेरी/सुनहरा)", p: "Ravan Dahan & Visarjan Procession", pr: "Jalebi Fafda" }
     ];
 
+    const DEFAULT_TIMINGS = {
+      subah: "7:30 AM",
+      sandhya: "7:30 PM",
+      garba: "8:30 PM – 10:00 PM",
+      prasad: "10:00 PM onwards"
+    };
+
     const DEFAULT_AARTIES = [
       {
         id: "aarti_1",
@@ -1173,6 +1211,7 @@
     };
 
     let cachedSchedule = JSON.parse(localStorage.getItem('nbmm_schedule_custom') || 'null') || DEFAULT_DAYS;
+    let cachedTimings = JSON.parse(localStorage.getItem('nbmm_timings') || 'null') || DEFAULT_TIMINGS;
     let cachedMedia = JSON.parse(localStorage.getItem('nbmm_media') || '{}');
     let cachedEntries = JSON.parse(localStorage.getItem('nbmm_entries') || '[]');
     let cachedAarties = JSON.parse(localStorage.getItem('nbmm_aarties') || 'null') || DEFAULT_AARTIES;
@@ -1191,6 +1230,15 @@
           localStorage.setItem('nbmm_schedule_custom', JSON.stringify(val));
           initDays();
           initMediaDays();
+        }
+      });
+
+      db.ref('regular_timings').on('value', (snap) => {
+        const val = snap.val();
+        if (val) {
+          cachedTimings = val;
+          localStorage.setItem('nbmm_timings', JSON.stringify(val));
+          renderRegularTimings();
         }
       });
 
@@ -1271,7 +1319,54 @@
     }
 
     // -------------------------------------------------------------
-    // 2. KHATA SUB-TAB BIFURCATION CONTROLLER
+    // 2. REGULAR TIMINGS CONTROLLER (NEW)
+    // -------------------------------------------------------------
+    function renderRegularTimings() {
+      const t = cachedTimings || DEFAULT_TIMINGS;
+      const subah = t.subah || DEFAULT_TIMINGS.subah;
+      const sandhya = t.sandhya || DEFAULT_TIMINGS.sandhya;
+      const garba = t.garba || DEFAULT_TIMINGS.garba;
+      const prasad = t.prasad || DEFAULT_TIMINGS.prasad;
+
+      // Devotee Displays
+      const elSubah = document.getElementById('dsp-subah-aarti');
+      const elSandhya = document.getElementById('dsp-sandhya-aarti');
+      const elGarba = document.getElementById('dsp-garba-time');
+      const elPrasad = document.getElementById('dsp-prasad-time');
+
+      if (elSubah) elSubah.innerText = subah;
+      if (elSandhya) elSandhya.innerText = sandhya;
+      if (elGarba) elGarba.innerText = garba;
+      if (elPrasad) elPrasad.innerText = prasad;
+
+      // Admin Inputs Preload
+      const inSubah = document.getElementById('adm-subah-aarti');
+      const inSandhya = document.getElementById('adm-sandhya-aarti');
+      const inGarba = document.getElementById('adm-garba-time');
+      const inPrasad = document.getElementById('adm-prasad-time');
+
+      if (inSubah) inSubah.value = subah;
+      if (inSandhya) inSandhya.value = sandhya;
+      if (inGarba) inGarba.value = garba;
+      if (inPrasad) inPrasad.value = prasad;
+    }
+
+    function saveRegularTimings() {
+      const subah = document.getElementById('adm-subah-aarti').value.trim() || DEFAULT_TIMINGS.subah;
+      const sandhya = document.getElementById('adm-sandhya-aarti').value.trim() || DEFAULT_TIMINGS.sandhya;
+      const garba = document.getElementById('adm-garba-time').value.trim() || DEFAULT_TIMINGS.garba;
+      const prasad = document.getElementById('adm-prasad-time').value.trim() || DEFAULT_TIMINGS.prasad;
+
+      cachedTimings = { subah, sandhya, garba, prasad };
+      localStorage.setItem('nbmm_timings', JSON.stringify(cachedTimings));
+      if (db) db.ref('regular_timings').set(cachedTimings);
+
+      renderRegularTimings();
+      alert('Regular Timings updated and synchronized across all phones!');
+    }
+
+    // -------------------------------------------------------------
+    // 3. KHATA SUB-TAB BIFURCATION CONTROLLER
     // -------------------------------------------------------------
     function switchAdminSubTab(tabName) {
       document.querySelectorAll('.admin-sub-btn').forEach(btn => btn.classList.remove('active'));
@@ -1285,7 +1380,7 @@
     }
 
     // -------------------------------------------------------------
-    // 3. BANK, UPI & BARCODE ENGINE
+    // 4. BANK, UPI & BARCODE ENGINE
     // -------------------------------------------------------------
     function renderBankDetails() {
       const b = cachedBank || DEFAULT_BANK;
@@ -1381,7 +1476,7 @@
     }
 
     // -------------------------------------------------------------
-    // 4. SOCIAL MEDIA & WHATSAPP ENGINE
+    // 5. SOCIAL MEDIA & WHATSAPP ENGINE
     // -------------------------------------------------------------
     function renderSocialLinks() {
       const instaLink = document.getElementById('link-insta-page');
@@ -1430,7 +1525,7 @@
     }
 
     // -------------------------------------------------------------
-    // 5. LANGUAGE TRANSLATION ENGINE
+    // 6. LANGUAGE TRANSLATION ENGINE
     // -------------------------------------------------------------
     const I18N = {
       en: {
@@ -1546,7 +1641,7 @@
     }
 
     // -------------------------------------------------------------
-    // 6. NUMBER CONVERTERS
+    // 7. NUMBER CONVERTERS
     // -------------------------------------------------------------
     function numberToMarathiWords(n) {
       n = parseInt(n);
@@ -1611,16 +1706,16 @@
       function inWords(n) {
         if (n < 20) return a[n];
         if (n < 100) return b[Math.floor(n / 10)] + (n % 10 ? ' ' + a[n % 10] : '');
-        if (n < 1000) return a[Math.floor(n / 10)] + 'Hundred ' + (n % 100 ? 'and ' + inWords(n % 100) : '');
+        if (n < 1000) return a[Math.floor(n / 100)] + 'Hundred ' + (n % 100 ? 'and ' + inWords(n % 100) : '');
         if (n < 100000) return inWords(Math.floor(n / 1000)) + 'Thousand ' + (n % 1000 ? inWords(n % 1000) : '');
-        if (n < 10000000) return inWords(Math.floor(n / 1000)) + 'Lakh ' + (n % 100000 ? inWords(n % 100000) : '');
+        if (n < 10000000) return inWords(Math.floor(n / 100000)) + 'Lakh ' + (n % 100000 ? inWords(n % 100000) : '');
         return inWords(Math.floor(n / 10000000)) + 'Crore ' + (n % 10000000 ? inWords(n % 10000000) : '');
       }
       return inWords(num).trim() + ' Rupees Only';
     }
 
     // -------------------------------------------------------------
-    // 7. GUARANTEED 1-TAP INSTALL
+    // 8. GUARANTEED 1-TAP INSTALL
     // -------------------------------------------------------------
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').catch(() => {});
@@ -1657,7 +1752,7 @@
     }
 
     // -------------------------------------------------------------
-    // 8. NAVIGATION & DRAWER
+    // 9. NAVIGATION & DRAWER
     // -------------------------------------------------------------
     function openDrawer() {
       document.getElementById('side-drawer').style.left = '0px';
@@ -1680,7 +1775,7 @@
     }
 
     // -------------------------------------------------------------
-    // 9. LIVE DARSHAN ENGINE
+    // 10. LIVE DARSHAN ENGINE
     // -------------------------------------------------------------
     function extractYouTubeEmbed(url) {
       if (!url) return '';
@@ -1729,7 +1824,7 @@
     }
 
     // -------------------------------------------------------------
-    // 10. AARTI VIEWER & ADMIN MANAGER
+    // 11. AARTI VIEWER & ADMIN MANAGER
     // -------------------------------------------------------------
     let selectedAartiIdx = 0;
 
@@ -1819,7 +1914,7 @@
     }
 
     // -------------------------------------------------------------
-    // 11. SCHEDULE & MEDIA
+    // 12. SCHEDULE & MEDIA
     // -------------------------------------------------------------
     function initDays() {
       const b = document.getElementById('day-bar');
@@ -1947,7 +2042,7 @@
     }
 
     // -------------------------------------------------------------
-    // 12. SHARE TAB & DYNAMIC URL
+    // 13. SHARE TAB & DYNAMIC URL
     // -------------------------------------------------------------
     function getCleanInstallUrl() {
       let base = window.location.origin + window.location.pathname;
@@ -1980,7 +2075,7 @@
     }
 
     // -------------------------------------------------------------
-    // 13. AUTHENTICATION & SETTINGS
+    // 14. AUTHENTICATION & SETTINGS
     // -------------------------------------------------------------
     function toggleForgotBox(show) {
       document.getElementById('login-box').style.display = show ? 'none' : 'block';
@@ -2047,6 +2142,7 @@
         renderAdminAartiList();
         renderSocialLinks();
         renderBankDetails();
+        renderRegularTimings();
         renderRows();
       }
     }
@@ -2071,6 +2167,7 @@
         renderAdminAartiList();
         renderSocialLinks();
         renderBankDetails();
+        renderRegularTimings();
         renderRows();
       } else {
         document.getElementById('err').style.display = 'block';
@@ -2088,7 +2185,7 @@
     }
 
     // -------------------------------------------------------------
-    // 14. KHATA & DYNAMIC COLLECTOR RECEIPT LOGIC
+    // 15. KHATA & DYNAMIC COLLECTOR RECEIPT LOGIC
     // -------------------------------------------------------------
     function saveRecord() {
       const name = document.getElementById('r-name').value.trim();
@@ -2245,7 +2342,7 @@
     }
 
     // -------------------------------------------------------------
-    // 15. POPULATE TRI-LINGUAL RECEIPT MODAL
+    // 16. POPULATE TRI-LINGUAL RECEIPT MODAL
     // -------------------------------------------------------------
     function openReceiptModal(item) {
       document.getElementById('pr-rec').innerText = item.rec;
@@ -2302,7 +2399,7 @@
     }
 
     // -------------------------------------------------------------
-    // 16. BOOTSTRAP
+    // 17. BOOTSTRAP
     // -------------------------------------------------------------
     setLanguage(currentLang);
     initDays();
@@ -2311,6 +2408,7 @@
     initShare();
     renderSocialLinks();
     renderBankDetails();
+    renderRegularTimings();
     renderLiveStream(cachedLiveStream);
     checkLogin();
   </script>
