@@ -819,6 +819,7 @@
         <button class="admin-sub-btn active" id="asb-receipts" onclick="switchAdminSubTab('receipts')">🧾 पावती व नोंद</button>
         <button class="admin-sub-btn" id="asb-bank" onclick="switchAdminSubTab('bank')">🏛️ बँक व UPI</button>
         <button class="admin-sub-btn" id="asb-live" onclick="switchAdminSubTab('live')">🔴 थेट दर्शन</button>
+        <button class="admin-sub-btn" id="asb-cctv" onclick="switchAdminSubTab('cctv')">📹 CCTV (सुरक्षा)</button>
         <button class="admin-sub-btn" id="asb-schedule" onclick="switchAdminSubTab('schedule')">📅 कार्यक्रम</button>
         <button class="admin-sub-btn" id="asb-settings" onclick="switchAdminSubTab('settings')">⚙️ सुरक्षा व उपकरणे</button>
       </div>
@@ -970,10 +971,8 @@
         </div>
       </div>
 
-      <!-- SUB-TAB 3: LIVE STREAM (DUAL-CAMERA PANDAL FEED + YOUTUBE + INSTA) -->
+      <!-- SUB-TAB 3: LIVE STREAM -->
       <div id="asv-live" class="admin-sub-view">
-        
-        <!-- DIRECT PANDAL PROJECTOR STREAM CONTROLLER -->
         <div class="card" style="border-left-color: #27ae60;">
           <h3>🎥 Live Pandal Camera (Projector Screen Feed)</h3>
           <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">
@@ -1009,7 +1008,6 @@
           <p id="pandal-cam-status-text" style="font-size:0.75rem; font-weight:bold; color:#777; margin-top:6px;">Status: Pandal Camera is currently OFF in App</p>
         </div>
 
-        <!-- YOUTUBE LIVE CONTROLLER -->
         <div class="card" style="border-left-color: #c0392b; margin-top: 12px;">
           <h3>🔴 YouTube Live Stream</h3>
           <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Paste YouTube Live stream URL when Aarti starts:</p>
@@ -1020,7 +1018,6 @@
           </div>
         </div>
 
-        <!-- INSTAGRAM LIVE CONTROLLER -->
         <div class="card" style="border-left-color: #e1306c; margin-top: 12px;">
           <h3>📸 Instagram Live Status Controller</h3>
           <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">
@@ -1035,6 +1032,28 @@
             </button>
           </div>
           <p id="insta-live-active-status" style="font-size:0.75rem; font-weight:bold; color:#777; margin-top:6px;">Status: Instagram Live is currently OFF</p>
+        </div>
+      </div>
+
+      <!-- SUB-TAB 6: CCTV ACCESS (RESTRICTED TO COMMITTEE MEMBERS) -->
+      <div id="asv-cctv" class="admin-sub-view">
+        <div class="card" style="border-left-color: #2c3e50;">
+          <h3>📹 Restricted Committee CCTV Surveillance</h3>
+          <p style="font-size:0.75rem; color:#555; margin-bottom:10px;">
+            Secure live security camera feeds from around the pandal entrance and donation counter. Visible only to logged-in committee members:
+          </p>
+
+          <label style="font-size:0.75rem; font-weight:600; color:#555;">CCTV Feed URL / Stream Link *</label>
+          <input type="url" id="adm-cctv-url" class="input-box" placeholder="Paste VDO.Ninja, RTSP, or IP camera embed link" />
+          <button class="btn" style="background:#2c3e50; width:100%; margin-bottom:12px;" onclick="saveCCTVStream()">💾 Save & Connect CCTV Stream</button>
+
+          <!-- CCTV Player Container -->
+          <div id="cctv-player-wrap" style="display:none; position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:8px; background:#000; border:2px solid #2c3e50;">
+            <iframe id="cctv-iframe" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;" src="" allow="camera; autoplay; fullscreen"></iframe>
+          </div>
+          <div id="cctv-offline-msg" style="padding:15px; background:#f4f4f4; border:1px dashed #ccc; border-radius:6px; text-align:center; font-size:0.8rem; color:#666;">
+            🔒 No CCTV link configured yet. Paste your private stream link above.
+          </div>
         </div>
       </div>
 
@@ -1368,6 +1387,7 @@
     let cachedLiveStream = localStorage.getItem('nbmm_live_url') || '';
     let cachedInstaLive = (localStorage.getItem('nbmm_insta_live') === '1');
     let cachedPandalCam = (localStorage.getItem('nbmm_pandal_cam') === '1');
+    let cachedCCTVStream = localStorage.getItem('nbmm_cctv_url') || '';
     let cachedSocial = JSON.parse(localStorage.getItem('nbmm_social') || 'null') || DEFAULT_SOCIAL;
     let cachedBank = JSON.parse(localStorage.getItem('nbmm_bank_details') || 'null') || DEFAULT_BANK;
     let cachedSessions = {};
@@ -1472,6 +1492,15 @@
         renderPandalCamLive(isLive);
       });
 
+      db.ref('cctv_stream').on('value', (snap) => {
+        const val = snap.val() || '';
+        cachedCCTVStream = val;
+        localStorage.setItem('nbmm_cctv_url', val);
+        renderCCTVStream(val);
+        const cctvInput = document.getElementById('adm-cctv-url');
+        if (cctvInput) cctvInput.value = val;
+      });
+
       db.ref('social_links').on('value', (snap) => {
         const val = snap.val();
         if (val) {
@@ -1549,7 +1578,42 @@
     }
 
     // -------------------------------------------------------------
-    // 3. AUTOMATED UPI PAYMENT POPUP & DELIVERY LOGIC
+    // 3. RESTRICTED COMMITTEE CCTV ENGINE
+    // -------------------------------------------------------------
+    function extractYouTubeEmbed(url) {
+      if (!url) return '';
+      const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|live\/|watch\?.+&v=))([\w-]{11})/);
+      return match ? `https://www.youtube.com/embed/${match[1]}?autoplay=1&mute=1&playsinline=1` : url;
+    }
+
+    function renderCCTVStream(url) {
+      const wrap = document.getElementById('cctv-player-wrap');
+      const msg = document.getElementById('cctv-offline-msg');
+      const iframe = document.getElementById('cctv-iframe');
+
+      if (url && url.trim()) {
+        const finalUrl = extractYouTubeEmbed(url.trim());
+        iframe.src = finalUrl;
+        wrap.style.display = 'block';
+        msg.style.display = 'none';
+      } else {
+        iframe.src = '';
+        wrap.style.display = 'none';
+        msg.style.display = 'block';
+      }
+    }
+
+    function saveCCTVStream() {
+      const url = document.getElementById('adm-cctv-url').value.trim();
+      cachedCCTVStream = url;
+      localStorage.setItem('nbmm_cctv_url', url);
+      if (db) db.ref('cctv_stream').set(url);
+      renderCCTVStream(url);
+      alert('CCTV Stream link updated for committee members!');
+    }
+
+    // -------------------------------------------------------------
+    // 4. AUTOMATED UPI PAYMENT POPUP & DELIVERY LOGIC
     // -------------------------------------------------------------
     function checkModeAndPromptUPI() {
       const mode = document.getElementById('r-mode').value;
@@ -1596,7 +1660,7 @@
     }
 
     // -------------------------------------------------------------
-    // 4. YOUTUBE & INSTAGRAM LIVE STREAM ENGINE
+    // 5. YOUTUBE & INSTAGRAM LIVE STREAM ENGINE
     // -------------------------------------------------------------
     function extractYouTubeId(url) {
       if (!url) return '';
@@ -1695,7 +1759,7 @@
     }
 
     // -------------------------------------------------------------
-    // 5. CATEGORY-WISE SECTION FILTER & TOTALS CALCULATION
+    // 6. CATEGORY-WISE SECTION FILTER & TOTALS CALCULATION
     // -------------------------------------------------------------
     function filterByCat(catKey) {
       currentSelectedCategory = catKey;
@@ -1754,7 +1818,7 @@
     }
 
     // -------------------------------------------------------------
-    // 6. ACTIVE DEVICE SESSIONS & REMOTE REVOCATION ENGINE
+    // 7. ACTIVE DEVICE SESSIONS & REMOTE REVOCATION ENGINE
     // -------------------------------------------------------------
     function getDeviceName() {
       const ua = navigator.userAgent;
@@ -1843,7 +1907,7 @@
     }
 
     // -------------------------------------------------------------
-    // 7. EXPORT LEDGER TO EXCEL / CSV
+    // 8. EXPORT LEDGER TO EXCEL / CSV
     // -------------------------------------------------------------
     function exportLedgerToExcel() {
       if (!cachedEntries || cachedEntries.length === 0) {
@@ -1873,7 +1937,7 @@
     }
 
     // -------------------------------------------------------------
-    // 8. DEVOTEE RECEIPT SELF-LOOKUP
+    // 9. DEVOTEE RECEIPT SELF-LOOKUP
     // -------------------------------------------------------------
     function findDevoteeReceipt() {
       const q = (document.getElementById('devotee-search-input').value || '').trim().toLowerCase();
@@ -1913,7 +1977,7 @@
     }
 
     // -------------------------------------------------------------
-    // 9. REGULAR TIMINGS CONTROLLER
+    // 10. REGULAR TIMINGS CONTROLLER
     // -------------------------------------------------------------
     function renderRegularTimings() {
       const t = cachedTimings || DEFAULT_TIMINGS;
@@ -1958,7 +2022,7 @@
     }
 
     // -------------------------------------------------------------
-    // 10. KHATA SUB-TAB BIFURCATION CONTROLLER
+    // 11. KHATA SUB-TAB BIFURCATION CONTROLLER
     // -------------------------------------------------------------
     function switchAdminSubTab(tabName) {
       document.querySelectorAll('.admin-sub-btn').forEach(btn => btn.classList.remove('active'));
@@ -1972,7 +2036,7 @@
     }
 
     // -------------------------------------------------------------
-    // 11. BANK, UPI & BARCODE ENGINE
+    // 12. BANK, UPI & BARCODE ENGINE
     // -------------------------------------------------------------
     function renderBankDetails() {
       const b = cachedBank || DEFAULT_BANK;
@@ -2068,7 +2132,7 @@
     }
 
     // -------------------------------------------------------------
-    // 12. SOCIAL MEDIA & WHATSAPP ENGINE
+    // 13. SOCIAL MEDIA & WHATSAPP ENGINE
     // -------------------------------------------------------------
     function renderSocialLinks() {
       const instaLink = document.getElementById('link-insta-page');
@@ -2117,7 +2181,7 @@
     }
 
     // -------------------------------------------------------------
-    // 13. LANGUAGE TRANSLATION ENGINE
+    // 14. LANGUAGE TRANSLATION ENGINE
     // -------------------------------------------------------------
     const I18N = {
       en: {
@@ -2233,7 +2297,7 @@
     }
 
     // -------------------------------------------------------------
-    // 14. NUMBER CONVERTERS
+    // 15. NUMBER CONVERTERS
     // -------------------------------------------------------------
     function numberToMarathiWords(n) {
       n = parseInt(n);
@@ -2307,7 +2371,7 @@
     }
 
     // -------------------------------------------------------------
-    // 15. GUARANTEED 1-TAP INSTALL
+    // 16. GUARANTEED 1-TAP INSTALL
     // -------------------------------------------------------------
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').catch(() => {});
@@ -2344,7 +2408,7 @@
     }
 
     // -------------------------------------------------------------
-    // 16. NAVIGATION & DRAWER
+    // 17. NAVIGATION & DRAWER
     // -------------------------------------------------------------
     function openDrawer() {
       document.getElementById('side-drawer').style.left = '0px';
@@ -2367,7 +2431,7 @@
     }
 
     // -------------------------------------------------------------
-    // 17. AARTI VIEWER & ADMIN MANAGER
+    // 18. AARTI VIEWER & ADMIN MANAGER
     // -------------------------------------------------------------
     let selectedAartiIdx = 0;
 
@@ -2457,7 +2521,7 @@
     }
 
     // -------------------------------------------------------------
-    // 18. SCHEDULE & MEDIA
+    // 19. SCHEDULE & MEDIA
     // -------------------------------------------------------------
     function initDays() {
       const b = document.getElementById('day-bar');
@@ -2585,7 +2649,7 @@
     }
 
     // -------------------------------------------------------------
-    // 19. SHARE TAB & DYNAMIC URL
+    // 20. SHARE TAB & DYNAMIC URL
     // -------------------------------------------------------------
     function getCleanInstallUrl() {
       let base = window.location.origin + window.location.pathname;
@@ -2618,7 +2682,7 @@
     }
 
     // -------------------------------------------------------------
-    // 20. AUTHENTICATION & SETTINGS
+    // 21. AUTHENTICATION & SETTINGS
     // -------------------------------------------------------------
     function toggleForgotBox(show) {
       document.getElementById('login-box').style.display = show ? 'none' : 'block';
@@ -2679,6 +2743,7 @@
         document.getElementById('set-uid').value = cachedAuth.uid;
         document.getElementById('set-pin').value = cachedAuth.pin;
         document.getElementById('adm-live-url').value = cachedLiveStream;
+        document.getElementById('adm-cctv-url').value = cachedCCTVStream;
 
         loadAdminScheduleFields();
         loadAdminMediaFields();
@@ -2690,6 +2755,7 @@
         renderCategoryBreakdownCards();
         renderInstagramLive(cachedInstaLive);
         renderPandalCamLive(cachedPandalCam);
+        renderCCTVStream(cachedCCTVStream);
         renderRows();
 
         registerDeviceSession();
@@ -2710,6 +2776,7 @@
         document.getElementById('set-uid').value = cachedAuth.uid;
         document.getElementById('set-pin').value = cachedAuth.pin;
         document.getElementById('adm-live-url').value = cachedLiveStream;
+        document.getElementById('adm-cctv-url').value = cachedCCTVStream;
 
         registerDeviceSession();
 
@@ -2723,6 +2790,7 @@
         renderCategoryBreakdownCards();
         renderInstagramLive(cachedInstaLive);
         renderPandalCamLive(cachedPandalCam);
+        renderCCTVStream(cachedCCTVStream);
         renderRows();
       } else {
         document.getElementById('err').style.display = 'block';
@@ -2746,7 +2814,7 @@
     }
 
     // -------------------------------------------------------------
-    // 21. KHATA & RECEIPT GENERATOR WITH AUTO-DELIVERY
+    // 22. KHATA & RECEIPT GENERATOR WITH AUTO-DELIVERY
     // -------------------------------------------------------------
     function saveRecord(autoDeliver) {
       const name = document.getElementById('r-name').value.trim();
@@ -2870,7 +2938,7 @@
     }
 
     // -------------------------------------------------------------
-    // 22. FILTER & RENDER LEDGER TABLE (CATEGORY-AWARE)
+    // 23. FILTER & RENDER LEDGER TABLE (CATEGORY-AWARE)
     // -------------------------------------------------------------
     function renderRows() {
       let incPaid = 0, incPending = 0, exp = 0;
@@ -2939,7 +3007,7 @@
     }
 
     // -------------------------------------------------------------
-    // 23. POPULATE TRI-LINGUAL RECEIPT MODAL
+    // 24. POPULATE TRI-LINGUAL RECEIPT MODAL
     // -------------------------------------------------------------
     function openReceiptModal(item) {
       document.getElementById('pr-rec').innerText = item.rec;
@@ -2993,7 +3061,7 @@
     }
 
     // -------------------------------------------------------------
-    // 24. BOOTSTRAP
+    // 25. BOOTSTRAP
     // -------------------------------------------------------------
     setLanguage(currentLang);
     initDays();
@@ -3005,6 +3073,7 @@
     renderRegularTimings();
     renderInstagramLive(cachedInstaLive);
     renderPandalCamLive(cachedPandalCam);
+    renderCCTVStream(cachedCCTVStream);
     renderLiveStream(cachedLiveStream);
     checkLogin();
   </script>
