@@ -1077,31 +1077,31 @@
           <div style="background:#fcf9ff; border:1px solid #e2cffc; padding:12px; border-radius:8px; margin-bottom:10px;">
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
               <div>
-                <label style="font-size:0.72rem; font-weight:600; color:#555;">Day Label (e.g. Day 1)</label>
-                <input type="text" id="adm-sched-dlabel" class="input-box" placeholder="Day 1" />
+                <label style="font-size:0.72rem; font-weight:600; color:#555;">Day Label (e.g. 11/10/2026 - रविवार)</label>
+                <input type="text" id="adm-sched-dlabel" class="input-box" placeholder="11/10/2026 - रविवार" />
               </div>
               <div>
                 <label style="font-size:0.72rem; font-weight:600; color:#555;">Date (e.g. Oct 11)</label>
-                <input type="text" id="adm-sched-dt" class="input-box" placeholder="Oct 11" />
+                <input type="text" id="adm-sched-dt" class="input-box" placeholder="11/10/2026" />
               </div>
             </div>
 
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
               <div>
-                <label style="font-size:0.72rem; font-weight:600; color:#555;">Devi Form / Puja</label>
-                <input type="text" id="adm-sched-devi" class="input-box" placeholder="Maa Shailputri" />
+                <label style="font-size:0.72rem; font-weight:600; color:#555;">Devi Form / Puja / Event</label>
+                <input type="text" id="adm-sched-devi" class="input-box" placeholder="घटस्थापना / माता रानी आगमन" />
               </div>
               <div>
-                <label style="font-size:0.72rem; font-weight:600; color:#555;">Color Theme</label>
-                <input type="text" id="adm-sched-clr" class="input-box" placeholder="Orange" />
+                <label style="font-size:0.72rem; font-weight:600; color:#555;">Color Theme (रंग)</label>
+                <input type="text" id="adm-sched-clr" class="input-box" placeholder="केसरिया (Orange)" />
               </div>
             </div>
 
             <label style="font-size:0.72rem; font-weight:600; color:#555;">Special Program / Event</label>
-            <input type="text" id="adm-sched-prog" class="input-box" placeholder="Kalash Sthapana" />
+            <input type="text" id="adm-sched-prog" class="input-box" placeholder="घटस्थापना / माता रानी आगमन" />
 
             <label style="font-size:0.72rem; font-weight:600; color:#555;">Prasad</label>
-            <input type="text" id="adm-sched-prasad" class="input-box" placeholder="Peda & Sheera" />
+            <input type="text" id="adm-sched-prasad" class="input-box" placeholder="महाप्रसाद / Peda" />
           </div>
 
           <div style="display:flex; gap:8px;">
@@ -1332,16 +1332,17 @@
     }
 
     const DEFAULT_DAYS = [
-      { d: "Day 1", dt: "Oct 11", devi: "Maa Shailputri (माँ शैलपुत्री)", clr: "Orange (नारंगी)", p: "Kalash Sthapana (8 AM) & Opening Aarti", pr: "Peda & Sheera" },
-      { d: "Day 2", dt: "Oct 12", devi: "Maa Brahmacharini (माँ ब्रह्मचारिणी)", clr: "White (पांढरा/सफेद)", p: "Traditional Garba Night", pr: "Kheer" },
-      { d: "Day 3", dt: "Oct 13", devi: "Maa Chandraghanta (माँ चंद्रघंटा)", clr: "Red (लाल)", p: "Balmitra Kids Drawing Contest (6 PM)", pr: "Boondi" },
-      { d: "Day 4", dt: "Oct 14", devi: "Maa Kushmanda (माँ कूष्मांडा)", clr: "Royal Blue (निळा/नीला)", p: "Dhol Tasha & Youth Dandiya", pr: "Fruit Salad" },
-      { d: "Day 5", dt: "Oct 15", devi: "Maa Skandamata (माँ स्कंदमाता)", clr: "Yellow (पिवळा/पीला)", p: "Mahila Mandal Traditional Dress Night", pr: "Ladoo" },
-      { d: "Day 6", dt: "Oct 16", devi: "Maa Katyayani (माँ कात्यायनी)", clr: "Green (हिरवा/हरा)", p: "Bhajan Sandhya (6:30 PM)", pr: "Halwa Puri" },
-      { d: "Day 7", dt: "Oct 17", devi: "Maa Kalaratri (माँ कालरात्रि)", clr: "Grey (राखाडी/ग्रे)", p: "Mata Ki Chowki & All-Night Jaagran", pr: "Kala Chana" },
-      { d: "Day 8", dt: "Oct 18", devi: "Maa Mahagauri (माँ महागौरी)", clr: "Purple (जांभळा/बैंगनी)", p: "Maha Ashtami Havan (10 AM) & Grand Aarti", pr: "Maha Bhog" },
-      { d: "Day 9", dt: "Oct 19", devi: "Maa Siddhidatri (माँ सिद्धिदात्री)", clr: "Peacock Green (मोरपंखी)", p: "Kanya Pujan (11 AM) & Prizegiving", pr: "Prasad Feast" },
-      { d: "Day 10", dt: "Oct 20", devi: "Vijayadashami (विजयादशमी)", clr: "Gold (सोनेरी/सुनहरा)", p: "Ravan Dahan & Visarjan Procession", pr: "Jalebi Fafda" }
+      { d: "11/10/2026 - रविवार", dt: "11/10/2026", devi: "घटस्थापना / माता रानी आगमन", clr: "केसरिया (Orange)", p: "घटस्थापना / माता रानी आगमन", pr: "महाप्रसाद" },
+      { d: "12/10/2026 - सोमवार", dt: "12/10/2026", devi: "मेहंदी", clr: "सफेद (White)", p: "मेहंदी", pr: "महाप्रसाद" },
+      { d: "13/10/2026 - मंगलवार", dt: "13/10/2026", devi: "गरबा", clr: "लाल (Red)", p: "गरबा", pr: "महाप्रसाद" },
+      { d: "14/10/2026 - बुधवार", dt: "14/10/2026", devi: "डांडिया", clr: "रॉयल ब्लू (Royal Blue)", p: "डांडिया", pr: "महाप्रसाद" },
+      { d: "15/10/2026 - गुरुवार", dt: "15/10/2026", devi: "फूट पूजा", clr: "येलो (Yellow)", p: "फूट पूजा", pr: "महाप्रसाद" },
+      { d: "16/10/2026 - शुक्रवार", dt: "16/10/2026", devi: "महा आरती", clr: "हरा (Green)", p: "महा आरती", pr: "महाप्रसाद" },
+      { d: "17/10/2026 - शनिवार", dt: "17/10/2026", devi: "हल्दी", clr: "ग्रे (Grey)", p: "हल्दी", pr: "महाप्रसाद" },
+      { d: "18/10/2026 - रविवार", dt: "18/10/2026", devi: "कन्या पूजन", clr: "बैंगनी (Purple)", p: "कन्या पूजन", pr: "महाप्रसाद" },
+      { d: "19/10/2026 - सोमवार", dt: "19/10/2026", devi: "हवन", clr: "पीकाँक ग्रीन (Peacock Green)", p: "हवन", pr: "महाप्रसाद" },
+      { d: "20/10/2026 - मंगलवार", dt: "20/10/2026", devi: "विजयादशमी • महाप्रसाद", clr: "गुलाबी (Pink)", p: "विजयादशमी • महाप्रसाद", pr: "महाप्रसाद" },
+      { d: "21/10/2026 - बुधवार", dt: "21/10/2026", devi: "मूर्ति विसर्जन", clr: "सफेद (White)", p: "मूर्ति विसर्जन", pr: "महाप्रसाद" }
     ];
 
     const DEFAULT_TIMINGS = {
@@ -1526,15 +1527,6 @@
       db.ref('active_sessions').on('value', (snap) => {
         const val = snap.val() || {};
         cachedSessions = val;
-        
-        if (localStorage.getItem('nbmm_auth') === '1') {
-          if (!val[myDeviceId]) {
-            alert('Your session has been logged out or revoked remotely.');
-            doLogout(true);
-            return;
-          }
-        }
-        renderDeviceSessions();
       });
     }
 
@@ -2539,7 +2531,7 @@
       cachedSchedule.forEach((x, i) => {
         const btn = document.createElement('button');
         btn.className = 'day-btn ' + (i === 0 ? 'active' : '');
-        btn.innerText = (x.d || `Day ${i+1}`) + ' (' + (x.dt || '') + ')';
+        btn.innerText = x.d || `Date ${i+1}`;
         btn.onclick = function() {
           document.querySelectorAll('#day-bar .day-btn').forEach(k => k.classList.remove('active'));
           btn.classList.add('active');
@@ -2555,10 +2547,11 @@
       const view = document.getElementById('day-view');
       if (!view) return;
       view.innerHTML = `
-        <h4 style="color:var(--primary);">${x.d || ''} (${x.dt || ''}) - Color: ${x.clr || ''}</h4>
-        <p><strong>Puja (पूजा):</strong> ${x.devi || ''}</p>
-        <p><strong>Special (विशेष):</strong> ${x.p || ''}</p>
-        <p><strong>Prasad (प्रसाद):</strong> ${x.pr || ''}</p>
+        <h4 style="color:var(--primary); font-size:1rem; margin-bottom:6px;">📅 दिनांक / Date: ${x.d || ''}</h4>
+        <p><strong>रंग (Color):</strong> <span style="font-weight:700; color:#d4af37;">${x.clr || ''}</span></p>
+        <p><strong>कार्यक्रम / puja:</strong> ${x.devi || ''}</p>
+        <p><strong>विशेष कार्यक्रम:</strong> ${x.p || ''}</p>
+        <p><strong>प्रसाद:</strong> ${x.pr || ''}</p>
       `;
     }
 
@@ -2573,13 +2566,13 @@
       cachedSchedule.forEach((x, idx) => {
         const opt = document.createElement('option');
         opt.value = idx;
-        opt.innerText = `${x.d || ('Day ' + (idx+1))} - ${x.dt || ''}`;
+        opt.innerText = `${x.d || ('Date ' + (idx+1))} (${x.devi || ''})`;
         sel.appendChild(opt);
 
         if (mediaSel) {
           const mOpt = document.createElement('option');
           mOpt.value = idx;
-          mOpt.innerText = `${x.d || ('Day ' + (idx+1))} - ${x.dt || ''}`;
+          mOpt.innerText = `${x.d || ('Date ' + (idx+1))}`;
           mediaSel.appendChild(mOpt);
         }
       });
@@ -2593,7 +2586,7 @@
       const idx = parseInt(sel.value) || 0;
       const x = cachedSchedule[idx] || {};
 
-      document.getElementById('adm-sched-dlabel').value = x.d || `Day ${idx+1}`;
+      document.getElementById('adm-sched-dlabel').value = x.d || '';
       document.getElementById('adm-sched-dt').value = x.dt || '';
       document.getElementById('adm-sched-clr').value = x.clr || '';
       document.getElementById('adm-sched-devi').value = x.devi || '';
@@ -2602,14 +2595,13 @@
     }
 
     function addNewFestivalDay() {
-      const nextNum = cachedSchedule.length + 1;
       const newDay = {
-        d: `Day ${nextNum}`,
-        dt: `Oct ${10 + nextNum}`,
-        devi: "Maa Devi Form",
-        clr: "Gold",
-        p: "Special Aarti & Celebration",
-        pr: "Maha Prasad"
+        d: "22/10/2026 - गुरुवार",
+        dt: "22/10/2026",
+        devi: "विशेष उत्सव",
+        clr: "गुलाबी (Pink)",
+        p: "विशेष कार्यक्रम",
+        pr: "महाप्रसाद"
       };
       cachedSchedule.push(newDay);
       localStorage.setItem('nbmm_schedule_custom', JSON.stringify(cachedSchedule));
@@ -2620,7 +2612,7 @@
       populateScheduleSelects();
       document.getElementById('adm-sched-day-select').value = cachedSchedule.length - 1;
       loadAdminScheduleFields();
-      alert(`New Day added successfully!`);
+      alert(`New Date added successfully!`);
     }
 
     function saveScheduleDay() {
@@ -2629,7 +2621,7 @@
       const idx = parseInt(sel.value) || 0;
 
       cachedSchedule[idx] = {
-        d: document.getElementById('adm-sched-dlabel').value.trim() || `Day ${idx+1}`,
+        d: document.getElementById('adm-sched-dlabel').value.trim() || 'Date',
         dt: document.getElementById('adm-sched-dt').value.trim(),
         clr: document.getElementById('adm-sched-clr').value.trim(),
         devi: document.getElementById('adm-sched-devi').value.trim(),
@@ -2643,7 +2635,7 @@
       initDays();
       initMediaDays();
       populateScheduleSelects();
-      alert('Schedule day updated and synced across all devices!');
+      alert('Schedule updated and synced across all devices!');
     }
 
     function deleteCurrentScheduleDay() {
@@ -2652,7 +2644,7 @@
       const idx = parseInt(sel.value) || 0;
 
       if (cachedSchedule.length <= 1) {
-        alert('You must keep at least one festival day.');
+        alert('You must keep at least one date.');
         return;
       }
 
@@ -2665,18 +2657,18 @@
       initDays();
       initMediaDays();
       populateScheduleSelects();
-      alert('Day deleted successfully.');
+      alert('Date deleted successfully.');
     }
 
     function resetScheduleDefaults() {
-      if (!confirm('Reset schedule back to default 10 festival days?')) return;
+      if (!confirm('Reset schedule back to official Navratri 2026 poster dates?')) return;
       cachedSchedule = DEFAULT_DAYS;
       localStorage.setItem('nbmm_schedule_custom', JSON.stringify(DEFAULT_DAYS));
       if (db) db.ref('schedule').set(DEFAULT_DAYS);
       initDays();
       initMediaDays();
       populateScheduleSelects();
-      alert('Schedule reset to defaults.');
+      alert('Schedule reset to official poster dates.');
     }
 
     function initMediaDays() {
@@ -2686,7 +2678,7 @@
       cachedSchedule.forEach((x, i) => {
         const btn = document.createElement('button');
         btn.className = 'day-btn ' + (i === 0 ? 'active' : '');
-        btn.innerText = (x.d || `Day ${i+1}`) + ' (' + (x.dt || '') + ')';
+        btn.innerText = x.d || `Date ${i+1}`;
         btn.onclick = function() {
           document.querySelectorAll('#media-day-bar .day-btn').forEach(k => k.classList.remove('active'));
           btn.classList.add('active');
@@ -2705,7 +2697,7 @@
 
       let html = `
         <div style="background:#fffaf0; border:1px solid #fce8cc; padding:14px; border-radius:8px;">
-          <h4 style="color:var(--primary); margin-bottom:4px;">${x.d || ''} (${x.dt || ''}) - ${x.devi || ''}</h4>
+          <h4 style="color:var(--primary); margin-bottom:4px;">${x.d || ''} - ${x.devi || ''}</h4>
           <p style="font-size:0.8rem; color:#666; margin-bottom:12px;">Events: ${x.p || ''}</p>
       `;
 
@@ -2780,8 +2772,7 @@
     }
 
     // -------------------------------------------------------------
-     // -------------------------------------------------------------
-    // 21. AUTHENTICATION & SETTINGS (FIXED PERSISTENT LOGIN)
+    // 21. AUTHENTICATION & SETTINGS
     // -------------------------------------------------------------
     function toggleForgotBox(show) {
       document.getElementById('login-box').style.display = show ? 'none' : 'block';
@@ -2874,8 +2865,6 @@
         document.getElementById('adm-live-url').value = cachedLiveStream;
         document.getElementById('adm-cctv-url').value = cachedCCTVStream;
 
-        registerDeviceSession();
-
         populateScheduleSelects();
         renderAdminAartiList();
         renderSocialLinks();
@@ -2907,7 +2896,6 @@
         alert('Signed out successfully.');
       }
     }
-    
 
     // -------------------------------------------------------------
     // 22. KHATA & RECEIPT GENERATOR WITH AUTO-DELIVERY
@@ -3175,4 +3163,4 @@
     checkLogin();
   </script>
 </body>
-</html
+</html>
