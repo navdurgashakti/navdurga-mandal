@@ -763,7 +763,7 @@
     </div>
 
     <div class="card" style="border-left-color: #d35400;">
-      <h3 id="sec-aarti-head">🕉️ Devi Aarties & Stutis</h3>
+      <h3>🕉️ Devi Aarties & Stutis</h3>
       <p style="font-size:0.8rem; color:#666; margin-bottom:8px;" id="sec-aarti-sub">Select an Aarti to read lyrics:</p>
       <div class="day-bar" id="aarti-tabs-bar"></div>
       <div id="aarti-content-view" style="margin-top:10px; background:#fffdf7; border:1px solid #f9e2b0; border-radius:8px; padding:12px;"></div>
@@ -819,7 +819,7 @@
         <button class="admin-sub-btn active" id="asb-receipts" onclick="switchAdminSubTab('receipts')">🧾 पावती व नोंद</button>
         <button class="admin-sub-btn" id="asb-bank" onclick="switchAdminSubTab('bank')">🏛️ बँक व UPI</button>
         <button class="admin-sub-btn" id="asb-live" onclick="switchAdminSubTab('live')">🔴 थेट दर्शन</button>
-        <button class="admin-sub-btn" id="asb-cctv" onclick="switchAdminSubTab('cctv')">📹 CCTV (सुरक्षा)</button>
+        <button class="admin-sub-btn" id="asb-cctv" onclick="switchAdminSubTab('cctv')">📹 CCTV</button>
         <button class="admin-sub-btn" id="asb-schedule" onclick="switchAdminSubTab('schedule')">📅 कार्यक्रम</button>
         <button class="admin-sub-btn" id="asb-settings" onclick="switchAdminSubTab('settings')">⚙️ सुरक्षा व उपकरणे</button>
       </div>
@@ -1035,7 +1035,7 @@
         </div>
       </div>
 
-      <!-- SUB-TAB 6: CCTV ACCESS (RESTRICTED TO COMMITTEE MEMBERS) -->
+      <!-- SUB-TAB 6: CCTV ACCESS -->
       <div id="asv-cctv" class="admin-sub-view">
         <div class="card" style="border-left-color: #2c3e50;">
           <h3>📹 Restricted Committee CCTV Surveillance</h3>
@@ -1047,7 +1047,6 @@
           <input type="url" id="adm-cctv-url" class="input-box" placeholder="Paste VDO.Ninja, RTSP, or IP camera embed link" />
           <button class="btn" style="background:#2c3e50; width:100%; margin-bottom:12px;" onclick="saveCCTVStream()">💾 Save & Connect CCTV Stream</button>
 
-          <!-- CCTV Player Container -->
           <div id="cctv-player-wrap" style="display:none; position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:8px; background:#000; border:2px solid #2c3e50;">
             <iframe id="cctv-iframe" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;" src="" allow="camera; autoplay; fullscreen"></iframe>
           </div>
@@ -1057,61 +1056,65 @@
         </div>
       </div>
 
-      <!-- SUB-TAB 4: SCHEDULE, REGULAR TIMINGS & MEDIA -->
+      <!-- SUB-TAB 4: SCHEDULE MANAGER (ADD, EDIT & DELETE DAYS) -->
       <div id="asv-schedule" class="admin-sub-view">
-        <div class="card" style="border-left-color: #e67e22;">
-          <h3>⏰ Edit Regular Daily Timings (नियमित वेळ)</h3>
-          <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Update daily Aarti and program timings shown on the front screen:</p>
-          
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-            <div>
-              <label style="font-size:0.75rem; font-weight:600; color:#555;">Subah Aarti Time (सकाळ)</label>
-              <input type="text" id="adm-subah-aarti" class="input-box" placeholder="e.g. 7:30 AM" />
-            </div>
-            <div>
-              <label style="font-size:0.75rem; font-weight:600; color:#555;">Sandhya Aarti Time (संध्याकाळ)</label>
-              <input type="text" id="adm-sandhya-aarti" class="input-box" placeholder="e.g. 7:30 PM" />
-            </div>
-          </div>
-
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-            <div>
-              <label style="font-size:0.75rem; font-weight:600; color:#555;">Garba & Dandiya (रास गरबा)</label>
-              <input type="text" id="adm-garba-time" class="input-box" placeholder="e.g. 8:30 PM – 10:00 PM" />
-            </div>
-            <div>
-              <label style="font-size:0.75rem; font-weight:600; color:#555;">Maha Prasad (महाप्रसाद)</label>
-              <input type="text" id="adm-prasad-time" class="input-box" placeholder="e.g. 10:00 PM onwards" />
-            </div>
-          </div>
-
-          <button class="btn" style="background:#e67e22; width:100%;" onclick="saveRegularTimings()">💾 Save Regular Timings</button>
-        </div>
-
         <div class="card" style="border-left-color: #8e44ad;">
-          <h3>📅 Edit Festival Schedule (All 10 Days)</h3>
-          <select id="adm-sched-day" class="input-box" onchange="loadAdminScheduleFields()">
-            <option value="0">Day 1</option><option value="1">Day 2</option><option value="2">Day 3</option><option value="3">Day 4</option><option value="4">Day 5</option>
-            <option value="6">Day 6</option><option value="7">Day 7</option><option value="8">Day 8</option><option value="9">Day 9</option><option value="10">Day 10</option>
-          </select>
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-            <input type="text" id="adm-sched-dt" class="input-box" placeholder="Date" />
-            <input type="text" id="adm-sched-clr" class="input-box" placeholder="Color" />
+          <h3>📅 Festival Schedule Manager (Add, Edit & Delete Days)</h3>
+          <p style="font-size:0.75rem; color:#555; margin-bottom:10px;">
+            Manage your festival schedule. You can select an existing day to edit, or add a completely new day!
+          </p>
+
+          <div style="margin-bottom:10px;">
+            <label style="font-size:0.75rem; font-weight:600; color:#555;">Select Day to Edit or Add New *</label>
+            <div style="display:flex; gap:6px; margin-top:4px;">
+              <select id="adm-sched-day-select" class="input-box" style="margin:0;" onchange="loadAdminScheduleFields()">
+                <!-- Populated dynamically -->
+              </select>
+              <button class="btn" style="background:#27ae60; font-size:0.75rem; white-space:nowrap;" onclick="addNewFestivalDay()">➕ Add New Day</button>
+            </div>
           </div>
-          <input type="text" id="adm-sched-devi" class="input-box" placeholder="Puja / Devi Form" />
-          <input type="text" id="adm-sched-prog" class="input-box" placeholder="Special Program" />
-          <input type="text" id="adm-sched-prasad" class="input-box" placeholder="Prasad" />
+
+          <div style="background:#fcf9ff; border:1px solid #e2cffc; padding:12px; border-radius:8px; margin-bottom:10px;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div>
+                <label style="font-size:0.72rem; font-weight:600; color:#555;">Day Label (e.g. Day 1)</label>
+                <input type="text" id="adm-sched-dlabel" class="input-box" placeholder="Day 1" />
+              </div>
+              <div>
+                <label style="font-size:0.72rem; font-weight:600; color:#555;">Date (e.g. Oct 11)</label>
+                <input type="text" id="adm-sched-dt" class="input-box" placeholder="Oct 11" />
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div>
+                <label style="font-size:0.72rem; font-weight:600; color:#555;">Devi Form / Puja</label>
+                <input type="text" id="adm-sched-devi" class="input-box" placeholder="Maa Shailputri" />
+              </div>
+              <div>
+                <label style="font-size:0.72rem; font-weight:600; color:#555;">Color Theme</label>
+                <input type="text" id="adm-sched-clr" class="input-box" placeholder="Orange" />
+              </div>
+            </div>
+
+            <label style="font-size:0.72rem; font-weight:600; color:#555;">Special Program / Event</label>
+            <input type="text" id="adm-sched-prog" class="input-box" placeholder="Kalash Sthapana" />
+
+            <label style="font-size:0.72rem; font-weight:600; color:#555;">Prasad</label>
+            <input type="text" id="adm-sched-prasad" class="input-box" placeholder="Peda & Sheera" />
+          </div>
+
           <div style="display:flex; gap:8px;">
-            <button class="btn" style="background:#8e44ad; flex:1;" onclick="saveScheduleDay()">💾 Save Schedule</button>
-            <button class="btn" style="background:#555;" onclick="resetScheduleDefaults()">🔄 Reset</button>
+            <button class="btn" style="background:#8e44ad; flex:1;" onclick="saveScheduleDay()">💾 Save / Update Day</button>
+            <button class="btn" style="background:#c0392b; font-size:0.78rem;" onclick="deleteCurrentScheduleDay()">🗑️ Delete Day</button>
+            <button class="btn" style="background:#555; font-size:0.78rem;" onclick="resetScheduleDefaults()">🔄 Reset Defaults</button>
           </div>
         </div>
 
         <div class="card" style="border-left-color: #f39c12;">
           <h3>📸 Upload Day-Wise Media Links</h3>
           <select id="adm-media-day" class="input-box" onchange="loadAdminMediaFields()">
-            <option value="0">Day 1</option><option value="1">Day 2</option><option value="2">Day 3</option><option value="3">Day 4</option><option value="4">Day 5</option>
-            <option value="6">Day 6</option><option value="7">Day 7</option><option value="8">Day 8</option><option value="9">Day 9</option><option value="10">Day 10</option>
+            <!-- Populated dynamically -->
           </select>
           <input type="url" id="adm-photo-link" class="input-box" placeholder="Google Drive / Photos Link" />
           <input type="url" id="adm-video-link" class="input-box" placeholder="YouTube Highlights Link" />
@@ -1338,7 +1341,7 @@
       { d: "Day 7", dt: "Oct 17", devi: "Maa Kalaratri (माँ कालरात्रि)", clr: "Grey (राखाडी/ग्रे)", p: "Mata Ki Chowki & All-Night Jaagran", pr: "Kala Chana" },
       { d: "Day 8", dt: "Oct 18", devi: "Maa Mahagauri (माँ महागौरी)", clr: "Purple (जांभळा/बैंगनी)", p: "Maha Ashtami Havan (10 AM) & Grand Aarti", pr: "Maha Bhog" },
       { d: "Day 9", dt: "Oct 19", devi: "Maa Siddhidatri (माँ सिद्धिदात्री)", clr: "Peacock Green (मोरपंखी)", p: "Kanya Pujan (11 AM) & Prizegiving", pr: "Prasad Feast" },
-      { d: "Day 10", dt: "Oct 20", devi: "Vijayadashami (विजयादशमी)", clr: "pink (गुलाबी)", p: "Ravan Dahan & Visarjan Procession", pr: "Jalebi Fafda" }
+      { d: "Day 10", dt: "Oct 20", devi: "Vijayadashami (विजयादशमी)", clr: "Gold (सोनेरी/सुनहरा)", p: "Ravan Dahan & Visarjan Procession", pr: "Jalebi Fafda" }
     ];
 
     const DEFAULT_TIMINGS = {
@@ -1409,6 +1412,7 @@
           localStorage.setItem('nbmm_schedule_custom', JSON.stringify(val));
           initDays();
           initMediaDays();
+          populateScheduleSelects();
         }
       });
 
@@ -2521,15 +2525,21 @@
     }
 
     // -------------------------------------------------------------
-    // 19. SCHEDULE & MEDIA
+    // 19. SCHEDULE & MEDIA MANAGER (ADD, EDIT, DELETE)
     // -------------------------------------------------------------
     function initDays() {
       const b = document.getElementById('day-bar');
+      if (!b) return;
       b.innerHTML = '';
+      
+      if (!cachedSchedule || cachedSchedule.length === 0) {
+        cachedSchedule = DEFAULT_DAYS;
+      }
+
       cachedSchedule.forEach((x, i) => {
         const btn = document.createElement('button');
         btn.className = 'day-btn ' + (i === 0 ? 'active' : '');
-        btn.innerText = x.d + ' (' + x.dt + ')';
+        btn.innerText = (x.d || `Day ${i+1}`) + ' (' + (x.dt || '') + ')';
         btn.onclick = function() {
           document.querySelectorAll('#day-bar .day-btn').forEach(k => k.classList.remove('active'));
           btn.classList.add('active');
@@ -2541,18 +2551,49 @@
     }
 
     function renderDay(i) {
-      const x = cachedSchedule[i] || DEFAULT_DAYS[i];
-      document.getElementById('day-view').innerHTML = `
-        <h4 style="color:var(--primary);">${x.d} (${x.dt}) - Color: ${x.clr}</h4>
-        <p><strong>Puja (पूजा):</strong> ${x.devi}</p>
-        <p><strong>Special (विशेष):</strong> ${x.p}</p>
-        <p><strong>Prasad (प्रसाद):</strong> ${x.pr}</p>
+      const x = cachedSchedule[i] || DEFAULT_DAYS[0];
+      const view = document.getElementById('day-view');
+      if (!view) return;
+      view.innerHTML = `
+        <h4 style="color:var(--primary);">${x.d || ''} (${x.dt || ''}) - Color: ${x.clr || ''}</h4>
+        <p><strong>Puja (पूजा):</strong> ${x.devi || ''}</p>
+        <p><strong>Special (विशेष):</strong> ${x.p || ''}</p>
+        <p><strong>Prasad (प्रसाद):</strong> ${x.pr || ''}</p>
       `;
     }
 
+    function populateScheduleSelects() {
+      const sel = document.getElementById('adm-sched-day-select');
+      const mediaSel = document.getElementById('adm-media-day');
+      if (!sel) return;
+
+      sel.innerHTML = '';
+      if (mediaSel) mediaSel.innerHTML = '';
+
+      cachedSchedule.forEach((x, idx) => {
+        const opt = document.createElement('option');
+        opt.value = idx;
+        opt.innerText = `${x.d || ('Day ' + (idx+1))} - ${x.dt || ''}`;
+        sel.appendChild(opt);
+
+        if (mediaSel) {
+          const mOpt = document.createElement('option');
+          mOpt.value = idx;
+          mOpt.innerText = `${x.d || ('Day ' + (idx+1))} - ${x.dt || ''}`;
+          mediaSel.appendChild(mOpt);
+        }
+      });
+      loadAdminScheduleFields();
+      loadAdminMediaFields();
+    }
+
     function loadAdminScheduleFields() {
-      const idx = document.getElementById('adm-sched-day').value;
-      const x = cachedSchedule[idx] || DEFAULT_DAYS[idx];
+      const sel = document.getElementById('adm-sched-day-select');
+      if (!sel) return;
+      const idx = parseInt(sel.value) || 0;
+      const x = cachedSchedule[idx] || {};
+
+      document.getElementById('adm-sched-dlabel').value = x.d || `Day ${idx+1}`;
       document.getElementById('adm-sched-dt').value = x.dt || '';
       document.getElementById('adm-sched-clr').value = x.clr || '';
       document.getElementById('adm-sched-devi').value = x.devi || '';
@@ -2560,41 +2601,92 @@
       document.getElementById('adm-sched-prasad').value = x.pr || '';
     }
 
+    function addNewFestivalDay() {
+      const nextNum = cachedSchedule.length + 1;
+      const newDay = {
+        d: `Day ${nextNum}`,
+        dt: `Oct ${10 + nextNum}`,
+        devi: "Maa Devi Form",
+        clr: "Gold",
+        p: "Special Aarti & Celebration",
+        pr: "Maha Prasad"
+      };
+      cachedSchedule.push(newDay);
+      localStorage.setItem('nbmm_schedule_custom', JSON.stringify(cachedSchedule));
+      if (db) db.ref('schedule').set(cachedSchedule);
+
+      initDays();
+      initMediaDays();
+      populateScheduleSelects();
+      document.getElementById('adm-sched-day-select').value = cachedSchedule.length - 1;
+      loadAdminScheduleFields();
+      alert(`New Day added successfully!`);
+    }
+
     function saveScheduleDay() {
-      const idx = parseInt(document.getElementById('adm-sched-day').value);
+      const sel = document.getElementById('adm-sched-day-select');
+      if (!sel) return;
+      const idx = parseInt(sel.value) || 0;
+
       cachedSchedule[idx] = {
-        d: `Day ${idx + 1}`,
+        d: document.getElementById('adm-sched-dlabel').value.trim() || `Day ${idx+1}`,
         dt: document.getElementById('adm-sched-dt').value.trim(),
         clr: document.getElementById('adm-sched-clr').value.trim(),
         devi: document.getElementById('adm-sched-devi').value.trim(),
         p: document.getElementById('adm-sched-prog').value.trim(),
         pr: document.getElementById('adm-sched-prasad').value.trim()
       };
+
       localStorage.setItem('nbmm_schedule_custom', JSON.stringify(cachedSchedule));
       if (db) db.ref('schedule').set(cachedSchedule);
-      alert(`Day ${idx + 1} schedule saved!`);
+
       initDays();
       initMediaDays();
+      populateScheduleSelects();
+      alert('Schedule day updated and synced across all devices!');
+    }
+
+    function deleteCurrentScheduleDay() {
+      const sel = document.getElementById('adm-sched-day-select');
+      if (!sel) return;
+      const idx = parseInt(sel.value) || 0;
+
+      if (cachedSchedule.length <= 1) {
+        alert('You must keep at least one festival day.');
+        return;
+      }
+
+      if (!confirm(`Are you sure you want to delete ${cachedSchedule[idx].d}?`)) return;
+
+      cachedSchedule.splice(idx, 1);
+      localStorage.setItem('nbmm_schedule_custom', JSON.stringify(cachedSchedule));
+      if (db) db.ref('schedule').set(cachedSchedule);
+
+      initDays();
+      initMediaDays();
+      populateScheduleSelects();
+      alert('Day deleted successfully.');
     }
 
     function resetScheduleDefaults() {
-      if (!confirm('Reset all 10 festival days?')) return;
+      if (!confirm('Reset schedule back to default 10 festival days?')) return;
       cachedSchedule = DEFAULT_DAYS;
       localStorage.setItem('nbmm_schedule_custom', JSON.stringify(DEFAULT_DAYS));
       if (db) db.ref('schedule').set(DEFAULT_DAYS);
       initDays();
       initMediaDays();
-      loadAdminScheduleFields();
-      alert('Festival schedule reset.');
+      populateScheduleSelects();
+      alert('Schedule reset to defaults.');
     }
 
     function initMediaDays() {
       const mb = document.getElementById('media-day-bar');
+      if (!mb) return;
       mb.innerHTML = '';
       cachedSchedule.forEach((x, i) => {
         const btn = document.createElement('button');
         btn.className = 'day-btn ' + (i === 0 ? 'active' : '');
-        btn.innerText = x.d + ' (' + x.dt + ')';
+        btn.innerText = (x.d || `Day ${i+1}`) + ' (' + (x.dt || '') + ')';
         btn.onclick = function() {
           document.querySelectorAll('#media-day-bar .day-btn').forEach(k => k.classList.remove('active'));
           btn.classList.add('active');
@@ -2606,13 +2698,15 @@
     }
 
     function renderMediaDay(idx) {
-      const x = cachedSchedule[idx] || DEFAULT_DAYS[idx];
+      const x = cachedSchedule[idx] || DEFAULT_DAYS[0];
       const current = cachedMedia[idx] || {};
+      const view = document.getElementById('media-content-view');
+      if (!view) return;
 
       let html = `
         <div style="background:#fffaf0; border:1px solid #fce8cc; padding:14px; border-radius:8px;">
-          <h4 style="color:var(--primary); margin-bottom:4px;">${x.d} (${x.dt}) - ${x.devi}</h4>
-          <p style="font-size:0.8rem; color:#666; margin-bottom:12px;">Events: ${x.p}</p>
+          <h4 style="color:var(--primary); margin-bottom:4px;">${x.d || ''} (${x.dt || ''}) - ${x.devi || ''}</h4>
+          <p style="font-size:0.8rem; color:#666; margin-bottom:12px;">Events: ${x.p || ''}</p>
       `;
 
       if (current.photo) {
@@ -2626,18 +2720,22 @@
       }
 
       html += `</div>`;
-      document.getElementById('media-content-view').innerHTML = html;
+      view.innerHTML = html;
     }
 
     function loadAdminMediaFields() {
-      const day = document.getElementById('adm-media-day').value;
+      const mediaSel = document.getElementById('adm-media-day');
+      if (!mediaSel) return;
+      const day = mediaSel.value || 0;
       const current = cachedMedia[day] || {};
       document.getElementById('adm-photo-link').value = current.photo || '';
       document.getElementById('adm-video-link').value = current.video || '';
     }
 
     function saveMediaLink() {
-      const day = document.getElementById('adm-media-day').value;
+      const mediaSel = document.getElementById('adm-media-day');
+      if (!mediaSel) return;
+      const day = mediaSel.value;
       const photo = document.getElementById('adm-photo-link').value.trim();
       const video = document.getElementById('adm-video-link').value.trim();
 
@@ -2745,8 +2843,7 @@
         document.getElementById('adm-live-url').value = cachedLiveStream;
         document.getElementById('adm-cctv-url').value = cachedCCTVStream;
 
-        loadAdminScheduleFields();
-        loadAdminMediaFields();
+        populateScheduleSelects();
         renderAdminAartiList();
         renderSocialLinks();
         renderBankDetails();
@@ -2780,8 +2877,7 @@
 
         registerDeviceSession();
 
-        loadAdminScheduleFields();
-        loadAdminMediaFields();
+        populateScheduleSelects();
         renderAdminAartiList();
         renderSocialLinks();
         renderBankDetails();
@@ -2943,6 +3039,7 @@
     function renderRows() {
       let incPaid = 0, incPending = 0, exp = 0;
       const tb = document.getElementById('rec-rows');
+      if (!tb) return;
       tb.innerHTML = '';
 
       const searchInput = document.getElementById('admin-search-input');
@@ -3078,4 +3175,4 @@
     checkLogin();
   </script>
 </body>
-</html>
+</html
