@@ -2780,7 +2780,8 @@
     }
 
     // -------------------------------------------------------------
-    // 21. AUTHENTICATION & SETTINGS
+     // -------------------------------------------------------------
+    // 21. AUTHENTICATION & SETTINGS (FIXED PERSISTENT LOGIN)
     // -------------------------------------------------------------
     function toggleForgotBox(show) {
       document.getElementById('login-box').style.display = show ? 'none' : 'block';
@@ -2854,8 +2855,6 @@
         renderPandalCamLive(cachedPandalCam);
         renderCCTVStream(cachedCCTVStream);
         renderRows();
-
-        registerDeviceSession();
       }
     }
 
@@ -2908,6 +2907,7 @@
         alert('Signed out successfully.');
       }
     }
+    
 
     // -------------------------------------------------------------
     // 22. KHATA & RECEIPT GENERATOR WITH AUTO-DELIVERY
