@@ -199,7 +199,7 @@
     .admin-sub-view { display: none; }
     .admin-sub-view.active { display: block; }
 
-    /* Category Dashboard Cards */
+    /* Category Breakdown Grid */
     .cat-stat-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -235,10 +235,8 @@
     .bank-data-lbl { color: #666; font-weight: 600; }
     .bank-data-val { color: #111; font-weight: 800; }
 
-    /* ==========================================================================
-       TRI-LINGUAL RECEIPT STYLES
-       ========================================================================== */
-    #receipt-modal { 
+    /* Modals */
+    #receipt-modal, #upi-pop-modal { 
       display: none; 
       position: fixed; 
       top: 0; left: 0; right: 0; bottom: 0; 
@@ -486,7 +484,7 @@
 </head>
 <body>
 
-  <!-- HEADER WITH DEDICATED TOP BAR -->
+  <!-- HEADER -->
   <header>
     <div class="header-top-bar">
       <div class="menu-btn" onclick="openDrawer()">☰</div>
@@ -551,7 +549,6 @@
       </div>
     </div>
 
-    <!-- QUICK SOCIAL ACCESS -->
     <div class="card" style="border-left-color: #e1306c;">
       <h3>🌟 Follow & Join Mandal Online</h3>
       <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px;">
@@ -566,7 +563,6 @@
       <div id="day-view" style="background:#fffaf0; border:1px solid #fce8cc; padding:10px; border-radius:8px;"></div>
     </div>
 
-    <!-- DYNAMIC REGULAR TIMINGS -->
     <div class="card">
       <h3 id="sec-timings-title">Regular Timings</h3>
       <p><strong>Subah Aarti (सकाळ):</strong> <span id="dsp-subah-aarti">7:30 AM</span></p>
@@ -586,20 +582,47 @@
     </div>
   </section>
 
-  <!-- TAB 3: LIVE DARSHAN (UPGRADED WITH DIRECT LINK BACKUP) -->
+  <!-- TAB 3: LIVE DARSHAN (PANDAL PROJECTOR CAMERA + YOUTUBE + INSTAGRAM) -->
   <section id="tab-live" class="tab">
     <div class="card" style="border-left-color: #c0392b; text-align: center;">
       <h3 id="sec-live-title">🔴 Live Darshan & Aarti</h3>
       <p style="font-size:0.85rem; color:#555; margin-bottom:12px;" id="sec-live-sub">Watch live Aarti and darshan direct from our Sukhlaji Street pandal:</p>
       
-      <div id="live-player-container" style="display:none; position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); margin-bottom: 10px;">
+      <!-- DIRECT PANDAL PROJECTOR CAMERA CARD (ZERO DELAY, NO YOUTUBE) -->
+      <div id="live-pandal-cam-box" style="display:none; background:#111; color:#fff; border-radius:10px; padding:10px; margin-bottom:12px; border:2px solid #27ae60;">
+        <div style="font-size:0.85rem; font-weight:700; color:#2ecc71; margin-bottom:6px; display:flex; align-items:center; justify-content:center; gap:6px;">
+          <span>🟢</span> PANDAL LIVE SCREEN (DIRECT CAMERA FEED)
+        </div>
+        <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:6px; background:#000;">
+          <iframe id="live-pandal-iframe" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;" src="" allow="camera; microphone; autoplay; fullscreen"></iframe>
+        </div>
+        <div style="display:flex; gap:8px; margin-top:8px;">
+          <a id="btn-projector-fullscreen" class="btn" style="background:#27ae60; flex:1; font-size:0.8rem;" href="#" target="_blank">
+            🖥️ Open Fullscreen on Projector
+          </a>
+        </div>
+      </div>
+
+      <!-- INSTAGRAM LIVE BROADCAST BANNER -->
+      <div id="live-insta-banner" style="display:none; background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); color:#fff; border-radius:10px; padding:14px; margin-bottom:12px; box-shadow:0 4px 15px rgba(225,48,108,0.35);">
+        <div style="font-size:1.1rem; font-weight:800; margin-bottom:4px;">📸 LIVE NOW ON INSTAGRAM</div>
+        <p style="font-size:0.82rem; margin-bottom:10px; color:#fff;">मंडळाची थेट आरती इन्स्टाग्रामवर सुरू आहे. खालील बटणावर टॅप करा!</p>
+        <a id="btn-insta-live-now" class="btn" style="background:#fff; color:#bc1888; font-weight:800; width:100%; border:none; box-shadow:0 2px 8px rgba(0,0,0,0.2);" href="https://instagram.com" target="_blank">
+          ▶️ Watch on Instagram App / Profile
+        </a>
+      </div>
+
+      <!-- YOUTUBE LIVE PLAYER CONTAINER -->
+      <div id="live-player-container" style="display:none; position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); margin-bottom: 10px; background:#000;">
         <iframe id="live-video-iframe" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
 
+      <!-- DIRECT MOBILE APP LAUNCH BUTTON -->
       <a id="btn-yt-direct-fallback" class="btn" style="background:#c0392b; width:100%; margin-top:8px; display:none;" href="#" target="_blank">
-        ▶️ Open Directly on YouTube App
+        ▶️ YouTube App वर थेट पहा (Watch on YouTube App)
       </a>
 
+      <!-- OFFLINE NOTICE -->
       <div id="live-offline-container" style="background:#fff8e7; border:1px dashed #d4af37; border-radius:8px; padding:20px; text-align:center;">
         <span style="font-size:2rem;">🪔</span>
         <h4 style="color:var(--primary); margin:8px 0 4px;" id="live-off-head">Pandal Live Stream Offline</h4>
@@ -614,8 +637,6 @@
 
   <!-- TAB 4: DAAN, UPI, BANK DETAILS & DEVOTEE RECEIPT LOOKUP -->
   <section id="tab-donate" class="tab">
-    
-    <!-- DEVOTEE RECEIPT LOOKUP -->
     <div class="card" style="border-left-color: #f39c12;">
       <h3>🔍 पावती शोधा / Find My Receipt</h3>
       <p style="font-size:0.8rem; color:#555; margin-bottom:8px;">Enter your 10-digit mobile number or Receipt number to download/print your official receipt:</p>
@@ -626,7 +647,6 @@
       <div id="devotee-search-results" style="margin-top:10px;"></div>
     </div>
 
-    <!-- UPI & SCAN QR CARD -->
     <div class="card" style="text-align:center; border-left-color: #27ae60;">
       <h3 id="sec-daan-title">🙏 Pavitra Daan / Varthi</h3>
       <p id="sec-daan-sub">Scan QR Code to contribute to Navdurga Balmitra Mandal:</p>
@@ -645,7 +665,6 @@
       <a class="btn" id="btn-upi-pay" style="background:#27ae60; width:100%; font-size:0.95rem; padding:12px;" href="upi://pay?pa=navdurgabalmitramandal@upi&pn=NavdurgaBalmitraMandal&cu=INR">⚡ Pay Directly via UPI App</a>
     </div>
 
-    <!-- OFFICIAL BANK ACCOUNT DETAILS CARD -->
     <div class="card" style="border-left-color: #2980b9;">
       <h3>🏛️ Mandal Bank Account Details (NEFT / IMPS)</h3>
       <p style="font-size:0.8rem; color:#666; margin-bottom:10px;">Devotees can transfer seva contribution directly to the Mandal's bank account:</p>
@@ -683,10 +702,9 @@
       </div>
       <p id="bank-copy-status" style="color:#2e7d32; font-size:0.75rem; text-align:center; margin-top:6px; display:none; font-weight:bold;">Copied to clipboard!</p>
     </div>
-
   </section>
 
-  <!-- TAB 5:SHARE -->
+  <!-- TAB 5: SHARE -->
   <section id="tab-share" class="tab">
     <div class="card" style="border-left-color: #25d366; text-align: center;">
       <h3 id="sec-share-title">📲 Share Mandal App</h3>
@@ -705,8 +723,6 @@
 
   <!-- TAB 6: INFO, CONTACTS, SOCIAL & AARTIS -->
   <section id="tab-info" class="tab">
-    
-    <!-- MANDAL SOCIAL & WHATSAPP CARD -->
     <div class="card" style="border-left-color: #25d366;">
       <h3>📱 Connect With Our Mandal</h3>
       <p style="font-size:0.85rem; color:#555; margin-bottom:12px;">Stay connected with our official Mandal social media handles and group:</p>
@@ -736,7 +752,6 @@
       </div>
     </div>
 
-    <!-- MANDAL CONTACTS -->
     <div class="card">
       <h3 id="sec-info-head">Mandal Office & Contacts</h3>
       <p>📍 NEW MUNICIPAL BUILDING 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008</p>
@@ -747,7 +762,6 @@
       </div>
     </div>
 
-    <!-- DYNAMIC AARTIS SECTION -->
     <div class="card" style="border-left-color: #d35400;">
       <h3 id="sec-aarti-head">🕉️ Devi Aarties & Stutis</h3>
       <p style="font-size:0.8rem; color:#666; margin-bottom:8px;" id="sec-aarti-sub">Select an Aarti to read lyrics:</p>
@@ -775,7 +789,7 @@
       </div>
     </div>
 
-    <!-- FORGOT / RESET PASSWORD CARD -->
+    <!-- FORGOT PASSWORD CARD -->
     <div id="forgot-box" class="card" style="display:none; border-left-color:#e67e22;">
       <h3>🔑 Reset Committee Password</h3>
       <p style="font-size:0.8rem; color:#555; margin-bottom:10px;">
@@ -811,11 +825,8 @@
 
       <!-- SUB-TAB 1: RECEIPTS, CATEGORY BREAKDOWN & REGISTER -->
       <div id="asv-receipts" class="admin-sub-view active">
-        
-        <!-- CATEGORY-WISE TOTALS SUMMARY CARDS -->
         <div class="cat-stat-grid" id="category-summary-cards"></div>
 
-        <!-- DONATION ENTRY FORM -->
         <div class="card" style="border-left-color:#7a0006;">
           <h3 id="form-title">🧾 पावती नोंदणी / New Digital Receipt</h3>
           <input type="hidden" id="edit-id" value="" />
@@ -850,7 +861,7 @@
               <input type="text" id="r-collector" class="input-box" placeholder="Enter Collector Name" />
             </div>
             <div>
-              <label style="font-size:0.75rem; font-weight:600; color:#555;">मोबाईल / WhatsApp Phone</label>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">मोबाईल / WhatsApp Phone *</label>
               <input type="tel" id="r-phone" class="input-box" placeholder="e.g. 9820000000" />
             </div>
           </div>
@@ -858,7 +869,7 @@
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
             <div>
               <label style="font-size:0.75rem; font-weight:600; color:#555;">माध्यम / Mode *</label>
-              <select id="r-mode" class="input-box">
+              <select id="r-mode" class="input-box" onchange="checkModeAndPromptUPI()">
                 <option value="रोख / Cash">रोख / Cash</option>
                 <option value="यूपीआय / UPI">यूपीआय / UPI</option>
                 <option value="बाकी / Due">बाकी / Due</option>
@@ -871,12 +882,11 @@
           </div>
 
           <div style="display:flex; gap:8px; margin-top:6px;">
-            <button class="btn" id="save-btn" style="background:#7a0006; flex:1;" onclick="saveRecord()">💾 पावती तयार करा / Generate Receipt</button>
+            <button class="btn" id="save-btn" style="background:#7a0006; flex:1;" onclick="saveRecord(false)">💾 पावती तयार करा / Generate Receipt</button>
             <button class="btn" id="cancel-edit-btn" style="background:#c0392b; display:none;" onclick="cancelEdit()">रद्द करा / Cancel</button>
           </div>
         </div>
 
-        <!-- REGISTER LEDGER WITH FILTER, EXPORT & CATEGORY SWITCHER -->
         <div class="card">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
             <h3>📋 पावती पुस्तक / Ledger</h3>
@@ -889,7 +899,6 @@
             <strong>शिल्लक:</strong> ₹<strong id="tot-bal" style="color:var(--primary);">0</strong>
           </p>
 
-          <!-- CATEGORY FILTER BUTTONS -->
           <div class="day-bar" style="margin-bottom:8px;">
             <button class="day-btn active" id="btn-cat-all" onclick="filterByCat('all')">सर्व (All)</button>
             <button class="day-btn" id="btn-cat-bhandara" onclick="filterByCat('भंडारा')">🍲 भंडारा</button>
@@ -900,7 +909,6 @@
             <button class="day-btn" id="btn-cat-other" onclick="filterByCat('इतर')">📦 इतर</button>
           </div>
 
-          <!-- LIVE SEARCH BAR -->
           <div style="position:relative; margin-bottom:10px;">
             <input type="text" id="admin-search-input" class="input-box" style="margin:0; padding-left:32px;" placeholder="Search by donor name, #rec, or mode..." oninput="renderRows()" />
             <span style="position:absolute; left:10px; top:50%; transform:translateY(-50%); font-size:0.85rem; color:#777;">🔍</span>
@@ -962,23 +970,70 @@
         </div>
       </div>
 
-      <!-- SUB-TAB 3: LIVE STREAM -->
+      <!-- SUB-TAB 3: LIVE STREAM (PANDAL PROJECTOR CAMERA + YOUTUBE + INSTA) -->
       <div id="asv-live" class="admin-sub-view">
-        <div class="card" style="border-left-color: #c0392b;">
-          <h3>🔴 Manage Live Darshan Stream</h3>
-          <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Paste YouTube Live stream URL when Aarti starts (updates on all devotee screens instantly):</p>
+        
+        <!-- DIRECT PANDAL PROJECTOR STREAM CONTROLLER -->
+        <div class="card" style="border-left-color: #27ae60;">
+          <h3>🎥 Live Pandal Camera (Projector Screen Feed)</h3>
+          <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">
+            Stream directly from the cameraman's mobile/camera to the projector screen and application (Zero-delay WebRTC, no YouTube):
+          </p>
+
+          <div style="background:#f4f9f4; border:1px dashed #27ae60; padding:10px; border-radius:8px; margin-bottom:10px;">
+            <p style="font-size:0.76rem; color:#333; margin-bottom:4px;"><strong>1. Cameraman Phone Link:</strong> Open on cameraman's phone and tap "Start Camera":</p>
+            <a id="adm-cam-push-link" href="https://vdo.ninja/?push=nbmm2026pandal&webcam&autostart&cleanoutput" target="_blank" style="font-size:0.75rem; color:#27ae60; font-weight:bold; word-break:break-all;">
+              https://vdo.ninja/?push=nbmm2026pandal&webcam&autostart&cleanoutput
+            </a>
+
+            <p style="font-size:0.76rem; color:#333; margin-top:8px; margin-bottom:4px;"><strong>2. Laptop / Projector Fullscreen Link:</strong> Open this on the laptop connected to the projector:</p>
+            <a id="adm-cam-view-link" href="https://vdo.ninja/?view=nbmm2026pandal&cleanoutput&transparent" target="_blank" style="font-size:0.75rem; color:#2980b9; font-weight:bold; word-break:break-all;">
+              https://vdo.ninja/?view=nbmm2026pandal&cleanoutput&transparent
+            </a>
+          </div>
+
+          <div style="display:flex; gap:8px;">
+            <button class="btn" style="background:#27ae60; flex:1;" onclick="togglePandalCamLive(true)">
+              🟢 Show Pandal Camera in App
+            </button>
+            <button class="btn" style="background:#555; padding:8px 12px; font-size:0.75rem;" onclick="togglePandalCamLive(false)">
+              ⏹️ Turn Off
+            </button>
+          </div>
+          <p id="pandal-cam-status-text" style="font-size:0.75rem; font-weight:bold; color:#777; margin-top:6px;">Status: Pandal Camera is currently OFF in App</p>
+        </div>
+
+        <!-- YOUTUBE LIVE CONTROLLER -->
+        <div class="card" style="border-left-color: #c0392b; margin-top: 12px;">
+          <h3>🔴 YouTube Live Stream</h3>
+          <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Paste YouTube Live stream URL when Aarti starts:</p>
           <input type="url" id="adm-live-url" class="input-box" placeholder="e.g. https://youtu.be/xyz or https://youtube.com/live/..." />
           <div style="display:flex; gap:8px;">
-            <button class="btn" style="background:#c0392b; flex:1;" onclick="saveLiveStream()">📡 Go Live (Show Stream)</button>
+            <button class="btn" style="background:#c0392b; flex:1;" onclick="saveLiveStream()">📡 Go Live (YouTube)</button>
             <button class="btn" style="background:#555; padding:8px 10px; font-size:0.75rem;" onclick="clearLiveStream()">⏹️ End Live</button>
           </div>
+        </div>
+
+        <!-- INSTAGRAM LIVE CONTROLLER -->
+        <div class="card" style="border-left-color: #e1306c; margin-top: 12px;">
+          <h3>📸 Instagram Live Status Controller</h3>
+          <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">
+            When going live from your phone via Instagram, turn this ON to show an instant watch alert to all devotees:
+          </p>
+          <div style="display:flex; gap:8px;">
+            <button class="btn" id="btn-adm-insta-on" style="background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); flex:1;" onclick="toggleInstagramLive(true)">
+              🔴 We Are Live on Instagram Now
+            </button>
+            <button class="btn" id="btn-adm-insta-off" style="background:#555; padding:8px 12px; font-size:0.75rem;" onclick="toggleInstagramLive(false)">
+              ⏹️ End Insta Live
+            </button>
+          </div>
+          <p id="insta-live-active-status" style="font-size:0.75rem; font-weight:bold; color:#777; margin-top:6px;">Status: Instagram Live is currently OFF</p>
         </div>
       </div>
 
       <!-- SUB-TAB 4: SCHEDULE, REGULAR TIMINGS & MEDIA -->
       <div id="asv-schedule" class="admin-sub-view">
-        
-        <!-- REGULAR TIMINGS EDITOR -->
         <div class="card" style="border-left-color: #e67e22;">
           <h3>⏰ Edit Regular Daily Timings (नियमित वेळ)</h3>
           <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Update daily Aarti and program timings shown on the front screen:</p>
@@ -1008,7 +1063,6 @@
           <button class="btn" style="background:#e67e22; width:100%;" onclick="saveRegularTimings()">💾 Save Regular Timings</button>
         </div>
 
-        <!-- 10-DAY SCHEDULE EDITOR -->
         <div class="card" style="border-left-color: #8e44ad;">
           <h3>📅 Edit Festival Schedule (All 10 Days)</h3>
           <select id="adm-sched-day" class="input-box" onchange="loadAdminScheduleFields()">
@@ -1028,7 +1082,6 @@
           </div>
         </div>
 
-        <!-- MEDIA LINK UPDATER -->
         <div class="card" style="border-left-color: #f39c12;">
           <h3>📸 Upload Day-Wise Media Links</h3>
           <select id="adm-media-day" class="input-box" onchange="loadAdminMediaFields()">
@@ -1043,8 +1096,6 @@
 
       <!-- SUB-TAB 5: SETTINGS, SOCIAL, SESSIONS & AARTIS -->
       <div id="asv-settings" class="admin-sub-view">
-        
-        <!-- ACTIVE SESSIONS & DEVICE ACCESS -->
         <div class="card" style="border-left-color: #e74c3c;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
             <h3>📱 सक्रिय उपकरणे / Active Logged-In Mobiles</h3>
@@ -1061,7 +1112,6 @@
           </button>
         </div>
 
-        <!-- SOCIAL MEDIA LINKS -->
         <div class="card" style="border-left-color: #25d366;">
           <h3>📱 Update Instagram & WhatsApp Links</h3>
           <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Paste your official Instagram profile and WhatsApp invite link:</p>
@@ -1072,7 +1122,6 @@
           <button class="btn" style="background:#25d366; width:100%;" onclick="saveSocialLinks()">💾 Save Social Links</button>
         </div>
 
-        <!-- SETTINGS & SECURITY -->
         <div class="card" style="border-left-color: #2980b9;">
           <h3>⚙️ Settings & Security</h3>
           <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Change Committee Login Credentials:</p>
@@ -1089,7 +1138,6 @@
           <button class="btn" style="background:#2980b9; width:100%;" onclick="updateSettingsPassword()">💾 Save New Credentials</button>
         </div>
 
-        <!-- AARTI MANAGER -->
         <div class="card" style="border-left-color: #e67e22;">
           <h3>🕉️ Add / Manage Festival Aarties</h3>
           <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Add new Aartis or Bhajans:</p>
@@ -1106,15 +1154,40 @@
     </div>
   </section>
 
-  <!-- ==========================================================================
-       MODAL: AUTHENTIC TRI-LINGUAL RECEIPT WITH LOGO
-       ========================================================================== -->
+  <!-- AUTOMATIC UPI PAYMENT POPUP MODAL -->
+  <div id="upi-pop-modal">
+    <div class="modal-content-wrap">
+      <div class="card" style="text-align:center; border:3px solid #27ae60; border-radius:12px; padding:20px; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+        <h3 style="color:#27ae60; font-size:1.15rem; margin-bottom:2px;">⚡ Scan & Pay via UPI</h3>
+        <p style="font-size:0.78rem; color:#555;">Pre-filled donation payment barcode:</p>
+        
+        <div style="background:#fffdf8; border:1px dashed #d4af37; border-radius:10px; padding:12px; margin:12px 0;">
+          <div style="font-size:1.4rem; font-weight:900; color:#7a0006;">₹ <span id="pop-upi-amt">0</span>/-</div>
+          <div style="font-size:0.75rem; color:#444; font-weight:bold; margin-top:2px;" id="pop-upi-donor">Donor: श्री / सौ.</div>
+          
+          <img id="pop-upi-qr-img" style="width:200px; height:200px; margin:10px auto; display:block; border:2px solid #27ae60; border-radius:8px; padding:6px; background:#fff;" src="" alt="Dynamic UPI QR" />
+          
+          <p style="font-size:0.72rem; color:#666;">(Google Pay, PhonePe, Paytm, BHIM or any Banking App)</p>
+          <a id="btn-pop-upi-deep" class="btn" style="background:#27ae60; width:100%; margin-top:10px; font-size:0.9rem;" href="#" target="_blank">
+            ⚡ Pay Directly via UPI App
+          </a>
+        </div>
+
+        <button class="btn" style="background:#7a0006; width:100%; font-size:0.95rem; padding:12px; font-weight:bold;" onclick="confirmUPIPaymentAndGenerateReceipt()">
+          ✅ पेमेंट पूर्ण झाले (Save & Generate Receipt)
+        </button>
+        <button class="btn" style="background:#777; width:100%; margin-top:8px; font-size:0.8rem; padding:8px;" onclick="closeUPIPopModal()">
+          रद्द करा (Cancel)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: AUTHENTIC TRI-LINGUAL RECEIPT WITH LOGO -->
   <div id="receipt-modal">
     <div class="modal-content-wrap">
-      
       <div id="capture-receipt" class="mrc-card">
         
-        <!-- HEADER WITH MANDAL LOGO[span_0](start_span)[span_0](end_span) -->
         <div class="mrc-header">
           <div class="mrc-top-meta">
             <span>स्थापना / Estd : 1992</span>
@@ -1130,28 +1203,22 @@
           <div style="font-size:0.62rem; color:#ffd1d1; margin-top:5px;">न्यू म्युनिसिपल इमारत, ७६ तेनामेंन्ट, ५वी गल्ली, कामाठीपुरा, मुंबई ४००००८</div>
         </div>
 
-        <!-- BODY[span_1](start_span)[span_1](end_span) -->
         <div class="mrc-body">
-          
-          <!-- META ROW[span_2](start_span)[span_2](end_span) -->
-          <div class="mrc-meta-row">
-            <div class="mrc-badge-box">
-              <span class="mrc-badge-lbl">पावती नं. / Rec. No.</span>
-              <span class="mrc-badge-val" id="pr-rec">2</span>
-            </div>
-            <div class="mrc-badge-box">
-              <span class="mrc-badge-lbl">दिनांक / Date</span>
-              <span style="padding:4px 10px; font-weight:700; color:#111;" id="pr-date">21 / 09 / 2026</span>
-            </div>
+          <div class="mrc-badge-box">
+            <span class="mrc-badge-lbl">पावती नं. / Rec. No.</span>
+            <span class="mrc-badge-val" id="pr-rec">2</span>
           </div>
+          <div class="mrc-badge-box" style="float:right;">
+            <span class="mrc-badge-lbl">दिनांक / Date</span>
+            <span style="padding:4px 10px; font-weight:700; color:#111;" id="pr-date">21 / 09 / 2026</span>
+          </div>
+          <div style="clear:both; margin-bottom:12px;"></div>
 
-          <!-- DONOR ROW[span_3](start_span)[span_3](end_span) -->
           <div class="mrc-field-group">
             <span class="mrc-lbl">श्री / सौ. / Received From:</span>
             <div class="mrc-val-lg" id="pr-name"></div>
           </div>
 
-          <!-- WORDS IN MARATHI, HINDI & ENGLISH[span_4](start_span)[span_4](end_span) -->
           <div class="mrc-field-group">
             <span class="mrc-lbl">यांच्याकडून अक्षरी रुपये / Amount in Words:</span>
             <div class="mrc-words-mr" id="pr-words-mr"></div>
@@ -1159,7 +1226,6 @@
             <div class="mrc-words-en" id="pr-words-en"></div>
           </div>
 
-          <!-- PURPOSE & COLLECTOR ROW[span_5](start_span)[span_5](end_span) -->
           <div class="mrc-field-group">
             <span class="mrc-lbl">वर्गणी दाखल / Towards & Collected By:</span>
             <div style="font-size:0.92rem; font-weight:700; color:#333;">
@@ -1167,7 +1233,6 @@
             </div>
           </div>
 
-          <!-- PAYMENT MODE PILLS[span_6](start_span)[span_6](end_span) -->
           <div class="mrc-mode-row">
             <span class="mrc-lbl" style="margin-right:4px;">माध्यम / Mode:</span>
             <span class="mrc-mode-pill" id="pill-cash">रोख / Cash</span>
@@ -1175,7 +1240,6 @@
             <span class="mrc-mode-pill" id="pill-due">बाकी / Due</span>
           </div>
 
-          <!-- AMOUNT BANNER, THANKS & QR CODE[span_7](start_span)[span_7](end_span) -->
           <div class="mrc-amount-section">
             <div class="mrc-amt-banner">
               <span class="mrc-amt-banner-lbl">रक्कम / Amount</span>
@@ -1196,7 +1260,6 @@
             </div>
           </div>
 
-          <!-- SIGNATURES[span_8](start_span)[span_8](end_span) -->
           <div class="mrc-footer-signatures">
             <div class="mrc-sign-col">
               <div class="mrc-sign-name">&nbsp;</div>
@@ -1208,17 +1271,14 @@
               <div class="mrc-sign-title">अध्यक्ष / President</div>
             </div>
           </div>
-
         </div>
       </div>
 
-      <!-- ACTION BUTTONS -->
       <div style="display:flex; flex-direction:column; gap:8px; margin-top:12px;">
         <button class="btn" style="background:#e74c3c; width:100%; font-size:0.95rem; padding:12px;" onclick="window.print()">📄 Save as PDF / Print</button>
         <button class="btn" style="background:#25d366; width:100%; font-size:0.95rem; padding:12px;" id="btn-wa-direct">📲 Forward Receipt on WhatsApp</button>
         <button class="btn" style="background:#555; width:100%;" onclick="closeReceiptModal()">पावती बंद करा / Close</button>
       </div>
-
     </div>
   </div>
 
@@ -1301,6 +1361,8 @@
     let cachedAarties = JSON.parse(localStorage.getItem('nbmm_aarties') || 'null') || DEFAULT_AARTIES;
     let cachedAuth = JSON.parse(localStorage.getItem('nbmm_credentials') || 'null') || DEFAULT_AUTH;
     let cachedLiveStream = localStorage.getItem('nbmm_live_url') || '';
+    let cachedInstaLive = (localStorage.getItem('nbmm_insta_live') === '1');
+    let cachedPandalCam = (localStorage.getItem('nbmm_pandal_cam') === '1');
     let cachedSocial = JSON.parse(localStorage.getItem('nbmm_social') || 'null') || DEFAULT_SOCIAL;
     let cachedBank = JSON.parse(localStorage.getItem('nbmm_bank_details') || 'null') || DEFAULT_BANK;
     let cachedSessions = {};
@@ -1327,16 +1389,7 @@
 
       db.ref('regular_timings').on('value', (snap) => {
         const val = snap.val();
-        if (val) {
-          cachedTimings = val;
-          localStorage.setItem('nbmm_timings', JSON.stringify(val));
-          renderRegularTimings();
-        }
-      });
-
-      db.ref('media').on('value', (snap) => {
-        const val = snap.val();
-        if (val) {
+       if (val) {
           cachedMedia = val;
           localStorage.setItem('nbmm_media', JSON.stringify(val));
           initMediaDays();
@@ -1391,6 +1444,20 @@
         if (admInput) admInput.value = val;
       });
 
+      db.ref('insta_live').on('value', (snap) => {
+        const isLive = (snap.val() === true);
+        cachedInstaLive = isLive;
+        localStorage.setItem('nbmm_insta_live', isLive ? '1' : '0');
+        renderInstagramLive(isLive);
+      });
+
+      db.ref('pandal_cam_live').on('value', (snap) => {
+        const isLive = (snap.val() === true);
+        cachedPandalCam = isLive;
+        localStorage.setItem('nbmm_pandal_cam', isLive ? '1' : '0');
+        renderPandalCamLive(isLive);
+      });
+
       db.ref('social_links').on('value', (snap) => {
         const val = snap.val();
         if (val) {
@@ -1425,14 +1492,102 @@
     }
 
     // -------------------------------------------------------------
-    // 2. LIVE STREAM ENGINE (ROBUST EMBED & DIRECT FALLBACK)
+    // 2. ZERO-DELAY PANDAL PROJECTOR CAM STREAMING ENGINE
+    // -------------------------------------------------------------
+    function renderPandalCamLive(isLive) {
+      const box = document.getElementById('live-pandal-cam-box');
+      const iframe = document.getElementById('live-pandal-iframe');
+      const offline = document.getElementById('live-offline-container');
+      const statusText = document.getElementById('pandal-cam-status-text');
+      const projBtn = document.getElementById('btn-projector-fullscreen');
+
+      const viewUrl = "https://vdo.ninja/?view=nbmm2026pandal&cleanoutput&transparent";
+
+      if (projBtn) projBtn.href = viewUrl;
+
+      if (isLive) {
+        if (box) box.style.display = 'block';
+        if (iframe && !iframe.src) iframe.src = viewUrl;
+        if (offline) offline.style.display = 'none';
+        if (statusText) {
+          statusText.innerText = "Status: 🟢 Pandal Camera is ACTIVE in App & Projector";
+          statusText.style.color = "#27ae60";
+        }
+      } else {
+        if (box) box.style.display = 'none';
+        if (iframe) iframe.src = '';
+        if (!cachedLiveStream && !cachedInstaLive && offline) {
+          offline.style.display = 'block';
+        }
+        if (statusText) {
+          statusText.innerText = "Status: Pandal Camera is currently OFF in App";
+          statusText.style.color = "#777";
+        }
+      }
+    }
+
+    function togglePandalCamLive(turnOn) {
+      cachedPandalCam = turnOn;
+      localStorage.setItem('nbmm_pandal_cam', turnOn ? '1' : '0');
+      if (db) db.ref('pandal_cam_live').set(turnOn);
+      renderPandalCamLive(turnOn);
+      alert(turnOn ? 'Pandal Camera Live is now ACTIVE for all devotees and projector!' : 'Pandal Camera Stream stopped.');
+    }
+
+    // -------------------------------------------------------------
+    // 3. AUTOMATED UPI PAYMENT POPUP & DELIVERY LOGIC
+    // -------------------------------------------------------------
+    function checkModeAndPromptUPI() {
+      const mode = document.getElementById('r-mode').value;
+      if (mode.includes('UPI') || mode.includes('यूपीआय')) {
+        let amt = parseFloat(document.getElementById('r-amt').value);
+        if (isNaN(amt) || amt <= 0) {
+          const promptedAmt = prompt("कृपया देणगी रक्कम प्रविष्ट करा / Please enter donation amount ₹:");
+          if (promptedAmt && !isNaN(parseFloat(promptedAmt))) {
+            amt = parseFloat(promptedAmt);
+            document.getElementById('r-amt').value = amt;
+          } else {
+            alert("कृपया रक्कम भरा.");
+            return;
+          }
+        }
+        triggerUPIPopModal(amt);
+      }
+    }
+
+    function triggerUPIPopModal(amt) {
+      const upiId = (cachedBank && cachedBank.upi) ? cachedBank.upi : DEFAULT_BANK.upi;
+      const donorName = document.getElementById('r-name').value.trim() || 'Devotee';
+      
+      document.getElementById('pop-upi-amt').innerText = amt;
+      document.getElementById('pop-upi-donor').innerText = `देणगीदार: ${donorName}`;
+
+      const upiDeepLink = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=NavdurgaBalmitraMandal&am=${amt}&cu=INR&tn=Donation`;
+      document.getElementById('btn-pop-upi-deep').href = upiDeepLink;
+
+      const dynamicQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiDeepLink)}`;
+      document.getElementById('pop-upi-qr-img').src = dynamicQrUrl;
+
+      document.getElementById('upi-pop-modal').style.display = 'block';
+    }
+
+    function closeUPIPopModal() {
+      document.getElementById('upi-pop-modal').style.display = 'none';
+    }
+
+    function confirmUPIPaymentAndGenerateReceipt() {
+      closeUPIPopModal();
+      document.getElementById('r-mode').value = 'यूपीआय / UPI';
+      saveRecord(true);
+    }
+
+    // -------------------------------------------------------------
+    // 4. YOUTUBE & INSTAGRAM LIVE STREAM ENGINE
     // -------------------------------------------------------------
     function extractYouTubeId(url) {
       if (!url) return '';
       url = url.trim();
-      
       if (/^[\w-]{11}$/.test(url)) return url;
-      
       const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|live|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
       const match = url.match(regExp);
       return (match && match[1]) ? match[1] : '';
@@ -1447,7 +1602,7 @@
       const videoId = extractYouTubeId(url);
 
       if (videoId) {
-        iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1&rel=0`;
+        iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1&enablejsapi=1&rel=0`;
         container.style.display = 'block';
         offline.style.display = 'none';
 
@@ -1458,7 +1613,9 @@
       } else {
         iframe.src = '';
         container.style.display = 'none';
-        offline.style.display = 'block';
+        if (!cachedInstaLive && !cachedPandalCam) {
+          offline.style.display = 'block';
+        }
         if (directBtn) directBtn.style.display = 'none';
       }
     }
@@ -1473,21 +1630,58 @@
       localStorage.setItem('nbmm_live_url', url);
       if (db) db.ref('live_stream').set(url);
       renderLiveStream(url);
-      alert('Live broadcast started across all phones!');
+      alert('YouTube Live broadcast started across all phones!');
     }
 
     function clearLiveStream() {
-      if (!confirm('End live stream for all devotees?')) return;
+      if (!confirm('End YouTube live stream for all devotees?')) return;
       cachedLiveStream = '';
       localStorage.removeItem('nbmm_live_url');
       document.getElementById('adm-live-url').value = '';
       if (db) db.ref('live_stream').set('');
       renderLiveStream('');
-      alert('Live stream ended.');
+      alert('YouTube Live stream ended.');
+    }
+
+    function renderInstagramLive(isLive) {
+      const banner = document.getElementById('live-insta-banner');
+      const offline = document.getElementById('live-offline-container');
+      const btnNow = document.getElementById('btn-insta-live-now');
+      const statusText = document.getElementById('insta-live-active-status');
+
+      const instaProfile = (cachedSocial && cachedSocial.insta) ? cachedSocial.insta : DEFAULT_SOCIAL.insta;
+
+      if (btnNow) btnNow.href = instaProfile;
+
+      if (isLive) {
+        if (banner) banner.style.display = 'block';
+        if (offline) offline.style.display = 'none';
+        if (statusText) {
+          statusText.innerText = "Status: 🔴 Instagram Live is currently ACTIVE";
+          statusText.style.color = "#27ae60";
+        }
+      } else {
+        if (banner) banner.style.display = 'none';
+        if (!cachedLiveStream && !cachedPandalCam && offline) {
+          offline.style.display = 'block';
+        }
+        if (statusText) {
+          statusText.innerText = "Status: Instagram Live is currently OFF";
+          statusText.style.color = "#777";
+        }
+      }
+    }
+
+    function toggleInstagramLive(turnOn) {
+      cachedInstaLive = turnOn;
+      localStorage.setItem('nbmm_insta_live', turnOn ? '1' : '0');
+      if (db) db.ref('insta_live').set(turnOn);
+      renderInstagramLive(turnOn);
+      alert(turnOn ? 'Instagram Live is set to ACTIVE! Devotees will see the live alert.' : 'Instagram Live ended.');
     }
 
     // -------------------------------------------------------------
-    // 3. CATEGORY-WISE SECTION FILTER & TOTALS CALCULATION
+    // 5. CATEGORY-WISE SECTION FILTER & TOTALS CALCULATION
     // -------------------------------------------------------------
     function filterByCat(catKey) {
       currentSelectedCategory = catKey;
@@ -1546,7 +1740,7 @@
     }
 
     // -------------------------------------------------------------
-    // 4. ACTIVE DEVICE SESSIONS & REMOTE REVOCATION ENGINE
+    // 6. ACTIVE DEVICE SESSIONS & REMOTE REVOCATION ENGINE
     // -------------------------------------------------------------
     function getDeviceName() {
       const ua = navigator.userAgent;
@@ -1635,7 +1829,7 @@
     }
 
     // -------------------------------------------------------------
-    // 5. EXPORT LEDGER TO EXCEL / CSV
+    // 7. EXPORT LEDGER TO EXCEL / CSV
     // -------------------------------------------------------------
     function exportLedgerToExcel() {
       if (!cachedEntries || cachedEntries.length === 0) {
@@ -1665,7 +1859,7 @@
     }
 
     // -------------------------------------------------------------
-    // 6. DEVOTEE RECEIPT SELF-LOOKUP
+    // 8. DEVOTEE RECEIPT SELF-LOOKUP
     // -------------------------------------------------------------
     function findDevoteeReceipt() {
       const q = (document.getElementById('devotee-search-input').value || '').trim().toLowerCase();
@@ -1705,7 +1899,7 @@
     }
 
     // -------------------------------------------------------------
-    // 7. REGULAR TIMINGS CONTROLLER
+    // 9. REGULAR TIMINGS CONTROLLER
     // -------------------------------------------------------------
     function renderRegularTimings() {
       const t = cachedTimings || DEFAULT_TIMINGS;
@@ -1750,7 +1944,7 @@
     }
 
     // -------------------------------------------------------------
-    // 8. KHATA SUB-TAB BIFURCATION CONTROLLER
+    // 10. KHATA SUB-TAB BIFURCATION CONTROLLER
     // -------------------------------------------------------------
     function switchAdminSubTab(tabName) {
       document.querySelectorAll('.admin-sub-btn').forEach(btn => btn.classList.remove('active'));
@@ -1764,7 +1958,7 @@
     }
 
     // -------------------------------------------------------------
-    // 9. BANK, UPI & BARCODE ENGINE
+    // 11. BANK, UPI & BARCODE ENGINE
     // -------------------------------------------------------------
     function renderBankDetails() {
       const b = cachedBank || DEFAULT_BANK;
@@ -1860,7 +2054,7 @@
     }
 
     // -------------------------------------------------------------
-    // 10. SOCIAL MEDIA & WHATSAPP ENGINE
+    // 12. SOCIAL MEDIA & WHATSAPP ENGINE
     // -------------------------------------------------------------
     function renderSocialLinks() {
       const instaLink = document.getElementById('link-insta-page');
@@ -1909,7 +2103,7 @@
     }
 
     // -------------------------------------------------------------
-    // 11. LANGUAGE TRANSLATION ENGINE
+    // 13. LANGUAGE TRANSLATION ENGINE
     // -------------------------------------------------------------
     const I18N = {
       en: {
@@ -2025,7 +2219,7 @@
     }
 
     // -------------------------------------------------------------
-    // 12. NUMBER CONVERTERS
+    // 14. NUMBER CONVERTERS
     // -------------------------------------------------------------
     function numberToMarathiWords(n) {
       n = parseInt(n);
@@ -2093,13 +2287,13 @@
         if (n < 1000) return a[Math.floor(n / 100)] + 'Hundred ' + (n % 100 ? 'and ' + inWords(n % 100) : '');
         if (n < 100000) return inWords(Math.floor(n / 1000)) + 'Thousand ' + (n % 1000 ? inWords(n % 1000) : '');
         if (n < 10000000) return inWords(Math.floor(n / 100000)) + 'Lakh ' + (n % 100000 ? inWords(n % 100000) : '');
-        return inWords(Math.floor(n / 10000000)) + 'Crore ' + (n % 10000000 ? inWords(n % 10000000) : '');
+        return inWords(Math.floor(n / 10000000)) + 'Crore ' + (n % 10000000 ? inWords(n % 100000) : '');
       }
       return inWords(num).trim() + ' Rupees Only';
     }
 
     // -------------------------------------------------------------
-    // 13. GUARANTEED 1-TAP INSTALL
+    // 15. GUARANTEED 1-TAP INSTALL
     // -------------------------------------------------------------
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').catch(() => {});
@@ -2136,7 +2330,7 @@
     }
 
     // -------------------------------------------------------------
-    // 14. NAVIGATION & DRAWER
+    // 16. NAVIGATION & DRAWER
     // -------------------------------------------------------------
     function openDrawer() {
       document.getElementById('side-drawer').style.left = '0px';
@@ -2159,7 +2353,7 @@
     }
 
     // -------------------------------------------------------------
-    // 15. AARTI VIEWER & ADMIN MANAGER
+    // 17. AARTI VIEWER & ADMIN MANAGER
     // -------------------------------------------------------------
     let selectedAartiIdx = 0;
 
@@ -2249,7 +2443,7 @@
     }
 
     // -------------------------------------------------------------
-    // 16. SCHEDULE & MEDIA
+    // 18. SCHEDULE & MEDIA
     // -------------------------------------------------------------
     function initDays() {
       const b = document.getElementById('day-bar');
@@ -2377,7 +2571,7 @@
     }
 
     // -------------------------------------------------------------
-    // 17. SHARE TAB & DYNAMIC URL
+    // 19. SHARE TAB & DYNAMIC URL
     // -------------------------------------------------------------
     function getCleanInstallUrl() {
       let base = window.location.origin + window.location.pathname;
@@ -2410,7 +2604,7 @@
     }
 
     // -------------------------------------------------------------
-    // 18. AUTHENTICATION & SETTINGS
+    // 20. AUTHENTICATION & SETTINGS
     // -------------------------------------------------------------
     function toggleForgotBox(show) {
       document.getElementById('login-box').style.display = show ? 'none' : 'block';
@@ -2480,6 +2674,8 @@
         renderRegularTimings();
         renderDeviceSessions();
         renderCategoryBreakdownCards();
+        renderInstagramLive(cachedInstaLive);
+        renderPandalCamLive(cachedPandalCam);
         renderRows();
 
         registerDeviceSession();
@@ -2511,6 +2707,8 @@
         renderRegularTimings();
         renderDeviceSessions();
         renderCategoryBreakdownCards();
+        renderInstagramLive(cachedInstaLive);
+        renderPandalCamLive(cachedPandalCam);
         renderRows();
       } else {
         document.getElementById('err').style.display = 'block';
@@ -2534,9 +2732,9 @@
     }
 
     // -------------------------------------------------------------
-    // 19. KHATA & DYNAMIC COLLECTOR RECEIPT LOGIC
+    // 21. KHATA & RECEIPT GENERATOR WITH AUTO-DELIVERY
     // -------------------------------------------------------------
-    function saveRecord() {
+    function saveRecord(autoDeliver) {
       const name = document.getElementById('r-name').value.trim();
       const amt = parseFloat(document.getElementById('r-amt').value);
       const category = document.getElementById('r-category').value;
@@ -2601,7 +2799,16 @@
         localStorage.setItem('nbmm_entries', JSON.stringify(cachedEntries));
         if (db) db.ref('entries/' + newId).set(item);
         cancelEdit();
-        if (item.type === 'Income') openReceiptModal(item);
+        
+        if (item.type === 'Income') {
+          openReceiptModal(item);
+
+          if (autoDeliver && item.phone) {
+            setTimeout(() => {
+              waSend(item);
+            }, 600);
+          }
+        }
       }
       renderRows();
     }
@@ -2649,7 +2856,7 @@
     }
 
     // -------------------------------------------------------------
-    // 20. FILTER & RENDER LEDGER TABLE (CATEGORY-AWARE)
+    // 22. FILTER & RENDER LEDGER TABLE (CATEGORY-AWARE)
     // -------------------------------------------------------------
     function renderRows() {
       let incPaid = 0, incPending = 0, exp = 0;
@@ -2718,7 +2925,7 @@
     }
 
     // -------------------------------------------------------------
-    // 21. POPULATE TRI-LINGUAL RECEIPT MODAL
+    // 23. POPULATE TRI-LINGUAL RECEIPT MODAL
     // -------------------------------------------------------------
     function openReceiptModal(item) {
       document.getElementById('pr-rec').innerText = item.rec;
@@ -2772,7 +2979,7 @@
     }
 
     // -------------------------------------------------------------
-    // 22. BOOTSTRAP
+    // 24. BOOTSTRAP
     // -------------------------------------------------------------
     setLanguage(currentLang);
     initDays();
@@ -2782,6 +2989,8 @@
     renderSocialLinks();
     renderBankDetails();
     renderRegularTimings();
+    renderInstagramLive(cachedInstaLive);
+    renderPandalCamLive(cachedPandalCam);
     renderLiveStream(cachedLiveStream);
     checkLogin();
   </script>
