@@ -582,13 +582,13 @@
     </div>
   </section>
 
-  <!-- TAB 3: LIVE DARSHAN (PANDAL PROJECTOR CAMERA + YOUTUBE + INSTAGRAM) -->
+  <!-- TAB 3: LIVE DARSHAN -->
   <section id="tab-live" class="tab">
     <div class="card" style="border-left-color: #c0392b; text-align: center;">
       <h3 id="sec-live-title">🔴 Live Darshan & Aarti</h3>
       <p style="font-size:0.85rem; color:#555; margin-bottom:12px;" id="sec-live-sub">Watch live Aarti and darshan direct from our Sukhlaji Street pandal:</p>
       
-      <!-- DIRECT PANDAL PROJECTOR CAMERA CARD (ZERO DELAY, NO YOUTUBE) -->
+      <!-- DIRECT PANDAL PROJECTOR CAMERA CARD (ZERO DELAY) -->
       <div id="live-pandal-cam-box" style="display:none; background:#111; color:#fff; border-radius:10px; padding:10px; margin-bottom:12px; border:2px solid #27ae60;">
         <div style="font-size:0.85rem; font-weight:700; color:#2ecc71; margin-bottom:6px; display:flex; align-items:center; justify-content:center; gap:6px;">
           <span>🟢</span> PANDAL LIVE SCREEN (DIRECT CAMERA FEED)
@@ -970,7 +970,7 @@
         </div>
       </div>
 
-      <!-- SUB-TAB 3: LIVE STREAM (PANDAL PROJECTOR CAMERA + YOUTUBE + INSTA) -->
+      <!-- SUB-TAB 3: LIVE STREAM (DUAL-CAMERA PANDAL FEED + YOUTUBE + INSTA) -->
       <div id="asv-live" class="admin-sub-view">
         
         <!-- DIRECT PANDAL PROJECTOR STREAM CONTROLLER -->
@@ -981,12 +981,18 @@
           </p>
 
           <div style="background:#f4f9f4; border:1px dashed #27ae60; padding:10px; border-radius:8px; margin-bottom:10px;">
-            <p style="font-size:0.76rem; color:#333; margin-bottom:4px;"><strong>1. Cameraman Phone Link:</strong> Open on cameraman's phone and tap "Start Camera":</p>
-            <a id="adm-cam-push-link" href="https://vdo.ninja/?push=nbmm2026pandal&webcam&autostart&cleanoutput" target="_blank" style="font-size:0.75rem; color:#27ae60; font-weight:bold; word-break:break-all;">
-              https://vdo.ninja/?push=nbmm2026pandal&webcam&autostart&cleanoutput
-            </a>
+            <p style="font-size:0.76rem; color:#333; margin-bottom:6px;"><strong>1. Cameraman Links (Choose Camera):</strong></p>
+            
+            <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:10px;">
+              <a class="btn" style="background:#27ae60; font-size:0.78rem; text-align:center;" href="https://vdo.ninja/?push=nbmm2026pandal&webcam&facing=back&autostart" target="_blank">
+                📷 Open Cameraman Link (Back Camera + Flip Option)
+              </a>
+              <a class="btn" style="background:#2980b9; font-size:0.78rem; text-align:center;" href="https://vdo.ninja/?push=nbmm2026pandal&webcam&facing=front&autostart" target="_blank">
+                🤳 Open Cameraman Link (Front / Selfie Camera)
+              </a>
+            </div>
 
-            <p style="font-size:0.76rem; color:#333; margin-top:8px; margin-bottom:4px;"><strong>2. Laptop / Projector Fullscreen Link:</strong> Open this on the laptop connected to the projector:</p>
+            <p style="font-size:0.76rem; color:#333; margin-bottom:4px;"><strong>2. Laptop / Projector Fullscreen Link:</strong> Open this on the laptop connected to the projector:</p>
             <a id="adm-cam-view-link" href="https://vdo.ninja/?view=nbmm2026pandal&cleanoutput&transparent" target="_blank" style="font-size:0.75rem; color:#2980b9; font-weight:bold; word-break:break-all;">
               https://vdo.ninja/?view=nbmm2026pandal&cleanoutput&transparent
             </a>
@@ -1187,7 +1193,6 @@
   <div id="receipt-modal">
     <div class="modal-content-wrap">
       <div id="capture-receipt" class="mrc-card">
-        
         <div class="mrc-header">
           <div class="mrc-top-meta">
             <span>स्थापना / Estd : 1992</span>
@@ -1389,7 +1394,16 @@
 
       db.ref('regular_timings').on('value', (snap) => {
         const val = snap.val();
-       if (val) {
+        if (val) {
+          cachedTimings = val;
+          localStorage.setItem('nbmm_timings', JSON.stringify(val));
+          renderRegularTimings();
+        }
+      });
+
+      db.ref('media').on('value', (snap) => {
+        const val = snap.val();
+        if (val) {
           cachedMedia = val;
           localStorage.setItem('nbmm_media', JSON.stringify(val));
           initMediaDays();
@@ -2287,7 +2301,7 @@
         if (n < 1000) return a[Math.floor(n / 100)] + 'Hundred ' + (n % 100 ? 'and ' + inWords(n % 100) : '');
         if (n < 100000) return inWords(Math.floor(n / 1000)) + 'Thousand ' + (n % 1000 ? inWords(n % 1000) : '');
         if (n < 10000000) return inWords(Math.floor(n / 100000)) + 'Lakh ' + (n % 100000 ? inWords(n % 100000) : '');
-        return inWords(Math.floor(n / 10000000)) + 'Crore ' + (n % 10000000 ? inWords(n % 100000) : '');
+        return inWords(Math.floor(n / 10000000)) + 'Crore ' + (n % 10000000 ? inWords(n % 10000000) : '');
       }
       return inWords(num).trim() + ' Rupees Only';
     }
