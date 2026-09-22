@@ -1056,39 +1056,39 @@
         </div>
       </div>
 
-            <!-- SUB-TAB 4: SCHEDULE MANAGER (ADD, EDIT & DELETE DAYS) -->
+                  <!-- SUB-TAB 4: SCHEDULE MANAGER (ADD, EDIT & DELETE DAYS WITH TITHI & WEEKDAY) -->
       <div id="asv-schedule" class="admin-sub-view">
         <div class="card" style="border-left-color: #8e44ad;">
-          <h3>📅 Festival Schedule Manager (Add, Edit & Delete Days)</h3>
+          <h3>📅 Festival Schedule Manager (Dates, Weekdays & Poojas)</h3>
           <p style="font-size:0.75rem; color:#555; margin-bottom:10px;">
-            Manage your festival schedule. You can select an existing day to edit, or add a completely new day!
+            Manage your festival dates, weekdays (सोमवार, मंगलवार), and events.
           </p>
 
           <div style="margin-bottom:10px;">
-            <label style="font-size:0.75rem; font-weight:600; color:#555;">Select Day to Edit or Add New *</label>
+            <label style="font-size:0.75rem; font-weight:600; color:#555;">Select Date to Edit or Add New *</label>
             <div style="display:flex; gap:6px; margin-top:4px;">
               <select id="adm-sched-day-select" class="input-box" style="margin:0;" onchange="loadAdminScheduleFields()">
                 <!-- Populated dynamically -->
               </select>
-              <button class="btn" style="background:#27ae60; font-size:0.75rem; white-space:nowrap;" onclick="addNewFestivalDay()">➕ Add New Day</button>
+              <button class="btn" style="background:#27ae60; font-size:0.75rem; white-space:nowrap;" onclick="addNewFestivalDay()">➕ Add Date</button>
             </div>
           </div>
 
           <div style="background:#fcf9ff; border:1px solid #e2cffc; padding:12px; border-radius:8px; margin-bottom:10px;">
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
               <div>
-                <label style="font-size:0.72rem; font-weight:600; color:#555;">Day Label (e.g. 11/10/2026 - रविवार)</label>
+                <label style="font-size:0.72rem; font-weight:600; color:#555;">Date & Weekday (तारीख व दिन)</label>
                 <input type="text" id="adm-sched-dlabel" class="input-box" placeholder="11/10/2026 - रविवार" />
               </div>
               <div>
-                <label style="font-size:0.72rem; font-weight:600; color:#555;">Date (e.g. Oct 11)</label>
+                <label style="font-size:0.72rem; font-weight:600; color:#555;">Calendar Date</label>
                 <input type="text" id="adm-sched-dt" class="input-box" placeholder="11/10/2026" />
               </div>
             </div>
 
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
               <div>
-                <label style="font-size:0.72rem; font-weight:600; color:#555;">Devi Form / Puja / Event</label>
+                <label style="font-size:0.72rem; font-weight:600; color:#555;">Puja / Event / Tithi (कार्यक्रम)</label>
                 <input type="text" id="adm-sched-devi" class="input-box" placeholder="घटस्थापना / माता रानी आगमन" />
               </div>
               <div>
@@ -1097,18 +1097,48 @@
               </div>
             </div>
 
-            <label style="font-size:0.72rem; font-weight:600; color:#555;">Special Program / Event</label>
+            <label style="font-size:0.72rem; font-weight:600; color:#555;">Detailed Program Description</label>
             <input type="text" id="adm-sched-prog" class="input-box" placeholder="घटस्थापना / माता रानी आगमन" />
 
-            <label style="font-size:0.72rem; font-weight:600; color:#555;">Prasad</label>
-            <input type="text" id="adm-sched-prasad" class="input-box" placeholder="महाप्रसाद / Peda" />
+            <label style="font-size:0.72rem; font-weight:600; color:#555;">Prasad (प्रसाद)</label>
+            <input type="text" id="adm-sched-prasad" class="input-box" placeholder="महाप्रसाद" />
           </div>
 
           <div style="display:flex; gap:8px;">
-            <button class="btn" style="background:#8e44ad; flex:1;" onclick="saveScheduleDay()">💾 Save / Update Day</button>
-            <button class="btn" style="background:#c0392b; font-size:0.78rem;" onclick="deleteCurrentScheduleDay()">🗑️ Delete Day</button>
-            <button class="btn" style="background:#555; font-size:0.78rem;" onclick="resetScheduleDefaults()">🔄 Reset Defaults</button>
+            <button class="btn" style="background:#8e44ad; flex:1;" onclick="saveScheduleDay()">💾 Save / Update Date</button>
+            <button class="btn" style="background:#c0392b; font-size:0.78rem;" onclick="deleteCurrentScheduleDay()">🗑️ Delete Date</button>
+            <button class="btn" style="background:#555; font-size:0.78rem;" onclick="resetScheduleDefaults()">🔄 Reset Poster Dates</button>
           </div>
+        </div>
+
+        <!-- REGULAR TIMINGS EDITOR -->
+        <div class="card" style="border-left-color: #e67e22;">
+          <h3>⏰ Edit Regular Daily Timings (नियमित वेळ)</h3>
+          <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Update daily Aarti and program timings shown on the front screen:</p>
+          
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">Subah Aarti Time (सकाळ)</label>
+              <input type="text" id="adm-subah-aarti" class="input-box" placeholder="e.g. 7:30 AM" />
+            </div>
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">Sandhya Aarti Time (संध्याकाळ)</label>
+              <input type="text" id="adm-sandhya-aarti" class="input-box" placeholder="e.g. 7:30 PM" />
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">Garba & Dandiya (रास गरबा)</label>
+              <input type="text" id="adm-garba-time" class="input-box" placeholder="e.g. 8:30 PM – 10:00 PM" />
+            </div>
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">Maha Prasad (महाप्रसाद)</label>
+              <input type="text" id="adm-prasad-time" class="input-box" placeholder="e.g. 10:00 PM onwards" />
+            </div>
+          </div>
+
+          <button class="btn" style="background:#e67e22; width:100%;" onclick="saveRegularTimings()">💾 Save Regular Timings</button>
         </div>
 
         <div class="card" style="border-left-color: #f39c12;">
@@ -2695,49 +2725,175 @@
       const current = cachedMedia[idx] || {};
       const view = document.getElementById('media-content-view');
       if (!view) return;
+    // -------------------------------------------------------------
+    // SCHEDULE & WEEKDAY/TITHI MANAGER
+    // -------------------------------------------------------------
+    const DEFAULT_DAYS = [
+      { d: "11/10/2026 - रविवार", dt: "11/10/2026", devi: "घटस्थापना / माता रानी आगमन", clr: "केसरिया (Orange)", p: "घटस्थापना / माता रानी आगमन", pr: "महाप्रसाद" },
+      { d: "12/10/2026 - सोमवार", dt: "12/10/2026", devi: "मेहंदी", clr: "सफेद (White)", p: "मेहंदी", pr: "महाप्रसाद" },
+      { d: "13/10/2026 - मंगलवार", dt: "13/10/2026", devi: "गरबा", clr: "लाल (Red)", p: "गरबा", pr: "महाप्रसाद" },
+      { d: "14/10/2026 - बुधवार", dt: "14/10/2026", devi: "डांडिया", clr: "रॉयल ब्लू (Royal Blue)", p: "डांडिया", pr: "महाप्रसाद" },
+      { d: "15/10/2026 - गुरुवार", dt: "15/10/2026", devi: "फूट पूजा", clr: "येलो (Yellow)", p: "फूट पूजा", pr: "महाप्रसाद" },
+      { d: "16/10/2026 - शुक्रवार", dt: "16/10/2026", devi: "महा आरती", clr: "हरा (Green)", p: "महा आरती", pr: "महाप्रसाद" },
+      { d: "17/10/2026 - शनिवार", dt: "17/10/2026", devi: "हल्दी", clr: "ग्रे (Grey)", p: "हल्दी", pr: "महाप्रसाद" },
+      { d: "18/10/2026 - रविवार", dt: "18/10/2026", devi: "कन्या पूजन", clr: "बैंगनी (Purple)", p: "कन्या पूजन", pr: "महाप्रसाद" },
+      { d: "19/10/2026 - सोमवार", dt: "19/10/2026", devi: "हवन", clr: "पीकाँक ग्रीन (Peacock Green)", p: "हवन", pr: "महाप्रसाद" },
+      { d: "20/10/2026 - मंगलवार", dt: "20/10/2026", devi: "विजयादशमी • महाप्रसाद", clr: "गुलाबी (Pink)", p: "विजयादशमी • महाप्रसाद", pr: "महाप्रसाद" },
+      { d: "21/10/2026 - बुधवार", dt: "21/10/2026", devi: "मूर्ति विसर्जन", clr: "सफेद (White)", p: "मूर्ति विसर्जन", pr: "महाप्रसाद" }
+    ];
 
-      let html = `
-        <div style="background:#fffaf0; border:1px solid #fce8cc; padding:14px; border-radius:8px;">
-          <h4 style="color:var(--primary); margin-bottom:4px;">${x.d || ''} - ${x.devi || ''}</h4>
-          <p style="font-size:0.8rem; color:#666; margin-bottom:12px;">Events: ${x.p || ''}</p>
+    function initDays() {
+      const b = document.getElementById('day-bar');
+      if (!b) return;
+      b.innerHTML = '';
+      
+      if (!cachedSchedule || cachedSchedule.length === 0) {
+        cachedSchedule = DEFAULT_DAYS;
+      }
+
+      cachedSchedule.forEach((x, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'day-btn ' + (i === 0 ? 'active' : '');
+        btn.innerText = x.d || `Date ${i+1}`;
+        btn.onclick = function() {
+          document.querySelectorAll('#day-bar .day-btn').forEach(k => k.classList.remove('active'));
+          btn.classList.add('active');
+          renderDay(i);
+        };
+        b.appendChild(btn);
+      });
+      renderDay(0);
+    }
+
+    function renderDay(i) {
+      const x = cachedSchedule[i] || DEFAULT_DAYS[0];
+      const view = document.getElementById('day-view');
+      if (!view) return;
+      view.innerHTML = `
+        <h4 style="color:var(--primary); font-size:1rem; margin-bottom:6px;">📅 दिनांक / Day: ${x.d || ''}</h4>
+        <p><strong>रंग (Color Theme):</strong> <span style="font-weight:700; color:#d4af37;">${x.clr || ''}</span></p>
+        <p><strong>कार्यक्रम / Puja:</strong> ${x.devi || ''}</p>
+        <p><strong>विशेष कार्यक्रम:</strong> ${x.p || ''}</p>
+        <p><strong>प्रसाद:</strong> ${x.pr || ''}</p>
       `;
+    }
 
-      if (current.photo) {
-        html += `<a class="btn" style="background:#2980b9; width:100%; margin-bottom:8px;" href="${current.photo}" target="_blank">📁 Open Photos (Drive/Photos)</a>`;
-      } else {
-        html += `<div style="padding:10px; background:#fff; border:1px dashed #ccc; border-radius:6px; text-align:center; font-size:0.8rem; color:#777; margin-bottom:8px;">⏳ Photos will be uploaded soon!</div>`;
+    function populateScheduleSelects() {
+      const sel = document.getElementById('adm-sched-day-select');
+      const mediaSel = document.getElementById('adm-media-day');
+      if (!sel) return;
+
+      sel.innerHTML = '';
+      if (mediaSel) mediaSel.innerHTML = '';
+
+      cachedSchedule.forEach((x, idx) => {
+        const opt = document.createElement('option');
+        opt.value = idx;
+        opt.innerText = `${x.d || ('Date ' + (idx+1))} - ${x.devi || ''}`;
+        sel.appendChild(opt);
+
+        if (mediaSel) {
+          const mOpt = document.createElement('option');
+          mOpt.value = idx;
+          mOpt.innerText = `${x.d || ('Date ' + (idx+1))}`;
+          mediaSel.appendChild(mOpt);
+        }
+      });
+      loadAdminScheduleFields();
+      loadAdminMediaFields();
+    }
+
+    function loadAdminScheduleFields() {
+      const sel = document.getElementById('adm-sched-day-select');
+      if (!sel) return;
+      const idx = parseInt(sel.value) || 0;
+      const x = cachedSchedule[idx] || {};
+
+      document.getElementById('adm-sched-dlabel').value = x.d || '';
+      document.getElementById('adm-sched-dt').value = x.dt || '';
+      document.getElementById('adm-sched-clr').value = x.clr || '';
+      document.getElementById('adm-sched-devi').value = x.devi || '';
+      document.getElementById('adm-sched-prog').value = x.p || '';
+      document.getElementById('adm-sched-prasad').value = x.pr || '';
+    }
+
+    function addNewFestivalDay() {
+      const newDay = {
+        d: "22/10/2026 - गुरुवार",
+        dt: "22/10/2026",
+        devi: "विशेष कार्यक्रम",
+        clr: "गुलाबी (Pink)",
+        p: "विशेष कार्यक्रम",
+        pr: "महाप्रसाद"
+      };
+      cachedSchedule.push(newDay);
+      localStorage.setItem('nbmm_schedule_custom', JSON.stringify(cachedSchedule));
+      if (db) db.ref('schedule').set(cachedSchedule);
+
+      initDays();
+      initMediaDays();
+      populateScheduleSelects();
+      document.getElementById('adm-sched-day-select').value = cachedSchedule.length - 1;
+      loadAdminScheduleFields();
+      alert(`New Date added successfully!`);
+    }
+
+    function saveScheduleDay() {
+      const sel = document.getElementById('adm-sched-day-select');
+      if (!sel) return;
+      const idx = parseInt(sel.value) || 0;
+
+      cachedSchedule[idx] = {
+        d: document.getElementById('adm-sched-dlabel').value.trim() || 'Date',
+        dt: document.getElementById('adm-sched-dt').value.trim(),
+        clr: document.getElementById('adm-sched-clr').value.trim(),
+        devi: document.getElementById('adm-sched-devi').value.trim(),
+        p: document.getElementById('adm-sched-prog').value.trim(),
+        pr: document.getElementById('adm-sched-prasad').value.trim()
+      };
+
+      localStorage.setItem('nbmm_schedule_custom', JSON.stringify(cachedSchedule));
+      if (db) db.ref('schedule').set(cachedSchedule);
+
+      initDays();
+      initMediaDays();
+      populateScheduleSelects();
+      alert('Schedule updated and synced across all devices!');
+    }
+
+    function deleteCurrentScheduleDay() {
+      const sel = document.getElementById('adm-sched-day-select');
+      if (!sel) return;
+      const idx = parseInt(sel.value) || 0;
+
+      if (cachedSchedule.length <= 1) {
+        alert('You must keep at least one date.');
+        return;
       }
 
-      if (current.video) {
-        html += `<a class="btn" style="background:#c0392b; width:100%;" href="${current.video}" target="_blank">▶️ Watch Video Highlights</a>`;
-      }
+      if (!confirm(`Are you sure you want to delete ${cachedSchedule[idx].d}?`)) return;
 
-      html += `</div>`;
-      view.innerHTML = html;
+      cachedSchedule.splice(idx, 1);
+      localStorage.setItem('nbmm_schedule_custom', JSON.stringify(cachedSchedule));
+      if (db) db.ref('schedule').set(cachedSchedule);
+
+      initDays();
+      initMediaDays();
+      populateScheduleSelects();
+      alert('Date deleted successfully.');
     }
 
-    function loadAdminMediaFields() {
-      const mediaSel = document.getElementById('adm-media-day');
-      if (!mediaSel) return;
-      const day = mediaSel.value || 0;
-      const current = cachedMedia[day] || {};
-      document.getElementById('adm-photo-link').value = current.photo || '';
-      document.getElementById('adm-video-link').value = current.video || '';
+    function resetScheduleDefaults() {
+      if (!confirm('Reset schedule back to official Navratri 2026 poster dates?')) return;
+      cachedSchedule = DEFAULT_DAYS;
+      localStorage.setItem('nbmm_schedule_custom', JSON.stringify(DEFAULT_DAYS));
+      if (db) db.ref('schedule').set(DEFAULT_DAYS);
+      initDays();
+      initMediaDays();
+      populateScheduleSelects();
+      alert('Schedule reset to official poster dates.');
     }
-
-    function saveMediaLink() {
-      const mediaSel = document.getElementById('adm-media-day');
-      if (!mediaSel) return;
-      const day = mediaSel.value;
-      const photo = document.getElementById('adm-photo-link').value.trim();
-      const video = document.getElementById('adm-video-link').value.trim();
-
-      cachedMedia[day] = { photo, video };
-      localStorage.setItem('nbmm_media', JSON.stringify(cachedMedia));
-      if (db) db.ref('media/' + day).set({ photo, video });
-      alert(`Media links updated!`);
-      renderMediaDay(day);
-    }
+      
 
     // -------------------------------------------------------------
     // 20. SHARE TAB & DYNAMIC URL
