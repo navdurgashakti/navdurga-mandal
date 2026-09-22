@@ -531,6 +531,7 @@
       <button class="active" onclick="switchSection('schedule', this)" id="nav-sched">📅 Daily Schedule</button>
       <button onclick="switchSection('media', this)" id="nav-media">📸 Photos & Videos</button>
       <button onclick="switchSection('live', this)" id="nav-live">🔴 Live Darshan</button>
+      <button onclick="switchSection('songs', this)" id="nav-songs">🎶 Garba & Dandiya Songs</button>
       <button onclick="switchSection('donate', this)" id="nav-donate">🙏 Pavitra Daan & Bank</button>
       <button onclick="switchSection('share', this)" id="nav-share">📤 Share App / QR</button>
       <button onclick="switchSection('info', this)" id="nav-info">📜 Aartis & Social</button>
@@ -632,6 +633,16 @@
         </p>
         <p style="font-size:0.75rem; color:#888; margin-top:8px;" id="live-off-note">The player will automatically start when the live stream begins!</p>
       </div>
+    </div>
+  </section>
+
+  <!-- TAB: GARBA & DANDIYA SONGS -->
+  <section id="tab-songs" class="tab">
+    <div class="card" style="border-left-color: #e84393;">
+      <h3 style="color:#c0392b;">🎶 गरबा व डांडिया गीते (Garba & Dandiya Songs)</h3>
+      <p style="font-size:0.82rem; color:#555; margin-bottom:10px;">Select a song or bhajan to read lyrics during Garba nights:</p>
+      <div class="day-bar" id="songs-tabs-bar"></div>
+      <div id="songs-content-view" style="margin-top:10px; background:#fffdf8; border:1px solid #f9e2b0; border-radius:8px; padding:12px;"></div>
     </div>
   </section>
 
@@ -764,7 +775,7 @@
 
     <div class="card" style="border-left-color: #d35400;">
       <h3>🕉️ Devi Aarties & Stutis</h3>
-      <p style="font-size:0.8rem; color:#666; margin-bottom:8px;" id="sec-aarti-sub">Select an Aarti to read lyrics:</p>
+      <p style="font-size:0.80rem; color:#666; margin-bottom:8px;" id="sec-aarti-sub">Select an Aarti to read lyrics:</p>
       <div class="day-bar" id="aarti-tabs-bar"></div>
       <div id="aarti-content-view" style="margin-top:10px; background:#fffdf7; border:1px solid #f9e2b0; border-radius:8px; padding:12px;"></div>
     </div>
@@ -821,6 +832,7 @@
         <button class="admin-sub-btn" id="asb-live" onclick="switchAdminSubTab('live')">🔴 थेट दर्शन</button>
         <button class="admin-sub-btn" id="asb-cctv" onclick="switchAdminSubTab('cctv')">📹 CCTV</button>
         <button class="admin-sub-btn" id="asb-schedule" onclick="switchAdminSubTab('schedule')">📅 कार्यक्रम</button>
+        <button class="admin-sub-btn" id="asb-songs" onclick="switchAdminSubTab('songs')">🎶 गाणी (Songs)</button>
         <button class="admin-sub-btn" id="asb-settings" onclick="switchAdminSubTab('settings')">⚙️ सुरक्षा व उपकरणे</button>
       </div>
 
@@ -1056,7 +1068,7 @@
         </div>
       </div>
 
-      <!-- SUB-TAB 4: SCHEDULE MANAGER (ADD, EDIT & DELETE DAYS WITH TITHI & WEEKDAY) -->
+      <!-- SUB-TAB 4: SCHEDULE MANAGER -->
       <div id="asv-schedule" class="admin-sub-view">
         <div class="card" style="border-left-color: #8e44ad;">
           <h3>📅 Festival Schedule Manager (Dates, Weekdays & Poojas)</h3>
@@ -1151,7 +1163,18 @@
           <button class="btn" style="background:#f39c12; color:#000; width:100%;" onclick="saveMediaLink()">💾 Update Links</button>
         </div>
       </div>
-      
+
+      <!-- SUB-TAB: SONGS MANAGER -->
+      <div id="asv-songs" class="admin-sub-view">
+        <div class="card" style="border-left-color: #e84393;">
+          <h3>🎶 Add / Manage Garba & Dandiya Songs</h3>
+          <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Add new Garba songs or lyrics for devotees to view:</p>
+          <input type="text" id="adm-song-title" class="input-box" placeholder="Song Title (e.g. Dhol Baje)" />
+          <textarea id="adm-song-lyrics" class="input-box" rows="5" placeholder="Enter song lyrics here..."></textarea>
+          <button class="btn" style="background:#e84393; width:100%; margin-bottom:12px;" onclick="saveNewSong()">➕ Add Song</button>
+          <div id="adm-songs-list"></div>
+        </div>
+      </div>
 
       <!-- SUB-TAB 5: SETTINGS, SOCIAL, SESSIONS & AARTIS -->
       <div id="asv-settings" class="admin-sub-view">
@@ -1396,6 +1419,19 @@
       }
     ];
 
+    const DEFAULT_SONGS = [
+      {
+        id: "song_1",
+        title: "Dhol Baje (ढोल बाजे - Ramleela)",
+        lyrics: "नगाड़ा संग ढोल बाजे, बाजे रे ढोल बाजे...\nकमरिया डोल बाजे, रे ढोल बाजे!\nताता थैया ताता थैया लगे सुहाना...\nमाता के दरबार में झूमे ज़माना!"
+      },
+      {
+        id: "song_2",
+        title: "Chogada Tara (चोगाडा तारा)",
+        lyrics: "चोगाडा तारा, दिल बितारा...\nऐसू नैनो ने मारा, ऐसा रंग डाला!\nआओ खेले गरबा, संग माता का प्यार है...\nझूमो नाचो गाओ, ये उत्सव बहार है!"
+      }
+    ];
+
     const DEFAULT_AUTH = { uid: "NBMM", pin: "NBMM1137@" };
     const DEFAULT_SOCIAL = {
       insta: "https://instagram.com/navdurgabalmitramandal",
@@ -1418,6 +1454,7 @@
     let cachedMedia = JSON.parse(localStorage.getItem('nbmm_media') || '{}');
     let cachedEntries = JSON.parse(localStorage.getItem('nbmm_entries') || '[]');
     let cachedAarties = JSON.parse(localStorage.getItem('nbmm_aarties') || 'null') || DEFAULT_AARTIES;
+    let cachedSongs = JSON.parse(localStorage.getItem('nbmm_songs') || 'null') || DEFAULT_SONGS;
     let cachedAuth = JSON.parse(localStorage.getItem('nbmm_credentials') || 'null') || DEFAULT_AUTH;
     let cachedLiveStream = localStorage.getItem('nbmm_live_url') || '';
     let cachedInstaLive = (localStorage.getItem('nbmm_insta_live') === '1');
@@ -1493,6 +1530,19 @@
         renderAdminAartiList();
       });
 
+      db.ref('songs').on('value', (snap) => {
+        const val = snap.val();
+        if (val) {
+          cachedSongs = Object.values(val);
+          localStorage.setItem('nbmm_songs', JSON.stringify(cachedSongs));
+        } else {
+          cachedSongs = DEFAULT_SONGS;
+          localStorage.setItem('nbmm_songs', JSON.stringify(DEFAULT_SONGS));
+        }
+        renderSongsTabs();
+        renderAdminSongsList();
+      });
+
       db.ref('auth_creds').on('value', (snap) => {
         const val = snap.val();
         if (val && val.uid && val.pin) {
@@ -1558,6 +1608,7 @@
       db.ref('active_sessions').on('value', (snap) => {
         const val = snap.val() || {};
         cachedSessions = val;
+        renderDeviceSessions();
       });
     }
 
@@ -1786,7 +1837,97 @@
     }
 
     // -------------------------------------------------------------
-    // 6. CATEGORY-WISE SECTION FILTER & TOTALS CALCULATION
+    // 6. GARBA & DANDIYA SONGS VIEWER & MANAGER
+    // -------------------------------------------------------------
+    let selectedSongIdx = 0;
+
+    function renderSongsTabs() {
+      const bar = document.getElementById('songs-tabs-bar');
+      if (!bar) return;
+      bar.innerHTML = '';
+
+      if (cachedSongs.length === 0) {
+        document.getElementById('songs-content-view').innerHTML = '<p style="color:#777; font-size:0.85rem;">No songs added yet.</p>';
+        return;
+      }
+
+      if (selectedSongIdx >= cachedSongs.length) selectedSongIdx = 0;
+
+      cachedSongs.forEach((s, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'day-btn ' + (idx === selectedSongIdx ? 'active' : '');
+        btn.innerText = '🎶 ' + s.title;
+        btn.onclick = function() {
+          document.querySelectorAll('#songs-tabs-bar .day-btn').forEach(k => k.classList.remove('active'));
+          btn.classList.add('active');
+          selectedSongIdx = idx;
+          showSong(idx);
+        };
+        bar.appendChild(btn);
+      });
+
+      showSong(selectedSongIdx);
+    }
+
+    function showSong(idx) {
+      const s = cachedSongs[idx];
+      if (!s) return;
+      document.getElementById('songs-content-view').innerHTML = `
+        <h4 style="color:#c0392b; font-size:1.05rem; margin-bottom:8px; border-bottom:1px dashed #e84393; padding-bottom:4px;">${s.title}</h4>
+        <p style="white-space: pre-line; line-height: 1.8; font-size: 0.88rem; color:#222; font-weight:500;">${s.lyrics}</p>
+      `;
+    }
+
+    function saveNewSong() {
+      const title = document.getElementById('adm-song-title').value.trim();
+      const lyrics = document.getElementById('adm-song-lyrics').value.trim();
+
+      if (!title || !lyrics) {
+        alert('Please enter song title and lyrics.');
+        return;
+      }
+
+      const id = 'song_' + Date.now();
+      const newSong = { id, title, lyrics };
+
+      cachedSongs.push(newSong);
+      localStorage.setItem('nbmm_songs', JSON.stringify(cachedSongs));
+      if (db) db.ref('songs/' + id).set(newSong);
+
+      document.getElementById('adm-song-title').value = '';
+      document.getElementById('adm-song-lyrics').value = '';
+      alert(`"${title}" added & synced!`);
+      renderSongsTabs();
+      renderAdminSongsList();
+    }
+
+    function deleteSong(id) {
+      if (!confirm('Delete this song across all phones?')) return;
+      cachedSongs = cachedSongs.filter(x => x.id !== id);
+      localStorage.setItem('nbmm_songs', JSON.stringify(cachedSongs));
+      if (db) db.ref('songs/' + id).remove();
+      renderSongsTabs();
+      renderAdminSongsList();
+    }
+
+    function renderAdminSongsList() {
+      const box = document.getElementById('adm-songs-list');
+      if (!box) return;
+      box.innerHTML = '';
+
+      cachedSongs.forEach(s => {
+        const div = document.createElement('div');
+        div.style = 'display:flex; justify-content:space-between; align-items:center; background:#f5f5f5; padding:8px 10px; border-radius:6px; margin-bottom:6px; font-size:0.85rem;';
+        div.innerHTML = `
+          <span><strong>🎶 ${s.title}</strong></span>
+          <button class="btn" style="background:#c0392b; padding:4px 8px; font-size:0.7rem;" onclick="deleteSong('${s.id}')">🗑️ Delete</button>
+        `;
+        box.appendChild(div);
+      });
+    }
+
+    // -------------------------------------------------------------
+    // 7. CATEGORY-WISE SECTION FILTER & TOTALS CALCULATION
     // -------------------------------------------------------------
     function filterByCat(catKey) {
       currentSelectedCategory = catKey;
@@ -1845,7 +1986,7 @@
     }
 
     // -------------------------------------------------------------
-    // 7. ACTIVE DEVICE SESSIONS & REMOTE REVOCATION ENGINE
+    // 8. ACTIVE DEVICE SESSIONS & REMOTE REVOCATION ENGINE
     // -------------------------------------------------------------
     function getDeviceName() {
       const ua = navigator.userAgent;
@@ -1934,7 +2075,7 @@
     }
 
     // -------------------------------------------------------------
-    // 8. EXPORT LEDGER TO EXCEL / CSV
+    // 9. EXPORT LEDGER TO EXCEL / CSV
     // -------------------------------------------------------------
     function exportLedgerToExcel() {
       if (!cachedEntries || cachedEntries.length === 0) {
@@ -1964,7 +2105,7 @@
     }
 
     // -------------------------------------------------------------
-    // 9. DEVOTEE RECEIPT SELF-LOOKUP
+    // 10. DEVOTEE RECEIPT SELF-LOOKUP
     // -------------------------------------------------------------
     function findDevoteeReceipt() {
       const q = (document.getElementById('devotee-search-input').value || '').trim().toLowerCase();
@@ -2004,7 +2145,7 @@
     }
 
     // -------------------------------------------------------------
-    // 10. REGULAR TIMINGS CONTROLLER
+    // 11. REGULAR TIMINGS CONTROLLER
     // -------------------------------------------------------------
     function renderRegularTimings() {
       const t = cachedTimings || DEFAULT_TIMINGS;
@@ -2049,7 +2190,7 @@
     }
 
     // -------------------------------------------------------------
-    // 11. KHATA SUB-TAB BIFURCATION CONTROLLER
+    // 12. KHATA SUB-TAB BIFURCATION CONTROLLER
     // -------------------------------------------------------------
     function switchAdminSubTab(tabName) {
       document.querySelectorAll('.admin-sub-btn').forEach(btn => btn.classList.remove('active'));
@@ -2063,7 +2204,7 @@
     }
 
     // -------------------------------------------------------------
-    // 12. BANK, UPI & BARCODE ENGINE
+    // 13. BANK, UPI & BARCODE ENGINE
     // -------------------------------------------------------------
     function renderBankDetails() {
       const b = cachedBank || DEFAULT_BANK;
@@ -2159,7 +2300,7 @@
     }
 
     // -------------------------------------------------------------
-    // 13. SOCIAL MEDIA & WHATSAPP ENGINE
+    // 14. SOCIAL MEDIA & WHATSAPP ENGINE
     // -------------------------------------------------------------
     function renderSocialLinks() {
       const instaLink = document.getElementById('link-insta-page');
@@ -2208,7 +2349,7 @@
     }
 
     // -------------------------------------------------------------
-    // 14. LANGUAGE TRANSLATION ENGINE
+    // 15. LANGUAGE TRANSLATION ENGINE
     // -------------------------------------------------------------
     const I18N = {
       en: {
@@ -2324,7 +2465,7 @@
     }
 
     // -------------------------------------------------------------
-    // 15. NUMBER CONVERTERS
+    // 16. NUMBER CONVERTERS
     // -------------------------------------------------------------
     function numberToMarathiWords(n) {
       n = parseInt(n);
@@ -2398,7 +2539,7 @@
     }
 
     // -------------------------------------------------------------
-    // 16. GUARANTEED 1-TAP INSTALL
+    // 17. GUARANTEED 1-TAP INSTALL
     // -------------------------------------------------------------
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').catch(() => {});
@@ -2435,7 +2576,7 @@
     }
 
     // -------------------------------------------------------------
-    // 17. NAVIGATION & DRAWER
+    // 18. NAVIGATION & DRAWER
     // -------------------------------------------------------------
     function openDrawer() {
       document.getElementById('side-drawer').style.left = '0px';
@@ -2458,7 +2599,7 @@
     }
 
     // -------------------------------------------------------------
-    // 18. AARTI VIEWER & ADMIN MANAGER
+    // 19. AARTI VIEWER & ADMIN MANAGER
     // -------------------------------------------------------------
     let selectedAartiIdx = 0;
 
@@ -2548,29 +2689,31 @@
     }
 
     // -------------------------------------------------------------
-    // 19. SCHEDULE & MEDIA MANAGER (ADD, EDIT, DELETE)
+    // 20. SCHEDULE & MEDIA MANAGER (OPTIMIZED & LAG-FREE)
     // -------------------------------------------------------------
     function initDays() {
       const b = document.getElementById('day-bar');
       if (!b) return;
-      b.innerHTML = '';
       
-      if (!cachedSchedule || cachedSchedule.length === 0) {
+      if (!cachedSchedule || !Array.isArray(cachedSchedule) || cachedSchedule.length === 0) {
         cachedSchedule = DEFAULT_DAYS;
       }
 
+      let html = '';
       cachedSchedule.forEach((x, i) => {
-        const btn = document.createElement('button');
-        btn.className = 'day-btn ' + (i === 0 ? 'active' : '');
-        btn.innerText = x.d || `Date ${i+1}`;
-        btn.onclick = function() {
-          document.querySelectorAll('#day-bar .day-btn').forEach(k => k.classList.remove('active'));
-          btn.classList.add('active');
-          renderDay(i);
-        };
-        b.appendChild(btn);
+        html += `<button class="day-btn ${i === 0 ? 'active' : ''}" onclick="selectFestivalDay(${i})">${x.d || ('Date ' + (i+1))}</button>`;
       });
+      b.innerHTML = html;
       renderDay(0);
+    }
+
+    function selectFestivalDay(i) {
+      const buttons = document.querySelectorAll('#day-bar .day-btn');
+      buttons.forEach((btn, idx) => {
+        if (idx === i) btn.classList.add('active');
+        else btn.classList.remove('active');
+      });
+      renderDay(i);
     }
 
     function renderDay(i) {
@@ -2578,9 +2721,9 @@
       const view = document.getElementById('day-view');
       if (!view) return;
       view.innerHTML = `
-        <h4 style="color:var(--primary); font-size:1rem; margin-bottom:6px;">📅 दिनांक / Date: ${x.d || ''}</h4>
-        <p><strong>रंग (Color):</strong> <span style="font-weight:700; color:#d4af37;">${x.clr || ''}</span></p>
-        <p><strong>कार्यक्रम / puja:</strong> ${x.devi || ''}</p>
+        <h4 style="color:var(--primary); font-size:1rem; margin-bottom:6px;">📅 दिनांक / Day: ${x.d || ''}</h4>
+        <p><strong>रंग (Color Theme):</strong> <span style="font-weight:700; color:#d4af37;">${x.clr || ''}</span></p>
+        <p><strong>कार्यक्रम / Puja:</strong> ${x.devi || ''}</p>
         <p><strong>विशेष कार्यक्रम:</strong> ${x.p || ''}</p>
         <p><strong>प्रसाद:</strong> ${x.pr || ''}</p>
       `;
@@ -2591,22 +2734,17 @@
       const mediaSel = document.getElementById('adm-media-day');
       if (!sel) return;
 
-      sel.innerHTML = '';
-      if (mediaSel) mediaSel.innerHTML = '';
-
+      let opts = '';
+      let mediaOpts = '';
       cachedSchedule.forEach((x, idx) => {
-        const opt = document.createElement('option');
-        opt.value = idx;
-        opt.innerText = `${x.d || ('Date ' + (idx+1))} (${x.devi || ''})`;
-        sel.appendChild(opt);
-
+        opts += `<option value="${idx}">${x.d || ('Date ' + (idx+1))} - ${x.devi || ''}</option>`;
         if (mediaSel) {
-          const mOpt = document.createElement('option');
-          mOpt.value = idx;
-          mOpt.innerText = `${x.d || ('Date ' + (idx+1))}`;
-          mediaSel.appendChild(mOpt);
+          mediaOpts += `<option value="${idx}">${x.d || ('Date ' + (idx+1))}</option>`;
         }
       });
+      sel.innerHTML = opts;
+      if (mediaSel) mediaSel.innerHTML = mediaOpts;
+      
       loadAdminScheduleFields();
       loadAdminMediaFields();
     }
@@ -2629,7 +2767,7 @@
       const newDay = {
         d: "22/10/2026 - गुरुवार",
         dt: "22/10/2026",
-        devi: "विशेष उत्सव",
+        devi: "विशेष कार्यक्रम",
         clr: "गुलाबी (Pink)",
         p: "विशेष कार्यक्रम",
         pr: "महाप्रसाद"
@@ -2725,179 +2863,52 @@
       const current = cachedMedia[idx] || {};
       const view = document.getElementById('media-content-view');
       if (!view) return;
-    // -------------------------------------------------------------
-    // SCHEDULE & WEEKDAY/TITHI MANAGER
-    // -------------------------------------------------------------
-    const DEFAULT_DAYS = [
-      { d: "11/10/2026 - रविवार", dt: "11/10/2026", devi: "घटस्थापना / माता रानी आगमन", clr: "केसरिया (Orange)", p: "घटस्थापना / माता रानी आगमन", pr: "महाप्रसाद" },
-      { d: "12/10/2026 - सोमवार", dt: "12/10/2026", devi: "मेहंदी", clr: "सफेद (White)", p: "मेहंदी", pr: "महाप्रसाद" },
-      { d: "13/10/2026 - मंगलवार", dt: "13/10/2026", devi: "गरबा", clr: "लाल (Red)", p: "गरबा", pr: "महाप्रसाद" },
-      { d: "14/10/2026 - बुधवार", dt: "14/10/2026", devi: "डांडिया", clr: "रॉयल ब्लू (Royal Blue)", p: "डांडिया", pr: "महाप्रसाद" },
-      { d: "15/10/2026 - गुरुवार", dt: "15/10/2026", devi: "फूट पूजा", clr: "येलो (Yellow)", p: "फूट पूजा", pr: "महाप्रसाद" },
-      { d: "16/10/2026 - शुक्रवार", dt: "16/10/2026", devi: "महा आरती", clr: "हरा (Green)", p: "महा आरती", pr: "महाप्रसाद" },
-      { d: "17/10/2026 - शनिवार", dt: "17/10/2026", devi: "हल्दी", clr: "ग्रे (Grey)", p: "हल्दी", pr: "महाप्रसाद" },
-      { d: "18/10/2026 - रविवार", dt: "18/10/2026", devi: "कन्या पूजन", clr: "बैंगनी (Purple)", p: "कन्या पूजन", pr: "महाप्रसाद" },
-      { d: "19/10/2026 - सोमवार", dt: "19/10/2026", devi: "हवन", clr: "पीकाँक ग्रीन (Peacock Green)", p: "हवन", pr: "महाप्रसाद" },
-      { d: "20/10/2026 - मंगलवार", dt: "20/10/2026", devi: "विजयादशमी • महाप्रसाद", clr: "गुलाबी (Pink)", p: "विजयादशमी • महाप्रसाद", pr: "महाप्रसाद" },
-      { d: "21/10/2026 - बुधवार", dt: "21/10/2026", devi: "मूर्ति विसर्जन", clr: "सफेद (White)", p: "मूर्ति विसर्जन", pr: "महाप्रसाद" }
-    ];
 
-    function initDays() {
-      const b = document.getElementById('day-bar');
-      if (!b) return;
-      b.innerHTML = '';
-      
-      if (!cachedSchedule || cachedSchedule.length === 0) {
-        cachedSchedule = DEFAULT_DAYS;
-      }
-
-      cachedSchedule.forEach((x, i) => {
-        const btn = document.createElement('button');
-        btn.className = 'day-btn ' + (i === 0 ? 'active' : '');
-        btn.innerText = x.d || `Date ${i+1}`;
-        btn.onclick = function() {
-          document.querySelectorAll('#day-bar .day-btn').forEach(k => k.classList.remove('active'));
-          btn.classList.add('active');
-          renderDay(i);
-        };
-        b.appendChild(btn);
-      });
-      renderDay(0);
-    }
-
-    function renderDay(i) {
-      const x = cachedSchedule[i] || DEFAULT_DAYS[0];
-      const view = document.getElementById('day-view');
-      if (!view) return;
-      view.innerHTML = `
-        <h4 style="color:var(--primary); font-size:1rem; margin-bottom:6px;">📅 दिनांक / Day: ${x.d || ''}</h4>
-        <p><strong>रंग (Color Theme):</strong> <span style="font-weight:700; color:#d4af37;">${x.clr || ''}</span></p>
-        <p><strong>कार्यक्रम / Puja:</strong> ${x.devi || ''}</p>
-        <p><strong>विशेष कार्यक्रम:</strong> ${x.p || ''}</p>
-        <p><strong>प्रसाद:</strong> ${x.pr || ''}</p>
+      let html = `
+        <div style="background:#fffaf0; border:1px solid #fce8cc; padding:14px; border-radius:8px;">
+          <h4 style="color:var(--primary); margin-bottom:4px;">${x.d || ''} - ${x.devi || ''}</h4>
+          <p style="font-size:0.8rem; color:#666; margin-bottom:12px;">Events: ${x.p || ''}</p>
       `;
-    }
 
-    function populateScheduleSelects() {
-      const sel = document.getElementById('adm-sched-day-select');
-      const mediaSel = document.getElementById('adm-media-day');
-      if (!sel) return;
-
-      sel.innerHTML = '';
-      if (mediaSel) mediaSel.innerHTML = '';
-
-      cachedSchedule.forEach((x, idx) => {
-        const opt = document.createElement('option');
-        opt.value = idx;
-        opt.innerText = `${x.d || ('Date ' + (idx+1))} - ${x.devi || ''}`;
-        sel.appendChild(opt);
-
-        if (mediaSel) {
-          const mOpt = document.createElement('option');
-          mOpt.value = idx;
-          mOpt.innerText = `${x.d || ('Date ' + (idx+1))}`;
-          mediaSel.appendChild(mOpt);
-        }
-      });
-      loadAdminScheduleFields();
-      loadAdminMediaFields();
-    }
-
-    function loadAdminScheduleFields() {
-      const sel = document.getElementById('adm-sched-day-select');
-      if (!sel) return;
-      const idx = parseInt(sel.value) || 0;
-      const x = cachedSchedule[idx] || {};
-
-      document.getElementById('adm-sched-dlabel').value = x.d || '';
-      document.getElementById('adm-sched-dt').value = x.dt || '';
-      document.getElementById('adm-sched-clr').value = x.clr || '';
-      document.getElementById('adm-sched-devi').value = x.devi || '';
-      document.getElementById('adm-sched-prog').value = x.p || '';
-      document.getElementById('adm-sched-prasad').value = x.pr || '';
-    }
-
-    function addNewFestivalDay() {
-      const newDay = {
-        d: "22/10/2026 - गुरुवार"
-          tithi: "1",
-        dt: "22/10/2026",
-        devi: "विशेष कार्यक्रम",
-        clr: "गुलाबी (Pink)",
-        p: "विशेष कार्यक्रम",
-        pr: "महाप्रसाद"
-      };
-      cachedSchedule.push(newDay);
-      localStorage.setItem('nbmm_schedule_custom', JSON.stringify(cachedSchedule));
-      if (db) db.ref('schedule').set(cachedSchedule);
-
-      initDays();
-      initMediaDays();
-      populateScheduleSelects();
-      document.getElementById('adm-sched-day-select').value = cachedSchedule.length - 1;
-      loadAdminScheduleFields();
-      alert(`New Date added successfully!`);
-    }
-
-    function saveScheduleDay() {
-      const sel = document.getElementById('adm-sched-day-select');
-      if (!sel) return;
-      const idx = parseInt(sel.value) || 0;
-
-      cachedSchedule[idx] = {
-        d: document.getElementById('adm-sched-dlabel').value.trim() || 'Date',
-        dt: document.getElementById('adm-sched-dt').value.trim(),
-        clr: document.getElementById('adm-sched-clr').value.trim(),
-        devi: document.getElementById('adm-sched-devi').value.trim(),
-        p: document.getElementById('adm-sched-prog').value.trim(),
-        pr: document.getElementById('adm-sched-prasad').value.trim()
-      };
-
-      localStorage.setItem('nbmm_schedule_custom', JSON.stringify(cachedSchedule));
-      if (db) db.ref('schedule').set(cachedSchedule);
-
-      initDays();
-      initMediaDays();
-      populateScheduleSelects();
-      alert('Schedule updated and synced across all devices!');
-    }
-
-    function deleteCurrentScheduleDay() {
-      const sel = document.getElementById('adm-sched-day-select');
-      if (!sel) return;
-      const idx = parseInt(sel.value) || 0;
-
-      if (cachedSchedule.length <= 1) {
-        alert('You must keep at least one date.');
-        return;
+      if (current.photo) {
+        html += `<a class="btn" style="background:#2980b9; width:100%; margin-bottom:8px;" href="${current.photo}" target="_blank">📁 Open Photos (Drive/Photos)</a>`;
+      } else {
+        html += `<div style="padding:10px; background:#fff; border:1px dashed #ccc; border-radius:6px; text-align:center; font-size:0.8rem; color:#777; margin-bottom:8px;">⏳ Photos will be uploaded soon!</div>`;
       }
 
-      if (!confirm(`Are you sure you want to delete ${cachedSchedule[idx].d}?`)) return;
+      if (current.video) {
+        html += `<a class="btn" style="background:#c0392b; width:100%;" href="${current.video}" target="_blank">▶️ Watch Video Highlights</a>`;
+      }
 
-      cachedSchedule.splice(idx, 1);
-      localStorage.setItem('nbmm_schedule_custom', JSON.stringify(cachedSchedule));
-      if (db) db.ref('schedule').set(cachedSchedule);
-
-      initDays();
-      initMediaDays();
-      populateScheduleSelects();
-      alert('Date deleted successfully.');
+      html += `</div>`;
+      view.innerHTML = html;
     }
 
-    function resetScheduleDefaults() {
-      if (!confirm('Reset schedule back to official Navratri 2026 poster dates?')) return;
-      cachedSchedule = DEFAULT_DAYS;
-      localStorage.setItem('nbmm_schedule_custom', JSON.stringify(DEFAULT_DAYS));
-      if (db) db.ref('schedule').set(DEFAULT_DAYS);
-      initDays();
-      initMediaDays();
-      populateScheduleSelects();
-      alert('Schedule reset to official poster dates.');
+    function loadAdminMediaFields() {
+      const mediaSel = document.getElementById('adm-media-day');
+      if (!mediaSel) return;
+      const day = mediaSel.value || 0;
+      const current = cachedMedia[day] || {};
+      document.getElementById('adm-photo-link').value = current.photo || '';
+      document.getElementById('adm-video-link').value = current.video || '';
     }
-      
+
+    function saveMediaLink() {
+      const mediaSel = document.getElementById('adm-media-day');
+      if (!mediaSel) return;
+      const day = mediaSel.value;
+      const photo = document.getElementById('adm-photo-link').value.trim();
+      const video = document.getElementById('adm-video-link').value.trim();
+
+      cachedMedia[day] = { photo, video };
+      localStorage.setItem('nbmm_media', JSON.stringify(cachedMedia));
+      if (db) db.ref('media/' + day).set({ photo, video });
+      alert(`Media links updated!`);
+      renderMediaDay(day);
+    }
 
     // -------------------------------------------------------------
-    // 20. SHARE TAB & DYNAMIC URL
+    // 21. SHARE TAB & DYNAMIC URL
     // -------------------------------------------------------------
     function getCleanInstallUrl() {
       let base = window.location.origin + window.location.pathname;
@@ -2930,7 +2941,7 @@
     }
 
     // -------------------------------------------------------------
-    // 21. AUTHENTICATION & SETTINGS
+    // 22. AUTHENTICATION & SETTINGS (FIXED PERSISTENT LOGIN)
     // -------------------------------------------------------------
     function toggleForgotBox(show) {
       document.getElementById('login-box').style.display = show ? 'none' : 'block';
@@ -2995,6 +3006,7 @@
 
         populateScheduleSelects();
         renderAdminAartiList();
+        renderAdminSongsList();
         renderSocialLinks();
         renderBankDetails();
         renderRegularTimings();
@@ -3023,8 +3035,11 @@
         document.getElementById('adm-live-url').value = cachedLiveStream;
         document.getElementById('adm-cctv-url').value = cachedCCTVStream;
 
+        registerDeviceSession();
+
         populateScheduleSelects();
         renderAdminAartiList();
+        renderAdminSongsList();
         renderSocialLinks();
         renderBankDetails();
         renderRegularTimings();
@@ -3056,7 +3071,7 @@
     }
 
     // -------------------------------------------------------------
-    // 22. KHATA & RECEIPT GENERATOR WITH AUTO-DELIVERY
+    // 23. KHATA & RECEIPT GENERATOR WITH AUTO-DELIVERY
     // -------------------------------------------------------------
     function saveRecord(autoDeliver) {
       const name = document.getElementById('r-name').value.trim();
@@ -3180,7 +3195,7 @@
     }
 
     // -------------------------------------------------------------
-    // 23. FILTER & RENDER LEDGER TABLE (CATEGORY-AWARE)
+    // 24. FILTER & RENDER LEDGER TABLE (CATEGORY-AWARE)
     // -------------------------------------------------------------
     function renderRows() {
       let incPaid = 0, incPending = 0, exp = 0;
@@ -3250,7 +3265,7 @@
     }
 
     // -------------------------------------------------------------
-    // 24. POPULATE TRI-LINGUAL RECEIPT MODAL
+    // 25. POPULATE TRI-LINGUAL RECEIPT MODAL
     // -------------------------------------------------------------
     function openReceiptModal(item) {
       document.getElementById('pr-rec').innerText = item.rec;
@@ -3304,12 +3319,13 @@
     }
 
     // -------------------------------------------------------------
-    // 25. BOOTSTRAP
+    // 26. BOOTSTRAP
     // -------------------------------------------------------------
     setLanguage(currentLang);
     initDays();
     initMediaDays();
     renderAartiTabs();
+    renderSongsTabs();
     initShare();
     renderSocialLinks();
     renderBankDetails();
