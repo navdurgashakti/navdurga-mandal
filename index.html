@@ -559,9 +559,9 @@
     </div>
 
     <div class="card">
-      <h3 id="sec-select-day">Select Festival Day</h3>
+      <h3 id="sec-select-day">Select Festival Day / Tithi</h3>
       <div class="day-bar" id="day-bar"></div>
-      <div id="day-view" style="background:#fffaf0; border:1px solid #fce8cc; padding:10px; border-radius:8px;"></div>
+      <div id="day-view" style="background:#fffaf0; border:1px solid #fce8cc; padding:12px; border-radius:8px;"></div>
     </div>
 
     <div class="card">
@@ -640,7 +640,7 @@
   <section id="tab-songs" class="tab">
     <div class="card" style="border-left-color: #e84393;">
       <h3 style="color:#c0392b;">🎶 गरबा व डांडिया गीते (Garba & Dandiya Songs)</h3>
-      <p style="font-size:0.82rem; color:#555; margin-bottom:10px;">Select a song or bhajan to read lyrics during Garba nights:</p>
+      <p style="font-size:0.82rem; color:#555; margin-bottom:10px;">Select a song to read lyrics or play audio:</p>
       <div class="day-bar" id="songs-tabs-bar"></div>
       <div id="songs-content-view" style="margin-top:10px; background:#fffdf8; border:1px solid #f9e2b0; border-radius:8px; padding:12px;"></div>
     </div>
@@ -720,11 +720,13 @@
     <div class="card" style="border-left-color: #25d366; text-align: center;">
       <h3 id="sec-share-title">📲 Share Mandal App</h3>
       <p style="font-size: 0.85rem; color:#555;" id="sec-share-sub">Scan this QR code with any mobile camera to instantly install the app:</p>
-      <div style="text-align:center; margin:14px 0;">
-        <img id="share-qr-img" style="width:190px; height:190px; display:block; margin:0 auto; border:1px solid #ddd; border-radius:8px; padding:4px;" src="" alt="App QR Code">
-        <p style="font-size:0.75rem; color:#888; margin-top:6px;" id="sec-share-note">(Long-press the QR code above to save as photo)</p>
+      
+      <div style="text-align:center; margin:14px 0; background:#fff; padding:10px; border-radius:8px; border:1px solid #ddd; display:inline-block;">
+        <div id="qrcode-container" style="display:flex; justify-content:center; align-items:center;"></div>
+        <p style="font-size:0.7rem; color:#888; margin-top:6px;" id="sec-share-note">(Scan with any phone camera)</p>
       </div>
-      <div style="display:flex; flex-direction:column; gap:8px;">
+
+      <div style="display:flex; flex-direction:column; gap:8px; margin-top:10px;">
         <button class="btn" style="background:#25d366;" onclick="shareOnWhatsApp()">💬 Share on WhatsApp</button>
         <button class="btn" style="background:#2980b9;" onclick="copyAppUrl()">📋 Copy App Link</button>
       </div>
@@ -775,23 +777,27 @@
 
     <div class="card" style="border-left-color: #d35400;">
       <h3>🕉️ Devi Aarties & Stutis</h3>
-      <p style="font-size:0.80rem; color:#666; margin-bottom:8px;" id="sec-aarti-sub">Select an Aarti to read lyrics:</p>
+      <p style="font-size:0.8rem; color:#666; margin-bottom:8px;" id="sec-aarti-sub">Select an Aarti to read lyrics:</p>
       <div class="day-bar" id="aarti-tabs-bar"></div>
       <div id="aarti-content-view" style="margin-top:10px; background:#fffdf7; border:1px solid #f9e2b0; border-radius:8px; padding:12px;"></div>
     </div>
   </section>
 
-  <!-- TAB 7: KHATA (ADMIN - BIFURCATED DASHBOARD) -->
+  <!-- TAB 7: KHATA  (ADMIN - BIFURCATED DASHBOARD) -->
   <section id="tab-admin" class="tab">
     
-    <!-- LOGIN BOX -->
+    <!-- LOGIN BOX WITH BIOMETRIC / PASSCODE LOCK -->
     <div id="login-box" class="card" style="text-align:center;">
-      <h3>🔐 Committee Login</h3>
-      <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">Enter committee credentials:</p>
-      <input type="text" id="uid" class="input-box" placeholder="User ID" />
-      <input type="password" id="pin" class="input-box" placeholder="Password" />
-      <button class="btn" style="width:100%;" onclick="doLogin()">Login & Save</button>
-      <p id="err" style="color:red; font-size:0.75rem; margin-top:6px; display:none;">Invalid ID or Password</p>
+      <h3>🔐 Committee Security & Login</h3>
+      <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">Enter passcode or use Biometric / Face Lock:</p>
+      <input type="text" id="uid" class="input-box" placeholder="User ID (e.g. NBMM)" />
+      <input type="password" id="pin" class="input-box" placeholder="Passcode / Password" />
+      
+      <div style="display:flex; gap:6px; margin-bottom:8px;">
+        <button class="btn" style="background:#7a0006; flex:1;" onclick="doLogin()">🔓 Login via Passcode</button>
+        <button class="btn" style="background:#2980b9; flex:1;" onclick="authenticateBiometric()">👆 Fingerprint / Face Lock</button>
+      </div>
+      <p id="err" style="color:red; font-size:0.75rem; margin-top:6px; display:none;">Invalid credentials or biometric failed.</p>
       
       <div style="margin-top:14px; border-top:1px solid #eee; padding-top:10px;">
         <a href="javascript:void(0)" onclick="toggleForgotBox(true)" style="font-size:0.8rem; color:var(--primary); text-decoration:none; font-weight:600;">
@@ -1167,9 +1173,10 @@
       <!-- SUB-TAB: SONGS MANAGER -->
       <div id="asv-songs" class="admin-sub-view">
         <div class="card" style="border-left-color: #e84393;">
-          <h3>🎶 Add / Manage Garba & Dandiya Songs</h3>
-          <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Add new Garba songs or lyrics for devotees to view:</p>
+          <h3>🎶 Add / Manage Garba & Dandiya Songs & Audio</h3>
+          <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Add new Garba songs, lyrics, and audio/YouTube link:</p>
           <input type="text" id="adm-song-title" class="input-box" placeholder="Song Title (e.g. Dhol Baje)" />
+          <input type="url" id="adm-song-audio" class="input-box" placeholder="Audio / YouTube Link (Optional)" />
           <textarea id="adm-song-lyrics" class="input-box" rows="5" placeholder="Enter song lyrics here..."></textarea>
           <button class="btn" style="background:#e84393; width:100%; margin-bottom:12px;" onclick="saveNewSong()">➕ Add Song</button>
           <div id="adm-songs-list"></div>
@@ -1423,11 +1430,13 @@
       {
         id: "song_1",
         title: "Dhol Baje (ढोल बाजे - Ramleela)",
+        audio: "https://www.youtube.com/watch?v=9S61c47g49s",
         lyrics: "नगाड़ा संग ढोल बाजे, बाजे रे ढोल बाजे...\nकमरिया डोल बाजे, रे ढोल बाजे!\nताता थैया ताता थैया लगे सुहाना...\nमाता के दरबार में झूमे ज़माना!"
       },
       {
         id: "song_2",
         title: "Chogada Tara (चोगाडा तारा)",
+        audio: "https://www.youtube.com/watch?v=vVj_oVDq0GU",
         lyrics: "चोगाडा तारा, दिल बितारा...\nऐसू नैनो ने मारा, ऐसा रंग डाला!\nआओ खेले गरबा, संग माता का प्यार है...\nझूमो नाचो गाओ, ये उत्सव बहार है!"
       }
     ];
@@ -1613,7 +1622,33 @@
     }
 
     // -------------------------------------------------------------
-    // 2. ZERO-DELAY PANDAL PROJECTOR CAM STREAMING ENGINE
+    // 2. BIOMETRIC  / FACE LOCK AUTHENTICATION
+    // -------------------------------------------------------------
+    async function authenticateBiometric() {
+      if (!window.PublicKeyCredential) {
+        alert("Biometric / Face Lock is not supported on this device/browser.");
+        return;
+      }
+      try {
+        const credential = await navigator.credentials.get({
+          publicKey: {
+            challenge: new Uint8Array([21, 31, 105, 78, 18, 45, 67, 89]),
+            timeout: 60000,
+            userVerification: "required"
+          }
+        });
+        if (credential) {
+          localStorage.setItem('nbmm_auth', '1');
+          checkLogin();
+          alert("Biometric verification successful!");
+        }
+      } catch (err) {
+        alert("Biometric authentication cancelled or failed.");
+      }
+    }
+
+    // -------------------------------------------------------------
+    // 3. ZERO-DELAY PANDAL PROJECTOR CAM STREAMING ENGINE
     // -------------------------------------------------------------
     function renderPandalCamLive(isLive) {
       const box = document.getElementById('live-pandal-cam-box');
@@ -1656,7 +1691,7 @@
     }
 
     // -------------------------------------------------------------
-    // 3. RESTRICTED COMMITTEE CCTV ENGINE
+    // 4. RESTRICTED COMMITTEE CCTV ENGINE
     // -------------------------------------------------------------
     function extractYouTubeEmbed(url) {
       if (!url) return '';
@@ -1691,7 +1726,7 @@
     }
 
     // -------------------------------------------------------------
-    // 4. AUTOMATED UPI PAYMENT POPUP & DELIVERY LOGIC
+    // 5. AUTOMATED UPI PAYMENT POPUP & DELIVERY LOGIC
     // -------------------------------------------------------------
     function checkModeAndPromptUPI() {
       const mode = document.getElementById('r-mode').value;
@@ -1738,7 +1773,7 @@
     }
 
     // -------------------------------------------------------------
-    // 5. YOUTUBE & INSTAGRAM LIVE STREAM ENGINE
+    // 6. YOUTUBE & INSTAGRAM LIVE STREAM ENGINE
     // -------------------------------------------------------------
     function extractYouTubeId(url) {
       if (!url) return '';
@@ -1837,7 +1872,7 @@
     }
 
     // -------------------------------------------------------------
-    // 6. GARBA & DANDIYA SONGS VIEWER & MANAGER
+    // 7. GARBA & DANDIYA SONGS WITH PLAY AUDIO/YOUTUBE BUTTON
     // -------------------------------------------------------------
     let selectedSongIdx = 0;
 
@@ -1872,14 +1907,22 @@
     function showSong(idx) {
       const s = cachedSongs[idx];
       if (!s) return;
+      
+      let playBtnHtml = '';
+      if (s.audio && s.audio.trim()) {
+        playBtnHtml = `<a class="btn" style="background:#e84393; margin-bottom:10px; font-size:0.78rem;" href="${s.audio}" target="_blank">▶️ Play Song Audio / Video</a>`;
+      }
+
       document.getElementById('songs-content-view').innerHTML = `
-        <h4 style="color:#c0392b; font-size:1.05rem; margin-bottom:8px; border-bottom:1px dashed #e84393; padding-bottom:4px;">${s.title}</h4>
+        <h4 style="color:#c0392b; font-size:1.05rem; margin-bottom:6px; border-bottom:1px dashed #e84393; padding-bottom:4px;">${s.title}</h4>
+        ${playBtnHtml}
         <p style="white-space: pre-line; line-height: 1.8; font-size: 0.88rem; color:#222; font-weight:500;">${s.lyrics}</p>
       `;
     }
 
     function saveNewSong() {
       const title = document.getElementById('adm-song-title').value.trim();
+      const audio = document.getElementById('adm-song-audio').value.trim();
       const lyrics = document.getElementById('adm-song-lyrics').value.trim();
 
       if (!title || !lyrics) {
@@ -1888,13 +1931,14 @@
       }
 
       const id = 'song_' + Date.now();
-      const newSong = { id, title, lyrics };
+      const newSong = { id, title, audio, lyrics };
 
       cachedSongs.push(newSong);
       localStorage.setItem('nbmm_songs', JSON.stringify(cachedSongs));
       if (db) db.ref('songs/' + id).set(newSong);
 
       document.getElementById('adm-song-title').value = '';
+      document.getElementById('adm-song-audio').value = '';
       document.getElementById('adm-song-lyrics').value = '';
       alert(`"${title}" added & synced!`);
       renderSongsTabs();
@@ -1927,7 +1971,7 @@
     }
 
     // -------------------------------------------------------------
-    // 7. CATEGORY-WISE SECTION FILTER & TOTALS CALCULATION
+    // 8. CATEGORY-WISE SECTION FILTER & TOTALS CALCULATION
     // -------------------------------------------------------------
     function filterByCat(catKey) {
       currentSelectedCategory = catKey;
@@ -1986,7 +2030,7 @@
     }
 
     // -------------------------------------------------------------
-    // 8. ACTIVE DEVICE SESSIONS & REMOTE REVOCATION ENGINE
+    // 9. ACTIVE DEVICE SESSIONS & REMOTE REVOCATION ENGINE
     // -------------------------------------------------------------
     function getDeviceName() {
       const ua = navigator.userAgent;
@@ -2075,7 +2119,7 @@
     }
 
     // -------------------------------------------------------------
-    // 9. EXPORT LEDGER TO EXCEL / CSV
+    // 10. EXPORT LEDGER TO EXCEL / CSV
     // -------------------------------------------------------------
     function exportLedgerToExcel() {
       if (!cachedEntries || cachedEntries.length === 0) {
@@ -2105,7 +2149,7 @@
     }
 
     // -------------------------------------------------------------
-    // 10. DEVOTEE RECEIPT SELF-LOOKUP
+    // 11. DEVOTEE RECEIPT SELF-LOOKUP
     // -------------------------------------------------------------
     function findDevoteeReceipt() {
       const q = (document.getElementById('devotee-search-input').value || '').trim().toLowerCase();
@@ -2145,7 +2189,7 @@
     }
 
     // -------------------------------------------------------------
-    // 11. REGULAR TIMINGS CONTROLLER
+    // 12. REGULAR TIMINGS CONTROLLER
     // -------------------------------------------------------------
     function renderRegularTimings() {
       const t = cachedTimings || DEFAULT_TIMINGS;
@@ -2190,7 +2234,7 @@
     }
 
     // -------------------------------------------------------------
-    // 12. KHATA SUB-TAB BIFURCATION CONTROLLER
+    // 13. KHATA SUB-TAB BIFURCATION CONTROLLER
     // -------------------------------------------------------------
     function switchAdminSubTab(tabName) {
       document.querySelectorAll('.admin-sub-btn').forEach(btn => btn.classList.remove('active'));
@@ -2204,7 +2248,7 @@
     }
 
     // -------------------------------------------------------------
-    // 13. BANK, UPI & BARCODE ENGINE
+    // 14. BANK, UPI & BARCODE ENGINE
     // -------------------------------------------------------------
     function renderBankDetails() {
       const b = cachedBank || DEFAULT_BANK;
@@ -2300,7 +2344,7 @@
     }
 
     // -------------------------------------------------------------
-    // 14. SOCIAL MEDIA & WHATSAPP ENGINE
+    // 15. SOCIAL MEDIA & WHATSAPP ENGINE
     // -------------------------------------------------------------
     function renderSocialLinks() {
       const instaLink = document.getElementById('link-insta-page');
@@ -2349,566 +2393,7 @@
     }
 
     // -------------------------------------------------------------
-    // 15. LANGUAGE TRANSLATION ENGINE
-    // -------------------------------------------------------------
-    const I18N = {
-      en: {
-        title: "🚩 NAVDURGA BALMITRA MANDAL",
-        addr: "📍 Sukhlaji Street, Kamathipura, Mumbai 400008",
-        navSched: "📅 Daily Schedule",
-        navMedia: "📸 Photos & Videos",
-        navLive: "🔴 Live Darshan",
-        navDonate: "🙏 Pavitra Daan & Bank",
-        navShare: "📤 Share App / QR",
-        navInfo: "📜 Aartis & Social",
-        navAdmin: "🔐 Receipt Book (Khata)",
-        pandalTitle: "Pandal Address & Helpdesk",
-        selectDay: "Select Festival Day",
-        timingsTitle: "Regular Timings",
-        mediaTitle: "📸 Utsav Photos & Videos",
-        mediaSub: "Select any day to open full-resolution photos and videos:",
-        liveTitle: "🔴 Live Darshan & Aarti",
-        liveSub: "Watch Aarti live from our Sukhlaji Street pandal:",
-        liveOffHead: "Pandal Live Stream Offline",
-        liveOffDesc: "The live broadcast is currently offline.<br><strong>Subah Aarti:</strong> 7:30 AM | <strong>Sandhya Aarti:</strong> 7:30 PM",
-        daanTitle: "🙏 Pavitra Daan / Seva",
-        daanSub: "Contribute to Navdurga Balmitra Mandal via UPI or Bank:",
-        shareTitle: "📲 Share Mandal App",
-        shareSub: "Scan this QR code with any camera to install the app:",
-        aartiHead: "🕉️ Devi Aarties & Stutis"
-      },
-      hi: {
-        title: "🚩 नवदुर्गा बाल मित्र मंडल",
-        addr: "📍 शुक्लाजी स्ट्रीट, कामाठीपुरा, मुंबई ४००००८",
-        navSched: "📅 दैनिक कार्यक्रम (Schedule)",
-        navMedia: "📸 फोटो और वीडियो (Media)",
-        navLive: "🔴 लाइव दर्शन (Live)",
-        navDonate: "🙏 पवित्र दान व बैंक खाता",
-        navShare: "📤 ऐप शेयर / QR कोड",
-        navInfo: "📜 आरतियां व सोशल",
-        navAdmin: "🔐 पावती पुस्तक (खाता)",
-        pandalTitle: "पंडाल का पता व सहायता केंद्र",
-        selectDay: "त्योहार का दिन चुनें",
-        timingsTitle: "नियमित आरती समय",
-        mediaTitle: "📸 उत्सव फोटो और वीडियो",
-        mediaSub: "दैनिक फोटो और वीडियो देखने के लिए दिन चुनें:",
-        liveTitle: "🔴 लाइव दर्शन एवं आरती",
-        liveSub: "शुक्लाजी स्ट्रीट पंडाल से सीधा लाइव प्रसारण देखें:",
-        liveOffHead: "लाइव प्रसारण अभी बंद है",
-        liveOffDesc: "लाइव प्रसारण अभी सक्रिय नहीं है।<br><strong>सुबह की आरती:</strong> 7:30 AM | <strong>संध्या आरती:</strong> 7:30 PM",
-        daanTitle: "🙏 पवित्र दान व बैंक विवरण",
-        daanSub: "नवदुर्गा बाल मित्र मंडल को UPI या बैंक खाते द्वारा सहयोग करें:",
-        shareTitle: "📲 मंडल ऐप शेयर करें",
-        shareSub: "ऐप डाउनलोड और इंस्टॉल करने के लिए QR कोड स्कैन करें:",
-        aartiHead: "🕉️ देवी आरतियां व स्तुति"
-      },
-      mr: {
-        title: "🚩 नवदुर्गा बाल मित्र मंडल",
-        addr: "📍 शुक्लाजी स्ट्रीट, कामाठीपुरा, मुंबई ४००००८",
-        navSched: "📅 दैनंदिन कार्यक्रम पत्रिका",
-        navMedia: "📸 फोटो व व्हिडिओ दालन",
-        navLive: "🔴 थेट प्रक्षेपण (Live Darshan)",
-        navDonate: "🙏 पवित्र दान व बँक खाते",
-        navShare: "📤 ॲप शेअर / QR कोड",
-        navInfo: "📜 आरत्या व सोशल ग्रुप",
-        navAdmin: "🔐 पावती पुस्तक (खतावणी)",
-        pandalTitle: "मंडप पत्ता व मदत केंद्र",
-        selectDay: "उत्सवाचा दिवस निवडा",
-        timingsTitle: "नियमित आरत्यांची वेळ",
-        mediaTitle: "📸 उत्सव फोटो व व्हिडिओ अल्बम",
-        mediaSub: "फोटो आणि व्हिडिओ पाहण्यासाठी दिवस निवडा:",
-        liveTitle: "🔴 थेट दर्शन व आरती (Live)",
-        liveSub: "शुक्लाजी स्ट्रीट मंडपातून थेट आरतीचे दर्शन घ्या:",
-        liveOffHead: "थेट प्रक्षेपण सध्या बंद आहे",
-        liveOffDesc: "लाईव्ह आरती प्रक्षेपण सध्या सुरू नाही.<br><strong>सकाळची आरती:</strong> 7:30 AM | <strong>संध्याकाळची आरती:</strong> 7:30 PM",
-        daanTitle: "🙏 पवित्र दान व बँक तपशील",
-        daanSub: "नवदुर्गा बाल मित्र मंडळास UPI किंवा बँकेद्वारे सहकार्य करा:",
-        shareTitle: "📲 मंडळाचे ॲप शेअर करा",
-        shareSub: "ॲप इन्स्टॉल करण्यासाठी हा QR कोड स्कॅन करा:",
-        aartiHead: "🕉️ देवीच्या आरत्या व स्तुती"
-      }
-    };
-
-    function setLanguage(lang) {
-      currentLang = lang;
-      localStorage.setItem('nbmm_lang', lang);
-      
-      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-      const activeBtn = document.getElementById('l-' + lang);
-      if (activeBtn) activeBtn.classList.add('active');
-
-      const dict = I18N[lang] || I18N['mr'];
-      document.getElementById('hdr-title').innerText = dict.title;
-      document.getElementById('hdr-addr').innerText = dict.addr;
-      document.getElementById('nav-sched').innerText = dict.navSched;
-      document.getElementById('nav-media').innerText = dict.navMedia;
-      document.getElementById('nav-live').innerText = dict.navLive;
-      document.getElementById('nav-donate').innerText = dict.navDonate;
-      document.getElementById('nav-share').innerText = dict.navShare;
-      document.getElementById('nav-info').innerText = dict.navInfo;
-      document.getElementById('nav-admin').innerText = dict.navAdmin;
-
-      document.getElementById('sec-pandal-title').innerText = dict.pandalTitle;
-      document.getElementById('sec-select-day').innerText = dict.selectDay;
-      document.getElementById('sec-timings-title').innerText = dict.timingsTitle;
-      document.getElementById('sec-media-title').innerText = dict.mediaTitle;
-      document.getElementById('sec-media-sub').innerText = dict.mediaSub;
-      document.getElementById('sec-live-title').innerText = dict.liveTitle;
-      document.getElementById('sec-live-sub').innerText = dict.liveSub;
-      document.getElementById('live-off-head').innerText = dict.liveOffHead;
-      document.getElementById('live-off-desc').innerHTML = dict.liveOffDesc;
-      document.getElementById('sec-daan-title').innerText = dict.daanTitle;
-      document.getElementById('sec-daan-sub').innerText = dict.daanSub;
-      document.getElementById('sec-share-title').innerText = dict.shareTitle;
-      document.getElementById('sec-share-sub').innerText = dict.shareSub;
-      document.getElementById('sec-aarti-head').innerText = dict.aartiHead;
-    }
-
-    // -------------------------------------------------------------
-    // 16. NUMBER CONVERTERS
-    // -------------------------------------------------------------
-    function numberToMarathiWords(n) {
-      n = parseInt(n);
-      if (!n || isNaN(n)) return "शून्य रुपये फक्त";
-      const ones = ['', 'एक', 'दोन', 'तीन', 'चार', 'पाच', 'सहा', 'सात', 'आठ', 'नऊ', 'दहा', 'अकरा', 'बारा', 'तेरा', 'चौदा', 'पंधरा', 'सोळा', 'सतरा', 'अठरा', 'एकोणीस', 'वीस', 'एकवीस', 'बावीस', 'तेवीस', 'चोवीस', 'पंचवीस', 'सव्वीस', 'सत्तावीस', 'अठ्ठावीस', 'एकोणतीस', 'तीस', 'एकतीस', 'बत्तीस', 'तेहेतीस', 'चौतीस', 'पस्तीस', 'छत्तीस', 'सदतीस', 'अडतीस', 'एकोणचाळीस', 'चाळीस', 'एक्केचाळीस', 'बेचाळीस', 'त्रेचाळीस', 'चव्वेचाळीस', 'पंचेचाळीस', 'ठेचाळीस', 'सत्तेचाळीस', 'अठ्ठेचाळीस', 'एकोणपन्नास', 'पन्नास', 'एक्कावन्न', 'बावन्न', 'त्रेपन्न', 'चौपन्न', 'पंचावन्न', 'छप्पन्न', 'सत्तावन्न', 'अठ्ठावन्न', 'एकोणसाठ', 'साठ', 'एकसष्ठ', 'बासष्ठ', 'त्रेसष्ठ', 'चौसष्ठ', 'पासष्ठ', 'सहासष्ठ', 'सदुसष्ठ', 'अडुसष्ठ', 'एकोणसत्तर', 'सत्तर', 'एकाहत्तर', 'बाहत्तर', 'त्र्याहत्तर', 'चौऱ्याहत्तर', 'पंच्याहत्तर', 'शहात्तर', 'सत्त्याहत्तर', 'अठ्ठ्याहत्तर', 'एकोणऐंशी', 'ऐंशी', 'एक्क्यांशी', 'ब्यांशी', 'त्र्यांशी', 'चौऱ्यांशी', 'पंच्यांशी', 'शहांशी', 'सत्त्यांशी', 'अठ्ठ्यांशी', 'एकोणनव्वद', 'नव्वद', 'एक्क्याण्णव', 'ब्याण्णव', 'त्र्याण्णव', 'चौऱ्याण्णव', 'पंच्याण्णव', 'शहाण्णव', 'सत्त्याण्णव', 'अठ्ठ्याण्णव', 'नऊवाण्णव'];
-
-      function convert(num) {
-        if (num < 100) return ones[num];
-        if (num < 1000) {
-          const h = Math.floor(num / 100);
-          const r = num % 100;
-          return (h === 1 ? 'शंभर' : ones[h] + 'शे') + (r ? ' ' + ones[r] : '');
-        }
-        if (num < 100000) {
-          const th = Math.floor(num / 1000);
-          const r = num % 1000;
-          return ones[th] + ' हजार' + (r ? ' ' + convert(r) : '');
-        }
-        if (num < 10000000) {
-          const lk = Math.floor(num / 100000);
-          const r = num % 100000;
-          return ones[lk] + ' लाख' + (r ? ' ' + convert(r) : '');
-        }
-        return num.toString();
-      }
-      return convert(n) + " रुपये फक्त";
-    }
-
-    function numberToHindiWords(n) {
-      n = parseInt(n);
-      if (!n || isNaN(n)) return "शून्य रुपये मात्र";
-      const ones = ['', 'एक', 'दो', 'तीन', 'चार', 'पाँच', 'छह', 'सात', 'आठ', 'नौ', 'दस', 'ग्यारह', 'बारह', 'तेरह', 'चौदह', 'पंद्रह', 'सोलह', 'सत्रह', 'अठारह', 'उन्नीस', 'बीस', 'इक्कीस', 'बाईस', 'तेईस', 'चौबीस', 'पच्चीस', 'छब्बीस', 'सत्ताईस', 'अट्ठाईस', 'उनतीस', 'तीस', 'इकतीस', 'बत्तीस', 'तैंतीस', 'चौंतीस', 'पैंतीस', 'छत्तीस', 'सैंतीस', 'अड़तीस', 'उनतालीस', 'चालीस', 'इकतालीस', 'बयालीस', 'तैंतालीस', 'चवालीस', 'पैंतालीस', 'छियालीस', 'सैंतालीस', 'अड़तालीस', 'उनचास', 'पचास', 'इक्यावन', 'बावन', 'तिरेपन', 'चौवन', 'पचपन', 'छप्पन', 'सत्तावन', 'अट्ठावन', 'उनसठ', 'साठ', 'इकसठ', 'बासठ', 'तिरसठ', 'चौंसठ', 'पैंसठ', 'छियासठ', 'सरसठ', 'अड़सठ', 'उनहत्तर', 'सत्तर', 'इकहत्तर', 'बहत्तर', 'तिहत्तर', 'चौहत्तर', 'पचहत्तर', 'छिहत्तर', 'सतहत्तर', 'अठहत्तर', 'उनासी', 'अस्सी', 'इक्यासी', 'बयासी', 'तिरासी', 'चौरासी', 'पचासी', 'छियासी', 'सत्तासी', 'अट्ठासी', 'नवासी', 'नब्बे', 'इक्यानवे', 'बानवे', 'तिरानवे', 'चौरानवे', 'पंचानवे', 'छियानवे', 'सत्तानवे', 'अट्ठानवे', 'निन्यानवे'];
-
-      function convert(num) {
-        if (num < 100) return ones[num];
-        if (num < 1000) {
-          const h = Math.floor(num / 100);
-          const r = num % 100;
-          return (h === 1 ? 'एक सौ' : ones[h] + ' सौ') + (r ? ' ' + ones[r] : '');
-        }
-        if (num < 100000) {
-          const th = Math.floor(num / 1000);
-          const r = num % 1000;
-          return ones[th] + ' हज़ार' + (r ? ' ' + convert(r) : '');
-        }
-        if (num < 10000000) {
-          const lk = Math.floor(num / 100000);
-          const r = num % 100000;
-          return ones[lk] + ' लाख' + (r ? ' ' + convert(r) : '');
-        }
-        return num.toString();
-      }
-      return convert(n) + " रुपये मात्र";
-    }
-
-    function numberToWords(num) {
-      const a = ['', 'One ', 'Two ', 'Three ', 'Four ', 'Five ', 'Six ', 'Seven ', 'Eight ', 'Nine ', 'Ten ', 'Eleven ', 'Twelve ', 'Thirteen ', 'Fourteen ', 'Fifteen ', 'Sixteen ', 'Seventeen ', 'Eighteen ', 'Nineteen '];
-      const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-      num = parseInt(num);
-      if (!num) return 'Zero Rupees Only';
-      
-      function inWords(n) {
-        if (n < 20) return a[n];
-        if (n < 100) return b[Math.floor(n / 10)] + (n % 10 ? ' ' + a[n % 10] : '');
-        if (n < 1000) return a[Math.floor(n / 100)] + 'Hundred ' + (n % 100 ? 'and ' + inWords(n % 100) : '');
-        if (n < 100000) return inWords(Math.floor(n / 1000)) + 'Thousand ' + (n % 1000 ? inWords(n % 1000) : '');
-        if (n < 10000000) return inWords(Math.floor(n / 100000)) + 'Lakh ' + (n % 100000 ? inWords(n % 100000) : '');
-        return inWords(Math.floor(n / 10000000)) + 'Crore ' + (n % 10000000 ? inWords(n % 10000000) : '');
-      }
-      return inWords(num).trim() + ' Rupees Only';
-    }
-
-    // -------------------------------------------------------------
-    // 17. GUARANTEED 1-TAP INSTALL
-    // -------------------------------------------------------------
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js').catch(() => {});
-    }
-
-    let deferredPrompt = null;
-    const qrModal = document.getElementById('qr-install-modal');
-    const installBtn = document.getElementById('btn-modal-install');
-    const urlParams = new URLSearchParams(window.location.search);
-    const isFromQR = (urlParams.get('install') === 'true');
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-    });
-
-    if (isFromQR && !isStandalone && qrModal) {
-      qrModal.style.display = 'block';
-    }
-
-    if (installBtn) {
-      installBtn.addEventListener('click', async () => {
-        if (deferredPrompt) {
-          qrModal.style.display = 'none';
-          deferredPrompt.prompt();
-          await deferredPrompt.userChoice;
-          deferredPrompt = null;
-        } else {
-          alert("📲 Install Mandal App:\n1. Tap browser menu (⋮ or Share)\n2. Tap 'Add to Home screen' or 'Install App'");
-          qrModal.style.display = 'none';
-        }
-      });
-    }
-
-    // -------------------------------------------------------------
-    // 18. NAVIGATION & DRAWER
-    // -------------------------------------------------------------
-    function openDrawer() {
-      document.getElementById('side-drawer').style.left = '0px';
-      document.getElementById('drawer-overlay').style.display = 'block';
-    }
-
-    function closeDrawer() {
-      document.getElementById('side-drawer').style.left = '-290px';
-      document.getElementById('drawer-overlay').style.display = 'none';
-    }
-
-    function switchSection(name, btn) {
-      document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.drawer-links button').forEach(b => b.classList.remove('active'));
-      const target = document.getElementById('tab-' + name);
-      if (target) target.classList.add('active');
-      if (btn) btn.classList.add('active');
-      closeDrawer();
-      window.scrollTo(0, 0);
-    }
-
-    // -------------------------------------------------------------
-    // 19. AARTI VIEWER & ADMIN MANAGER
-    // -------------------------------------------------------------
-    let selectedAartiIdx = 0;
-
-    function renderAartiTabs() {
-      const bar = document.getElementById('aarti-tabs-bar');
-      if (!bar) return;
-      bar.innerHTML = '';
-
-      if (cachedAarties.length === 0) {
-        document.getElementById('aarti-content-view').innerHTML = '<p style="color:#777; font-size:0.85rem;">No Aartis added yet.</p>';
-        return;
-      }
-
-      if (selectedAartiIdx >= cachedAarties.length) selectedAartiIdx = 0;
-
-      cachedAarties.forEach((a, idx) => {
-        const btn = document.createElement('button');
-        btn.className = 'day-btn ' + (idx === selectedAartiIdx ? 'active' : '');
-        btn.innerText = '🪔 ' + a.title;
-        btn.onclick = function() {
-          document.querySelectorAll('#aarti-tabs-bar .day-btn').forEach(k => k.classList.remove('active'));
-          btn.classList.add('active');
-          selectedAartiIdx = idx;
-          showAarti(idx);
-        };
-        bar.appendChild(btn);
-      });
-
-      showAarti(selectedAartiIdx);
-    }
-
-    function showAarti(idx) {
-      const a = cachedAarties[idx];
-      if (!a) return;
-      document.getElementById('aarti-content-view').innerHTML = `
-        <h4 style="color:var(--primary); font-size:1.05rem; margin-bottom:8px; border-bottom:1px dashed #d4af37; padding-bottom:4px;">${a.title}</h4>
-        <p style="white-space: pre-line; line-height: 1.8; font-size: 0.88rem; color:#222; font-weight:500;">${a.lyrics}</p>
-      `;
-    }
-
-    function saveNewAarti() {
-      const title = document.getElementById('adm-aarti-title').value.trim();
-      const lyrics = document.getElementById('adm-aarti-lyrics').value.trim();
-
-      if (!title || !lyrics) {
-        alert('Please enter Aarti title and lyrics.');
-        return;
-      }
-
-      const id = 'aarti_' + Date.now();
-      const newAarti = { id, title, lyrics };
-
-      cachedAarties.push(newAarti);
-      localStorage.setItem('nbmm_aarties', JSON.stringify(cachedAarties));
-      if (db) db.ref('aarties/' + id).set(newAarti);
-
-      document.getElementById('adm-aarti-title').value = '';
-      document.getElementById('adm-aarti-lyrics').value = '';
-      alert(`"${title}" added & synced!`);
-      renderAartiTabs();
-      renderAdminAartiList();
-    }
-
-    function deleteAarti(id) {
-      if (!confirm('Delete this Aarti across all phones?')) return;
-      cachedAarties = cachedAarties.filter(x => x.id !== id);
-      localStorage.setItem('nbmm_aarties', JSON.stringify(cachedAarties));
-      if (db) db.ref('aarties/' + id).remove();
-      renderAartiTabs();
-      renderAdminAartiList();
-    }
-
-    function renderAdminAartiList() {
-      const box = document.getElementById('adm-aarti-list');
-      if (!box) return;
-      box.innerHTML = '';
-
-      cachedAarties.forEach(a => {
-        const div = document.createElement('div');
-        div.style = 'display:flex; justify-content:space-between; align-items:center; background:#f5f5f5; padding:8px 10px; border-radius:6px; margin-bottom:6px; font-size:0.85rem;';
-        div.innerHTML = `
-          <span><strong>🪔 ${a.title}</strong></span>
-          <button class="btn" style="background:#c0392b; padding:4px 8px; font-size:0.7rem;" onclick="deleteAarti('${a.id}')">🗑️ Delete</button>
-        `;
-        box.appendChild(div);
-      });
-    }
-
-    // -------------------------------------------------------------
-    // 20. SCHEDULE & MEDIA MANAGER (OPTIMIZED & LAG-FREE)
-    // -------------------------------------------------------------
-    function initDays() {
-      const b = document.getElementById('day-bar');
-      if (!b) return;
-      
-      if (!cachedSchedule || !Array.isArray(cachedSchedule) || cachedSchedule.length === 0) {
-        cachedSchedule = DEFAULT_DAYS;
-      }
-
-      let html = '';
-      cachedSchedule.forEach((x, i) => {
-        html += `<button class="day-btn ${i === 0 ? 'active' : ''}" onclick="selectFestivalDay(${i})">${x.d || ('Date ' + (i+1))}</button>`;
-      });
-      b.innerHTML = html;
-      renderDay(0);
-    }
-
-    function selectFestivalDay(i) {
-      const buttons = document.querySelectorAll('#day-bar .day-btn');
-      buttons.forEach((btn, idx) => {
-        if (idx === i) btn.classList.add('active');
-        else btn.classList.remove('active');
-      });
-      renderDay(i);
-    }
-
-    function renderDay(i) {
-      const x = cachedSchedule[i] || DEFAULT_DAYS[0];
-      const view = document.getElementById('day-view');
-      if (!view) return;
-      view.innerHTML = `
-        <h4 style="color:var(--primary); font-size:1rem; margin-bottom:6px;">📅 दिनांक / Day: ${x.d || ''}</h4>
-        <p><strong>रंग (Color Theme):</strong> <span style="font-weight:700; color:#d4af37;">${x.clr || ''}</span></p>
-        <p><strong>कार्यक्रम / Puja:</strong> ${x.devi || ''}</p>
-        <p><strong>विशेष कार्यक्रम:</strong> ${x.p || ''}</p>
-        <p><strong>प्रसाद:</strong> ${x.pr || ''}</p>
-      `;
-    }
-
-    function populateScheduleSelects() {
-      const sel = document.getElementById('adm-sched-day-select');
-      const mediaSel = document.getElementById('adm-media-day');
-      if (!sel) return;
-
-      let opts = '';
-      let mediaOpts = '';
-      cachedSchedule.forEach((x, idx) => {
-        opts += `<option value="${idx}">${x.d || ('Date ' + (idx+1))} - ${x.devi || ''}</option>`;
-        if (mediaSel) {
-          mediaOpts += `<option value="${idx}">${x.d || ('Date ' + (idx+1))}</option>`;
-        }
-      });
-      sel.innerHTML = opts;
-      if (mediaSel) mediaSel.innerHTML = mediaOpts;
-      
-      loadAdminScheduleFields();
-      loadAdminMediaFields();
-    }
-
-    function loadAdminScheduleFields() {
-      const sel = document.getElementById('adm-sched-day-select');
-      if (!sel) return;
-      const idx = parseInt(sel.value) || 0;
-      const x = cachedSchedule[idx] || {};
-
-      document.getElementById('adm-sched-dlabel').value = x.d || '';
-      document.getElementById('adm-sched-dt').value = x.dt || '';
-      document.getElementById('adm-sched-clr').value = x.clr || '';
-      document.getElementById('adm-sched-devi').value = x.devi || '';
-      document.getElementById('adm-sched-prog').value = x.p || '';
-      document.getElementById('adm-sched-prasad').value = x.pr || '';
-    }
-
-    function addNewFestivalDay() {
-      const newDay = {
-        d: "22/10/2026 - गुरुवार",
-        dt: "22/10/2026",
-        devi: "विशेष कार्यक्रम",
-        clr: "गुलाबी (Pink)",
-        p: "विशेष कार्यक्रम",
-        pr: "महाप्रसाद"
-      };
-      cachedSchedule.push(newDay);
-      localStorage.setItem('nbmm_schedule_custom', JSON.stringify(cachedSchedule));
-      if (db) db.ref('schedule').set(cachedSchedule);
-
-      initDays();
-      initMediaDays();
-      populateScheduleSelects();
-      document.getElementById('adm-sched-day-select').value = cachedSchedule.length - 1;
-      loadAdminScheduleFields();
-      alert(`New Date added successfully!`);
-    }
-
-    function saveScheduleDay() {
-      const sel = document.getElementById('adm-sched-day-select');
-      if (!sel) return;
-      const idx = parseInt(sel.value) || 0;
-
-      cachedSchedule[idx] = {
-        d: document.getElementById('adm-sched-dlabel').value.trim() || 'Date',
-        dt: document.getElementById('adm-sched-dt').value.trim(),
-        clr: document.getElementById('adm-sched-clr').value.trim(),
-        devi: document.getElementById('adm-sched-devi').value.trim(),
-        p: document.getElementById('adm-sched-prog').value.trim(),
-        pr: document.getElementById('adm-sched-prasad').value.trim()
-      };
-
-      localStorage.setItem('nbmm_schedule_custom', JSON.stringify(cachedSchedule));
-      if (db) db.ref('schedule').set(cachedSchedule);
-
-      initDays();
-      initMediaDays();
-      populateScheduleSelects();
-      alert('Schedule updated and synced across all devices!');
-    }
-
-    function deleteCurrentScheduleDay() {
-      const sel = document.getElementById('adm-sched-day-select');
-      if (!sel) return;
-      const idx = parseInt(sel.value) || 0;
-
-      if (cachedSchedule.length <= 1) {
-        alert('You must keep at least one date.');
-        return;
-      }
-
-      if (!confirm(`Are you sure you want to delete ${cachedSchedule[idx].d}?`)) return;
-
-      cachedSchedule.splice(idx, 1);
-      localStorage.setItem('nbmm_schedule_custom', JSON.stringify(cachedSchedule));
-      if (db) db.ref('schedule').set(cachedSchedule);
-
-      initDays();
-      initMediaDays();
-      populateScheduleSelects();
-      alert('Date deleted successfully.');
-    }
-
-    function resetScheduleDefaults() {
-      if (!confirm('Reset schedule back to official Navratri 2026 poster dates?')) return;
-      cachedSchedule = DEFAULT_DAYS;
-      localStorage.setItem('nbmm_schedule_custom', JSON.stringify(DEFAULT_DAYS));
-      if (db) db.ref('schedule').set(DEFAULT_DAYS);
-      initDays();
-      initMediaDays();
-      populateScheduleSelects();
-      alert('Schedule reset to official poster dates.');
-    }
-
-    function initMediaDays() {
-      const mb = document.getElementById('media-day-bar');
-      if (!mb) return;
-      mb.innerHTML = '';
-      cachedSchedule.forEach((x, i) => {
-        const btn = document.createElement('button');
-        btn.className = 'day-btn ' + (i === 0 ? 'active' : '');
-        btn.innerText = x.d || `Date ${i+1}`;
-        btn.onclick = function() {
-          document.querySelectorAll('#media-day-bar .day-btn').forEach(k => k.classList.remove('active'));
-          btn.classList.add('active');
-          renderMediaDay(i);
-        };
-        mb.appendChild(btn);
-      });
-      renderMediaDay(0);
-    }
-
-    function renderMediaDay(idx) {
-      const x = cachedSchedule[idx] || DEFAULT_DAYS[0];
-      const current = cachedMedia[idx] || {};
-      const view = document.getElementById('media-content-view');
-      if (!view) return;
-
-      let html = `
-        <div style="background:#fffaf0; border:1px solid #fce8cc; padding:14px; border-radius:8px;">
-          <h4 style="color:var(--primary); margin-bottom:4px;">${x.d || ''} - ${x.devi || ''}</h4>
-          <p style="font-size:0.8rem; color:#666; margin-bottom:12px;">Events: ${x.p || ''}</p>
-      `;
-
-      if (current.photo) {
-        html += `<a class="btn" style="background:#2980b9; width:100%; margin-bottom:8px;" href="${current.photo}" target="_blank">📁 Open Photos (Drive/Photos)</a>`;
-      } else {
-        html += `<div style="padding:10px; background:#fff; border:1px dashed #ccc; border-radius:6px; text-align:center; font-size:0.8rem; color:#777; margin-bottom:8px;">⏳ Photos will be uploaded soon!</div>`;
-      }
-
-      if (current.video) {
-        html += `<a class="btn" style="background:#c0392b; width:100%;" href="${current.video}" target="_blank">▶️ Watch Video Highlights</a>`;
-      }
-
-      html += `</div>`;
-      view.innerHTML = html;
-    }
-
-    function loadAdminMediaFields() {
-      const mediaSel = document.getElementById('adm-media-day');
-      if (!mediaSel) return;
-      const day = mediaSel.value || 0;
-      const current = cachedMedia[day] || {};
-      document.getElementById('adm-photo-link').value = current.photo || '';
-      document.getElementById('adm-video-link').value = current.video || '';
-    }
-
-    function saveMediaLink() {
-      const mediaSel = document.getElementById('adm-media-day');
-      if (!mediaSel) return;
-      const day = mediaSel.value;
-      const photo = document.getElementById('adm-photo-link').value.trim();
-      const video = document.getElementById('adm-video-link').value.trim();
-
-      cachedMedia[day] = { photo, video };
-      localStorage.setItem('nbmm_media', JSON.stringify(cachedMedia));
-      if (db) db.ref('media/' + day).set({ photo, video });
-      alert(`Media links updated!`);
-      renderMediaDay(day);
-    }
-
-    // -------------------------------------------------------------
-    // 21. SHARE TAB & DYNAMIC URL
+    // 16. SHARE TAB & BUILT-IN QR CODE GENERATOR
     // -------------------------------------------------------------
     function getCleanInstallUrl() {
       let base = window.location.origin + window.location.pathname;
@@ -2918,9 +2403,21 @@
 
     function initShare() {
       const installUrl = getCleanInstallUrl();
-      const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(installUrl);
-      const qrImg = document.getElementById('share-qr-img');
-      if (qrImg) qrImg.src = qrApiUrl;
+      const container = document.getElementById('qrcode-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const qrImg = document.createElement('img');
+      qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent(installUrl);
+      qrImg.alt = 'App QR Code';
+      qrImg.style.width = '180px';
+      qrImg.style.height = '180px';
+      qrImg.style.display = 'block';
+      qrImg.style.margin = '0 auto';
+      qrImg.onerror = function() {
+        container.innerHTML = `<a href="${installUrl}" target="_blank" style="font-size:0.85rem; color:#7a0006; font-weight:bold; word-break:break-all;">${installUrl}</a>`;
+      };
+      container.appendChild(qrImg);
     }
 
     function shareOnWhatsApp() {
@@ -2941,7 +2438,7 @@
     }
 
     // -------------------------------------------------------------
-    // 22. AUTHENTICATION & SETTINGS (FIXED PERSISTENT LOGIN)
+    // 17. AUTHENTICATION & SETTINGS (FIXED PERSISTENT LOGIN)
     // -------------------------------------------------------------
     function toggleForgotBox(show) {
       document.getElementById('login-box').style.display = show ? 'none' : 'block';
@@ -3071,7 +2568,7 @@
     }
 
     // -------------------------------------------------------------
-    // 23. KHATA & RECEIPT GENERATOR WITH AUTO-DELIVERY
+    // 18. KHATA & RECEIPT GENERATOR WITH AUTO-DELIVERY
     // -------------------------------------------------------------
     function saveRecord(autoDeliver) {
       const name = document.getElementById('r-name').value.trim();
@@ -3195,7 +2692,7 @@
     }
 
     // -------------------------------------------------------------
-    // 24. FILTER & RENDER LEDGER TABLE (CATEGORY-AWARE)
+    // 19. FILTER & RENDER LEDGER TABLE (CATEGORY-AWARE)
     // -------------------------------------------------------------
     function renderRows() {
       let incPaid = 0, incPending = 0, exp = 0;
@@ -3265,7 +2762,7 @@
     }
 
     // -------------------------------------------------------------
-    // 25. POPULATE TRI-LINGUAL RECEIPT MODAL
+    // 20. POPULATE  TRI-LINGUAL RECEIPT MODAL
     // -------------------------------------------------------------
     function openReceiptModal(item) {
       document.getElementById('pr-rec').innerText = item.rec;
@@ -3319,7 +2816,7 @@
     }
 
     // -------------------------------------------------------------
-    // 26. BOOTSTRAP
+    // 21. BOOTSTRAP
     // -------------------------------------------------------------
     setLanguage(currentLang);
     initDays();
