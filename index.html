@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -481,6 +481,15 @@
   <!-- FIREBASE SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  
+  <script>
+    // INSTANT PERSISTENT LOGIN BYPASS STYLE INJECTION
+    if (localStorage.getItem('nbmm_auth') === '1') {
+      const s = document.createElement('style');
+      s.innerHTML = '#login-box { display: none !important; } #panel-box { display: block !important; }';
+      document.head.appendChild(s);
+    }
+  </script>
 </head>
 <body>
 
@@ -775,13 +784,12 @@
   <!-- TAB 7: KHATA (ADMIN - BIFURCATED DASHBOARD) -->
   <section id="tab-admin" class="tab">
     
-    <!-- LOGIN BOX WITH STANDARD ID & PASSWORD ONLY -->
+    <!-- LOGIN BOX -->
     <div id="login-box" class="card" style="text-align:center;">
       <h3>🔐 Committee Login</h3>
       <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">Enter User ID and Password:</p>
       <input type="text" id="uid" class="input-box" placeholder="Enter User ID" />
       <input type="password" id="pin" class="input-box" placeholder="Enter Password" />
-      
       
       <button class="btn" style="background:#7a0006; width:100%; margin-bottom:8px;" onclick="doLogin()">🔓 Sign In</button>
       <p id="err" style="color:red; font-size:0.75rem; margin-top:6px; display:none;">Invalid ID or Password.</p>
@@ -1308,7 +1316,7 @@
             </div>
 
             <div class="mrc-thanks-center">
-              <div style="font-size:0.8rem; color:#7a0006; font-weight:bold;">॥</div>
+              <div style="font-size:0.80rem; color:#7a0006; font-weight:bold;">॥</div>
               <h3>धन्यवाद</h3>
               <div style="font-size:0.75rem; color:#666; font-weight:bold;">THANK YOU</div>
               <div style="color:var(--gold); font-size:0.75rem;">❦</div>
@@ -1564,8 +1572,9 @@
         renderDeviceSessions();
       });
     }
+
     // -------------------------------------------------------------
-    // FIXED: PAVITRA DAAN QR CODE RENDERER
+    // PAVITRA DAAN QR & BANK DETAILS RENDERER
     // -------------------------------------------------------------
     function renderBankDetails() {
       const b = cachedBank || DEFAULT_BANK;
@@ -1595,53 +1604,7 @@
     }
 
     // -------------------------------------------------------------
-    // FIXED: PERSISTENT LOGIN (NO RE-PROMPTING ON REFRESH)
-    // -------------------------------------------------------------
-    function checkLogin() {
-      if (localStorage.getItem('nbmm_auth') === '1') {
-        const loginBox = document.getElementById('login-box');
-        const forgotBox = document.getElementById('forgot-box');
-        const panelBox = document.getElementById('panel-box');
-        
-        if (loginBox) loginBox.style.display = 'none';
-        if (forgotBox) forgotBox.style.display = 'none';
-        if (panelBox) panelBox.style.display = 'block';
-
-        setTimeout(() => {
-          try {
-            if (document.getElementById('set-uid')) document.getElementById('set-uid').value = cachedAuth.uid;
-            if (document.getElementById('set-pin')) document.getElementById('set-pin').value = cachedAuth.pin;
-            if (typeof populateScheduleSelects === 'function') populateScheduleSelects();
-            if (typeof renderAdminAartiList === 'function') renderAdminAartiList();
-            if (typeof renderSocialLinks === 'function') renderSocialLinks();
-            if (typeof renderBankDetails === 'function') renderBankDetails();
-            if (typeof renderRegularTimings === 'function') renderRegularTimings();
-            if (typeof renderRows === 'function') renderRows();
-          } catch (e) {
-            console.warn("Panel init note:", e);
-          }
-        }, 30);
-      }
-    }
-
-    function doLogin() {
-      const u = document.getElementById('uid').value.trim();
-      const p = document.getElementById('pin').value.trim();
-
-      if (u === cachedAuth.uid && p === cachedAuth.pin) {
-        localStorage.setItem('nbmm_auth', '1');
-        const err = document.getElementById('err');
-        if (err) err.style.display = 'none';
-        checkLogin();
-        registerDeviceSession();
-      } else {
-        const err = document.getElementById('err');
-        if (err) err.style.display = 'block';
-      }
-    }
-    
-    // -------------------------------------------------------------
-    // 2. ZERO-DELAY PANDAL PROJECTOR CAM STREAMING ENGINE
+    // ZERO-DELAY PANDAL PROJECTOR CAM STREAMING ENGINE
     // -------------------------------------------------------------
     function renderPandalCamLive(isLive) {
       const box = document.getElementById('live-pandal-cam-box');
@@ -1684,14 +1647,8 @@
     }
 
     // -------------------------------------------------------------
-    // 3. RESTRICTED COMMITTEE CCTV ENGINE
+    // RESTRICTED COMMITTEE CCTV ENGINE
     // -------------------------------------------------------------
-    function extractYouTubeEmbed(url) {
-      if (!url) return '';
-      const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|live\/|watch\?.+&v=))([\w-]{11})/);
-      return match ? `https://www.youtube.com/embed/${match[1]}?autoplay=1&mute=1&playsinline=1` : url;
-    }
-
     function renderCCTVStream(url) {
       const wrap = document.getElementById('cctv-player-wrap');
       const msg = document.getElementById('cctv-offline-msg');
@@ -1719,7 +1676,7 @@
     }
 
     // -------------------------------------------------------------
-    // 4. AUTOMATED UPI PAYMENT POPUP & DELIVERY LOGIC
+    // AUTOMATED UPI PAYMENT POPUP & DELIVERY LOGIC
     // -------------------------------------------------------------
     function checkModeAndPromptUPI() {
       const mode = document.getElementById('r-mode').value;
@@ -1766,7 +1723,7 @@
     }
 
     // -------------------------------------------------------------
-    // 5. YOUTUBE & INSTAGRAM LIVE STREAM ENGINE
+    // YOUTUBE & INSTAGRAM LIVE STREAM ENGINE
     // -------------------------------------------------------------
     function extractYouTubeId(url) {
       if (!url) return '';
@@ -1865,7 +1822,7 @@
     }
 
     // -------------------------------------------------------------
-    // 6. NAVIGATION, DRAWER & LANGUAGE SWITCHER FUNCTIONS
+    // NAVIGATION, DRAWER & LANGUAGE SWITCHER FUNCTIONS
     // -------------------------------------------------------------
     function openDrawer() {
       document.getElementById('side-drawer').style.left = '0px';
@@ -2012,7 +1969,7 @@
     }
 
     // -------------------------------------------------------------
-    // 7. NUMBER CONVERTERS
+    // NUMBER CONVERTERS
     // -------------------------------------------------------------
     function numberToMarathiWords(n) {
       n = parseInt(n);
@@ -2086,7 +2043,7 @@
     }
 
     // -------------------------------------------------------------
-    // 8. SHARE TAB & BUILT-IN QR CODE GENERATOR
+    // SHARE TAB  & BUILT-IN QR CODE GENERATOR
     // -------------------------------------------------------------
     function getCleanInstallUrl() {
       let base = window.location.origin + window.location.pathname;
@@ -2131,7 +2088,7 @@
     }
 
     // -------------------------------------------------------------
-    // 9. AUTHENTICATION & SETTINGS (PERSISTENT ID/PASSWORD LOGIN)
+    // AUTHENTICATION & SETTINGS (PERSISTENT ID/PASSWORD LOGIN)
     // -------------------------------------------------------------
     function toggleForgotBox(show) {
       document.getElementById('login-box').style.display = show ? 'none' : 'block';
@@ -2192,27 +2149,21 @@
         if (loginBox) loginBox.style.display = 'none';
         if (forgotBox) forgotBox.style.display = 'none';
         if (panelBox) panelBox.style.display = 'block';
-        
-        if (document.getElementById('set-uid')) document.getElementById('set-uid').value = cachedAuth.uid;
-        if (document.getElementById('set-pin')) document.getElementById('set-pin').value = cachedAuth.pin;
-        if (document.getElementById('adm-live-url')) document.getElementById('adm-live-url').value = cachedLiveStream;
-        if (document.getElementById('adm-cctv-url')) document.getElementById('adm-cctv-url').value = cachedCCTVStream;
 
-        try {
-          populateScheduleSelects();
-          if (typeof renderAdminAartiList === 'function') renderAdminAartiList();
-          renderSocialLinks();
-          renderBankDetails();
-          renderRegularTimings();
-          renderDeviceSessions();
-          renderCategoryBreakdownCards();
-          renderInstagramLive(cachedInstaLive);
-          renderPandalCamLive(cachedPandalCam);
-          renderCCTVStream(cachedCCTVStream);
-          renderRows();
-        } catch (e) {
-          console.warn("Admin panel init warning:", e);
-        }
+        setTimeout(() => {
+          try {
+            if (document.getElementById('set-uid')) document.getElementById('set-uid').value = cachedAuth.uid;
+            if (document.getElementById('set-pin')) document.getElementById('set-pin').value = cachedAuth.pin;
+            if (typeof populateScheduleSelects === 'function') populateScheduleSelects();
+            if (typeof renderAdminAartiList === 'function') renderAdminAartiList();
+            if (typeof renderSocialLinks === 'function') renderSocialLinks();
+            if (typeof renderBankDetails === 'function') renderBankDetails();
+            if (typeof renderRegularTimings === 'function') renderRegularTimings();
+            if (typeof renderRows === 'function') renderRows();
+          } catch (e) {
+            console.warn("Panel init note:", e);
+          }
+        }, 30);
       }
     }
 
@@ -2249,7 +2200,7 @@
     }
 
     // -------------------------------------------------------------
-    // 10. SCHEDULE & MEDIA MANAGER
+    // SCHEDULE & MEDIA MANAGER
     // -------------------------------------------------------------
     function initDays() {
       const b = document.getElementById('day-bar');
@@ -2468,7 +2419,7 @@
     }
 
     // -------------------------------------------------------------
-    // 11. KHATA & RECEIPTS MANAGER
+    // KHATA  & RECEIPTS MANAGER
     // -------------------------------------------------------------
     function saveRecord(autoDeliver) {
       const name = document.getElementById('r-name').value.trim();
@@ -2695,7 +2646,7 @@
     }
 
     // -------------------------------------------------------------
-    // 12. AARTI VIEWER & ADMIN MANAGER
+    // AARTI VIEWER & ADMIN MANAGER
     // -------------------------------------------------------------
     let selectedAartiIdx = 0;
 
@@ -2790,7 +2741,7 @@
     }
 
     // -------------------------------------------------------------
-    // 13. BOOTSTRAP INITIALIZATION
+    // BOOTSTRAP INITIALIZATION
     // -------------------------------------------------------------
     setLanguage(currentLang);
     initDays();
