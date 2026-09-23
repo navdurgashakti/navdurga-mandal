@@ -102,7 +102,6 @@
       <button class="active" onclick="switchSection('schedule', this)">📅 Daily Schedule</button>
       <button onclick="switchSection('media', this)">📸 Photos & Videos</button>
       <button onclick="switchSection('live', this)">🔴 Live Darshan</button>
-      <button onclick="switchSection('songs', this)">🎶 Garba & Songs</button>
       <button onclick="switchSection('donate', this)">🙏 Pavitra Daan & Bank</button>
       <button onclick="switchSection('share', this)">📤 Share App / QR</button>
       <button onclick="switchSection('info', this)">📜 Aartis & Social</button>
@@ -163,15 +162,6 @@
         <h4 style="color:var(--primary); margin:8px 0 4px;">Pandal Live Stream Offline</h4>
         <p style="font-size:0.82rem; color:#555;">Subah Aarti: 7:30 AM | Sandhya Aarti: 7:30 PM</p>
       </div>
-    </div>
-  </section>
-
-  <!-- TAB: SONGS -->
-  <section id="tab-songs" class="tab">
-    <div class="card" style="border-left-color: #e84393;">
-      <h3 style="color:#c0392b;">🎶 Garba & Dandiya Songs</h3>
-      <div class="day-bar" id="songs-tabs-bar"></div>
-      <div id="songs-content-view" style="margin-top:10px; background:#fffdf8; border:1px solid #f9e2b0; border-radius:8px; padding:12px;"></div>
     </div>
   </section>
 
@@ -238,7 +228,6 @@
         <button class="admin-sub-btn" id="asb-live" onclick="switchAdminSubTab('live')">🔴 लाईव्ह</button>
         <button class="admin-sub-btn" id="asb-cctv" onclick="switchAdminSubTab('cctv')">📹 CCTV</button>
         <button class="admin-sub-btn" id="asb-schedule" onclick="switchAdminSubTab('schedule')">📅 कार्यक्रम</button>
-        <button class="admin-sub-btn" id="asb-songs" onclick="switchAdminSubTab('songs')">🎶 गाणी</button>
         <button class="admin-sub-btn" id="asb-settings" onclick="switchAdminSubTab('settings')">⚙️ सेटिंग्स</button>
       </div>
 
@@ -280,17 +269,6 @@
           <input type="text" id="adm-sched-devi" class="input-box" placeholder="Puja / Event" />
           <input type="text" id="adm-sched-clr" class="input-box" placeholder="Color Theme" />
           <button class="btn" style="background:#8e44ad; width:100%;" onclick="saveScheduleDay()">💾 Save Date</button>
-        </div>
-      </div>
-
-      <!-- SONGS SUB-TAB -->
-      <div id="asv-songs" class="admin-sub-view">
-        <div class="card">
-          <h3>🎶 Add Song & Audio</h3>
-          <input type="text" id="adm-song-title" class="input-box" placeholder="Song Title" />
-          <input type="url" id="adm-song-audio" class="input-box" placeholder="Audio / YouTube Link" />
-          <textarea id="adm-song-lyrics" class="input-box" rows="4" placeholder="Lyrics..."></textarea>
-          <button class="btn" style="background:#e84393; width:100%;" onclick="saveNewSong()">➕ Add Song</button>
         </div>
       </div>
 
@@ -352,18 +330,12 @@
       { d: "13/10/2026 - मंगलवार", devi: "गरबा", clr: "लाल (Red)", p: "गरबा नाइट", pr: "महाप्रसाद" }
     ];
 
-    const DEFAULT_SONGS = [
-      { id: "s1", title: "Dhol Baje", audio: "https://www.youtube.com/watch?v=9S61c47g49s", lyrics: "नगाड़ा संग ढोल बाजे..." }
-    ];
-
     let cachedSchedule = JSON.parse(localStorage.getItem('nbmm_sched') || 'null') || DEFAULT_DAYS;
-    let cachedSongs = JSON.parse(localStorage.getItem('nbmm_songs') || 'null') || DEFAULT_SONGS;
     let cachedEntries = JSON.parse(localStorage.getItem('nbmm_entries') || '[]');
     let cachedAuth = { uid: "NBMM", pin: "NBMM1137@" };
 
     if (db) {
       db.ref('schedule').on('value', s => { if(s.val()) { cachedSchedule = s.val(); initDays(); populateScheduleSelects(); } });
-      db.ref('songs').on('value', s => { if(s.val()) { cachedSongs = Object.values(s.val()); renderSongsTabs(); } });
       db.ref('entries').on('value', s => { 
         cachedEntries = s.val() ? Object.values(s.val()) : [];
         renderRows();
@@ -405,28 +377,6 @@
       `;
     }
 
-    function renderSongsTabs() {
-      const bar = document.getElementById('songs-tabs-bar');
-      if (!bar) return;
-      let html = '';
-      cachedSongs.forEach((s, idx) => {
-        html += `<button class="day-btn ${idx === 0 ? 'active' : ''}" onclick="showSong(${idx})">${s.title}</button>`;
-      });
-      bar.innerHTML = html;
-      if (cachedSongs.length > 0) showSong(0);
-    }
-
-    function showSong(idx) {
-      const s = cachedSongs[idx];
-      if (!s) return;
-      let audioHtml = s.audio ? `<a class="btn" style="background:#e84393; margin-bottom:8px; font-size:0.75rem;" href="${s.audio}" target="_blank">▶️ Play Audio</a>` : '';
-      document.getElementById('songs-content-view').innerHTML = `
-        <h4>${s.title}</h4>
-        ${audioHtml}
-        <p style="white-space: pre-line; font-size:0.85rem;">${s.lyrics}</p>
-      `;
-    }
-
     function populateScheduleSelects() {
       const sel = document.getElementById('adm-sched-day-select');
       if (!sel) return;
@@ -453,20 +403,6 @@
       if (db) db.ref('schedule').set(cachedSchedule);
       initDays();
       alert('Updated!');
-    }
-
-    function saveNewSong() {
-      const title = document.getElementById('adm-song-title').value.trim();
-      const audio = document.getElementById('adm-song-audio').value.trim();
-      const lyrics = document.getElementById('adm-song-lyrics').value.trim();
-      if (!title || !lyrics) return alert('Enter title and lyrics');
-      const id = 's_' + Date.now();
-      const item = { id, title, audio, lyrics };
-      cachedSongs.push(item);
-      localStorage.setItem('nbmm_songs', JSON.stringify(cachedSongs));
-      if (db) db.ref('songs/' + id).set(item);
-      renderSongsTabs();
-      alert('Song added!');
     }
 
     function checkModeAndPromptUPI() {
@@ -550,10 +486,8 @@
 
     // Bootstrap
     initDays();
-    renderSongsTabs();
     initShare();
-    renderBankDetails();
     checkLogin();
   </script>
 </body>
-</html
+</html>
