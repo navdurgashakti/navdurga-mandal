@@ -8,8 +8,8 @@
   <link rel="apple-touch-icon" href="icon.jpg">
   <link rel="icon" type="image/jpeg" href="icon.jpg">
   <style>
-    :root { --primary: #7a0006; --gold: #d4af37; --bg: #fffbf0; }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+    :root { --primary: #7a0006; --gold: #d4af37; --gold-light: #fef8eb; --bg: #fffbf0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
     body { background: var(--bg); color: #2c3e50; min-height: 100vh; }
     
     header { 
@@ -21,50 +21,461 @@
       top: 0; 
       z-index: 90; 
     }
-    .header-top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .header-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
     .menu-btn {
-      background: rgba(255, 255, 255, 0.22); border: 1px solid rgba(255, 255, 255, 0.45);
-      color: #fff; font-size: 1.3rem; width: 38px; height: 38px; border-radius: 8px;
-      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      background: rgba(255, 255, 255, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      color: #fff;
+      font-size: 1.3rem;
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
     }
-    .lang-switcher { display: inline-flex; gap: 3px; background: rgba(0,0,0,0.3); padding: 3px; border-radius: 6px; }
-    .lang-btn { background: transparent; border: none; color: #fff; font-size: 0.72rem; font-weight: 700; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
-    .lang-btn.active { background: var(--gold); color: #000; }
-    .header-title-wrap { text-align: center; }
-    header h1 { font-size: 1.15rem; font-weight: 800; margin: 2px 0; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
-    .header-addr { display: inline-block; margin-top: 4px; background: rgba(0,0,0,0.3); padding: 3px 10px; border-radius: 14px; font-size: 0.65rem; }
+    .lang-switcher {
+      display: inline-flex;
+      gap: 3px;
+      background: rgba(0,0,0,0.3);
+      padding: 3px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+    .lang-btn {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .lang-btn.active {
+      background: var(--gold);
+      color: #000;
+    }
+    .header-title-wrap {
+      text-align: center;
+      padding: 0 4px;
+    }
+    header h1 { 
+      font-size: 1.15rem; 
+      font-weight: 800; 
+      letter-spacing: 0.5px; 
+      line-height: 1.3;
+      margin: 2px 0;
+      color: #ffffff;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    }
+    .header-addr { 
+      display: inline-block; 
+      margin-top: 4px; 
+      background: rgba(0,0,0,0.3); 
+      padding: 3px 10px; 
+      border-radius: 14px; 
+      font-size: 0.65rem; 
+      line-height: 1.3; 
+    }
 
+    /* Left Drawer */
     #side-drawer {
-      position: fixed; top: 0; left: -290px; width: 280px; height: 100%; background: #fff;
-      box-shadow: 4px 0 20px rgba(0,0,0,0.35); z-index: 200; transition: left 0.25s ease; display: flex; flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: -290px;
+      width: 280px;
+      height: 100%;
+      background: #ffffff;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.35);
+      z-index: 200;
+      transition: left 0.25s ease;
+      display: flex;
+      flex-direction: column;
     }
-    .drawer-header { background: linear-gradient(135deg, var(--primary), #520004); color: #fff; padding: 18px 16px; border-bottom: 3px solid var(--gold); position: relative; }
-    .drawer-close { position: absolute; top: 10px; right: 12px; background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; }
-    .drawer-links { display: flex; flex-direction: column; padding: 10px 0; }
-    .drawer-links button { background: none; border: none; text-align: left; padding: 14px 20px; font-size: 0.95rem; color: #333; cursor: pointer; border-bottom: 1px solid #eee; font-weight: 500; width: 100%; }
-    .drawer-links button.active { color: var(--primary); background: #fff5f5; font-weight: 700; border-left: 6px solid var(--primary); }
+    .drawer-header {
+      background: linear-gradient(135deg, var(--primary), #520004);
+      color: #fff;
+      padding: 18px 16px;
+      border-bottom: 3px solid var(--gold);
+      position: relative;
+    }
+    .drawer-close {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.6rem;
+      cursor: pointer;
+      padding: 6px 10px;
+    }
+    .drawer-links {
+      display: flex;
+      flex-direction: column;
+      padding: 10px 0;
+    }
+    .drawer-links button {
+      background: none;
+      border: none;
+      text-align: left;
+      padding: 14px 20px;
+      font-size: 0.95rem;
+      color: #333;
+      cursor: pointer;
+      border-bottom: 1px solid #eee;
+      font-weight: 500;
+      width: 100%;
+    }
+    .drawer-links button.active {
+      color: var(--primary);
+      background: #fff5f5;
+      font-weight: 700;
+      border-left: 6px solid var(--primary);
+    }
     
-    #drawer-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 150; }
+    #drawer-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 150;
+    }
 
     .tab { display: none; padding: 14px; max-width: 550px; margin: 0 auto; }
     .tab.active { display: block; }
     .card { background: #fff; border-radius: 10px; padding: 14px; margin-bottom: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 4px solid var(--gold); }
     .card h3 { color: var(--primary); margin-bottom: 8px; font-size: 1rem; }
+    .card p { font-size: 0.88rem; line-height: 1.4; color: #444; margin-bottom: 5px; }
     .btn { display: inline-flex; align-items: center; justify-content: center; padding: 10px 14px; background: var(--primary); color: #fff; text-decoration: none; font-weight: 600; border-radius: 6px; font-size: 0.85rem; border: none; cursor: pointer; }
     .day-bar { display: flex; overflow-x: auto; gap: 6px; padding-bottom: 8px; margin-bottom: 10px; }
     .day-btn { flex: 0 0 auto; background: #fff; border: 1px solid #ccc; border-radius: 16px; padding: 6px 12px; font-size: 0.78rem; font-weight: 600; color: #444; cursor: pointer; }
     .day-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
     .input-box { width: 100%; padding: 10px; margin: 4px 0 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem; }
     .table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin-top: 8px; }
-    .table th, .table td { border: 1px solid #eee; padding: 6px; text-align: left; }
+    .table th, .table td { border: 1px solid #eee; padding: 6px; text-align: left; vertical-align: middle; }
     .table th { background: #f5f5f5; }
-    .admin-sub-bar { display: flex; overflow-x: auto; gap: 6px; background: #fdf3e7; border: 1px solid #e2cfb8; border-radius: 8px; padding: 6px; margin-bottom: 14px; }
-    .admin-sub-btn { background: #fff; border: 1px solid #d5c0a5; padding: 7px 11px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; color: #444; cursor: pointer; }
-    .admin-sub-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    
+    .badge-paid { background: #e8f8f5; color: #27ae60; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; border: 1px solid #a3e4d7; display: inline-block; }
+    .badge-unpaid { background: #fef9e7; color: #d35400; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; border: 1px solid #f9e79f; display: inline-block; }
+
+    /* Bifurcated Sub-Tabs Bar in Khata */
+    .admin-sub-bar {
+      display: flex;
+      overflow-x: auto;
+      gap: 6px;
+      background: #fdf3e7;
+      border: 1px solid #e2cfb8;
+      border-radius: 8px;
+      padding: 6px;
+      margin-bottom: 14px;
+    }
+    .admin-sub-btn {
+      flex: 0 0 auto;
+      background: #fff;
+      border: 1px solid #d5c0a5;
+      padding: 7px 11px;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #444;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .admin-sub-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
     .admin-sub-view { display: none; }
     .admin-sub-view.active { display: block; }
-    #receipt-modal, #upi-pop-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 300; padding: 10px; overflow-y: auto; }
+
+    /* Category Breakdown Grid */
+    .cat-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .cat-stat-card {
+      background: #fffdf8;
+      border: 1px solid #ebd8bd;
+      border-top: 3px solid var(--primary);
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+    }
+    .cat-stat-card h4 { font-size: 0.78rem; color: #444; margin-bottom: 4px; }
+    .cat-stat-card .cat-amt-paid { color: #2e7d32; font-weight: 800; font-size: 0.95rem; }
+    .cat-stat-card .cat-amt-due { color: #d35400; font-size: 0.7rem; font-weight: 600; display: block; }
+
+    .device-session-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      border: 1px solid #e0d0b0;
+      padding: 9px 12px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .bank-data-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-bottom: 1px dashed #eee; font-size: 0.82rem; }
+    .bank-data-row:last-child { border-bottom: none; }
+    .bank-data-lbl { color: #666; font-weight: 600; }
+    .bank-data-val { color: #111; font-weight: 800; }
+
+    /* Modals */
+    #receipt-modal, #upi-pop-modal { 
+      display: none; 
+      position: fixed; 
+      top: 0; left: 0; right: 0; bottom: 0; 
+      background: rgba(0,0,0,0.85); 
+      z-index: 300; 
+      padding: 10px; 
+      overflow-y: auto;
+    }
     .modal-content-wrap { max-width: 480px; margin: 10px auto; }
+    
+    .mrc-card {
+      background: #ffffff;
+      border: 3px solid #7a0006;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .mrc-header {
+      background: linear-gradient(180deg, #7a0006 0%, #540003 100%);
+      color: #ffffff;
+      text-align: center;
+      padding: 12px 12px 10px;
+      position: relative;
+      border-bottom: 2px solid var(--gold);
+    }
+    .mrc-top-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: #ffe0b2;
+      margin-bottom: 6px;
+      padding: 0 4px;
+    }
+    .mrc-header-branding {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .mrc-logo {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      border: 2px solid var(--gold);
+      object-fit: cover;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+    .mrc-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+      line-height: 1.2;
+    }
+    .mrc-sub {
+      font-size: 0.85rem;
+      color: #ffecb3;
+      margin-top: 2px;
+    }
+    .mrc-body {
+      background: #fdfaf3;
+      padding: 14px 14px 10px;
+      position: relative;
+    }
+    .mrc-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .mrc-badge-box {
+      display: inline-flex;
+      align-items: center;
+      background: #fff;
+      border: 1px solid #e0d0b0;
+      border-radius: 6px;
+      overflow: hidden;
+      font-size: 0.8rem;
+    }
+    .mrc-badge-lbl {
+      padding: 4px 8px;
+      color: #555;
+      font-weight: 600;
+    }
+    .mrc-badge-val {
+      background: #7a0006;
+      color: #fff;
+      padding: 4px 10px;
+      font-weight: bold;
+    }
+    .mrc-field-group {
+      border-bottom: 1px dashed #d8c29d;
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+    }
+    .mrc-lbl {
+      font-size: 0.74rem;
+      color: #666;
+      font-weight: 600;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .mrc-val-lg {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #1a1a1a;
+      line-height: 1.3;
+    }
+    .mrc-words-mr {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: #222;
+    }
+    .mrc-words-hi {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #555;
+      margin-top: 1px;
+    }
+    .mrc-words-en {
+      font-size: 0.74rem;
+      color: #777;
+      margin-top: 1px;
+      font-style: italic;
+    }
+    .mrc-mode-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      margin-bottom: 14px;
+    }
+    .mrc-mode-pill {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 14px;
+      border: 1px solid #ccc;
+      color: #555;
+      background: #fff;
+      font-weight: 600;
+    }
+    .mrc-mode-pill.active {
+      background: #7a0006;
+      color: #ffffff;
+      border-color: #7a0006;
+    }
+    .mrc-amount-section {
+      display: grid;
+      grid-template-columns: 140px 1fr 75px;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .mrc-amt-banner {
+      background: linear-gradient(135deg, #7a0006, #9b000a);
+      color: #fff;
+      border-radius: 8px;
+      padding: 8px 10px;
+      border: 2px solid #520004;
+      box-shadow: inset 0 0 4px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .mrc-amt-banner-lbl {
+      font-size: 0.68rem;
+      color: #ffd1d1;
+      display: block;
+    }
+    .mrc-amt-banner-val {
+      font-size: 1.25rem;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+    }
+    .mrc-thanks-center {
+      text-align: center;
+    }
+    .mrc-thanks-center h3 {
+      color: #7a0006;
+      font-size: 1.12rem;
+      font-weight: 800;
+    }
+    .mrc-thanks-center p {
+      font-size: 0.7rem;
+      color: #444;
+      font-weight: 600;
+      margin-top: 2px;
+      line-height: 1.2;
+    }
+    .mrc-qr-box {
+      text-align: center;
+      background: #fff;
+      padding: 4px;
+      border: 1px solid #e2d2b5;
+      border-radius: 6px;
+    }
+    .mrc-qr-box img {
+      width: 65px;
+      height: 65px;
+      display: block;
+      margin: 0 auto;
+    }
+    .mrc-qr-box span {
+      font-size: 0.52rem;
+      color: #555;
+      display: block;
+      margin-top: 2px;
+      line-height: 1.1;
+    }
+    .mrc-footer-signatures {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-top: 10px;
+      border-top: 1px solid #e5d7be;
+      margin-top: 6px;
+    }
+    .mrc-sign-col {
+      text-align: center;
+      min-width: 100px;
+    }
+    .mrc-sign-name {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #111;
+      margin-bottom: 2px;
+    }
+    .mrc-sign-title {
+      font-size: 0.7rem;
+      color: #7a0006;
+      font-weight: bold;
+    }
+
+    @media print {
+      body * { visibility: hidden; }
+      #capture-receipt, #capture-receipt * { visibility: visible; }
+      #capture-receipt { position: absolute; left: 0; top: 0; width: 100%; border: 3px solid #7a0006; box-shadow: none; }
+    }
   </style>
 
   <!-- FIREBASE SDK -->
@@ -83,36 +494,54 @@
         <button class="lang-btn active" id="l-mr" onclick="setLanguage('mr')">MR</button>
       </div>
     </div>
+    
     <div class="header-title-wrap">
       <h1 id="hdr-title">🚩 नवदुर्गा बाल मित्र मंडल</h1>
-      <p style="font-size:0.75rem; color:#ffe0b2;">Navratri Utsav 2026</p>
+      <p style="font-size:0.75rem; color:#ffe0b2;" id="hdr-sub">Navratri Utsav 2026</p>
       <div class="header-addr" id="hdr-addr">📍 शुक्लाजी स्ट्रीट, कामाठीपुरा, मुंबई ४००००८</div>
     </div>
   </header>
 
-  <!-- DRAWER -->
+  <!-- 1-TAP QR DIRECT INSTALL MODAL -->
+  <div id="qr-install-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.85); z-index:500; padding:20px;">
+    <div style="background:#ffffff; max-width:380px; margin:18vh auto 0; border-radius:12px; padding:22px; text-align:center; border:3px solid #7a0006; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+      <img src="icon.jpg" alt="Logo" style="width:70px; height:70px; border-radius:50%; border:2px solid #d4af37; margin-bottom:10px; object-fit:cover;" onerror="this.style.display='none'" />
+      <h3 style="color:#7a0006; font-size:1.15rem; margin-bottom:6px;" id="qrm-title">नवदुर्गा बाल मित्र मंडल</h3>
+      <p style="font-size:0.85rem; color:#444; line-height:1.4; margin-bottom:16px;" id="qrm-desc">
+        Install our official Mandal app directly to your home screen!
+      </p>
+      <button id="btn-modal-install" class="btn" style="background:#27ae60; width:100%; font-size:1rem; padding:14px; font-weight:700; letter-spacing:0.5px;">
+        ⚡ INSTALL APP NOW
+      </button>
+      <button onclick="document.getElementById('qr-install-modal').style.display='none'" style="background:none; border:none; color:#777; font-size:0.8rem; margin-top:12px; cursor:pointer;">
+        Continue in Browser
+      </button>
+    </div>
+  </div>
+
+  <!-- OVERLAY & SIDE DRAWER -->
   <div id="drawer-overlay" onclick="closeDrawer()"></div>
   <aside id="side-drawer">
     <div class="drawer-header">
       <button class="drawer-close" onclick="closeDrawer()">✕</button>
-      <h3>Mandal Menu</h3>
-      <p style="font-size:0.75rem; color:#ffe0b2;">शुक्लाजी स्ट्रीट, मुंबई</p>
+      <h3 style="font-size:1.05rem;" id="drw-head">Mandal Menu</h3>
+      <p style="font-size:0.75rem; color:#ffe0b2; margin-top:3px;">शुक्लाजी स्ट्रीट, मुंबई</p>
     </div>
     <div class="drawer-links">
-      <button class="active" onclick="switchSection('schedule', this)">📅 Daily Schedule</button>
-      <button onclick="switchSection('media', this)">📸 Photos & Videos</button>
-      <button onclick="switchSection('live', this)">🔴 Live Darshan</button>
-      <button onclick="switchSection('donate', this)">🙏 Pavitra Daan & Bank</button>
-      <button onclick="switchSection('share', this)">📤 Share App / QR</button>
-      <button onclick="switchSection('info', this)">📜 Aartis & Social</button>
-      <button onclick="switchSection('admin', this)">🔐 पावती पुस्तक (Khata)</button>
+      <button class="active" onclick="switchSection('schedule', this)" id="nav-sched">📅 Daily Schedule</button>
+      <button onclick="switchSection('media', this)" id="nav-media">📸 Photos & Videos</button>
+      <button onclick="switchSection('live', this)" id="nav-live">🔴 Live Darshan</button>
+      <button onclick="switchSection('donate', this)" id="nav-donate">🙏 Pavitra Daan & Bank</button>
+      <button onclick="switchSection('share', this)" id="nav-share">📤 Share App / QR</button>
+      <button onclick="switchSection('info', this)" id="nav-info">📜 Aartis & Social</button>
+      <button onclick="switchSection('admin', this)" id="nav-admin">🔐 पावती पुस्तक (Khata)</button>
     </div>
   </aside>
 
-  <!-- TAB 1: SCHEDULE -->
+  <!-- TAB 1: SCHEDULE & REGULAR TIMINGS -->
   <section id="tab-schedule" class="tab active">
     <div class="card" style="border-left-color: #2e7d32;">
-      <h3>Pandal Address & Helpdesk</h3>
+      <h3 id="sec-pandal-title">Pandal Address & Helpdesk</h3>
       <p><strong>NEW MUNICIPAL BUILDING 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008</strong></p>
       <div style="display:flex; gap:8px; margin-top:8px;">
         <a class="btn" style="background:#2e7d32; flex:1;" href="https://goo.gl/maps/TxZFq3YUEzNL9uU58?g_st=ac" target="_blank">🗺️ Google Maps</a>
@@ -120,14 +549,22 @@
       </div>
     </div>
 
+    <div class="card" style="border-left-color: #e1306c;">
+      <h3>🌟 Follow & Join Mandal Online</h3>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px;">
+        <a id="btn-insta-quick" class="btn" style="background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color:#fff;" href="https://instagram.com" target="_blank">📸 Instagram</a>
+        <a id="btn-wa-quick" class="btn" style="background:#25d366; color:#fff;" href="https://chat.whatsapp.com" target="_blank">💬 WhatsApp Group</a>
+      </div>
+    </div>
+
     <div class="card">
-      <h3>Select Festival Day / Tithi</h3>
+      <h3 id="sec-select-day">Select Festival Day / Tithi</h3>
       <div class="day-bar" id="day-bar"></div>
       <div id="day-view" style="background:#fffaf0; border:1px solid #fce8cc; padding:12px; border-radius:8px;"></div>
     </div>
 
     <div class="card">
-      <h3>Regular Timings</h3>
+      <h3 id="sec-timings-title">Regular Timings</h3>
       <p><strong>Subah Aarti (सकाळ):</strong> <span id="dsp-subah-aarti">7:30 AM</span></p>
       <p><strong>Sandhya Aarti (संध्याकाळ):</strong> <span id="dsp-sandhya-aarti">7:30 PM</span></p>
       <p><strong>Garba & Dandiya (रास गरबा):</strong> <span id="dsp-garba-time">8:30 PM – 10:00 PM</span></p>
@@ -135,359 +572,2329 @@
     </div>
   </section>
 
-  <!-- TAB 2: MEDIA -->
+  <!-- TAB 2: PHOTOS & VIDEOS -->
   <section id="tab-media" class="tab">
     <div class="card">
-      <h3>📸 Utsav Photos & Videos</h3>
+      <h3 id="sec-media-title">📸 Utsav Photos & Videos</h3>
+      <p style="font-size:0.85rem; color:#555; margin-bottom:10px;" id="sec-media-sub">Select any day to open full-resolution photo albums and video recordings:</p>
       <div class="day-bar" id="media-day-bar"></div>
       <div id="media-content-view" style="margin-top:10px;"></div>
     </div>
   </section>
 
-  <!-- TAB 3: LIVE -->
+  <!-- TAB 3: LIVE DARSHAN -->
   <section id="tab-live" class="tab">
     <div class="card" style="border-left-color: #c0392b; text-align: center;">
-      <h3>🔴 Live Darshan & Aarti</h3>
+      <h3 id="sec-live-title">🔴 Live Darshan & Aarti</h3>
+      <p style="font-size:0.85rem; color:#555; margin-bottom:12px;" id="sec-live-sub">Watch live Aarti and darshan direct from our Sukhlaji Street pandal:</p>
+      
+      <!-- DIRECT PANDAL PROJECTOR CAMERA CARD (ZERO DELAY) -->
       <div id="live-pandal-cam-box" style="display:none; background:#111; color:#fff; border-radius:10px; padding:10px; margin-bottom:12px; border:2px solid #27ae60;">
-        <div style="font-size:0.85rem; font-weight:700; color:#2ecc71; margin-bottom:6px;">🟢 PANDAL LIVE STREAM</div>
+        <div style="font-size:0.85rem; font-weight:700; color:#2ecc71; margin-bottom:6px; display:flex; align-items:center; justify-content:center; gap:6px;">
+          <span>🟢</span> PANDAL LIVE SCREEN (DIRECT CAMERA FEED)
+        </div>
         <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:6px; background:#000;">
           <iframe id="live-pandal-iframe" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;" src="" allow="camera; microphone; autoplay; fullscreen"></iframe>
         </div>
+        <div style="display:flex; gap:8px; margin-top:8px;">
+          <a id="btn-projector-fullscreen" class="btn" style="background:#27ae60; flex:1; font-size:0.8rem;" href="#" target="_blank">
+            🖥️ Open Fullscreen on Projector
+          </a>
+        </div>
       </div>
-      <div id="live-player-container" style="display:none; position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:8px; margin-bottom:10px; background:#000;">
-        <iframe id="live-video-iframe" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;" src="" allowfullscreen></iframe>
+
+      <!-- INSTAGRAM LIVE BROADCAST BANNER -->
+      <div id="live-insta-banner" style="display:none; background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); color:#fff; border-radius:10px; padding:14px; margin-bottom:12px; box-shadow:0 4px 15px rgba(225,48,108,0.35);">
+        <div style="font-size:1.1rem; font-weight:800; margin-bottom:4px;">📸 LIVE NOW ON INSTAGRAM</div>
+        <p style="font-size:0.82rem; margin-bottom:10px; color:#fff;">मंडळाची थेट आरती इन्स्टाग्रामवर सुरू आहे. खालील बटणावर टॅप करा!</p>
+        <a id="btn-insta-live-now" class="btn" style="background:#fff; color:#bc1888; font-weight:800; width:100%; border:none; box-shadow:0 2px 8px rgba(0,0,0,0.2);" href="https://instagram.com" target="_blank">
+          ▶️ Watch on Instagram App / Profile
+        </a>
       </div>
+
+      <!-- YOUTUBE LIVE PLAYER CONTAINER -->
+      <div id="live-player-container" style="display:none; position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); margin-bottom: 10px; background:#000;">
+        <iframe id="live-video-iframe" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+
+      <!-- DIRECT MOBILE APP LAUNCH BUTTON -->
+      <a id="btn-yt-direct-fallback" class="btn" style="background:#c0392b; width:100%; margin-top:8px; display:none;" href="#" target="_blank">
+        ▶️ YouTube App वर थेट पहा (Watch on YouTube App)
+      </a>
+
+      <!-- OFFLINE NOTICE -->
       <div id="live-offline-container" style="background:#fff8e7; border:1px dashed #d4af37; border-radius:8px; padding:20px; text-align:center;">
         <span style="font-size:2rem;">🪔</span>
-        <h4 style="color:var(--primary); margin:8px 0 4px;">Pandal Live Stream Offline</h4>
-        <p style="font-size:0.82rem; color:#555;">Subah Aarti: 7:30 AM | Sandhya Aarti: 7:30 PM</p>
+        <h4 style="color:var(--primary); margin:8px 0 4px;" id="live-off-head">Pandal Live Stream Offline</h4>
+        <p style="font-size:0.82rem; color:#555; line-height:1.4;" id="live-off-desc">
+          The live Aarti broadcast is currently not active.<br>
+          <strong>Subah Aarti:</strong> 7:30 AM | <strong>Sandhya Aarti:</strong> 7:30 PM
+        </p>
+        <p style="font-size:0.75rem; color:#888; margin-top:8px;" id="live-off-note">The player will automatically start when the live stream begins!</p>
       </div>
     </div>
   </section>
 
-  <!-- TAB 4: DONATE -->
+  <!-- TAB 4: DAAN, UPI, BANK DETAILS & DEVOTEE RECEIPT LOOKUP -->
   <section id="tab-donate" class="tab">
     <div class="card" style="border-left-color: #f39c12;">
       <h3>🔍 पावती शोधा / Find My Receipt</h3>
+      <p style="font-size:0.8rem; color:#555; margin-bottom:8px;">Enter your 10-digit mobile number or Receipt number to download/print your official receipt:</p>
       <div style="display:flex; gap:6px;">
         <input type="text" id="devotee-search-input" class="input-box" style="margin:0;" placeholder="Phone Number or Receipt No" />
-        <button class="btn" style="background:#f39c12; color:#000; white-space:nowrap;" onclick="findDevoteeReceipt()">Search 🔎</button>
+        <button class="btn" style="background:#f39c12; color:#000; font-weight:bold; white-space:nowrap;" onclick="findDevoteeReceipt()">Search 🔎</button>
       </div>
       <div id="devotee-search-results" style="margin-top:10px;"></div>
     </div>
 
     <div class="card" style="text-align:center; border-left-color: #27ae60;">
-      <h3>🙏 Pavitra Daan / Varthi</h3>
-      <img id="daan-qr-img" style="width:170px; height:170px; margin:10px auto; display:block; border:2px solid #7a0006; border-radius:10px; padding:6px; background:#fff;" src="" alt="UPI QR">
-      <p id="txt-upi-id" style="font-weight:900; color:#7a0006; font-size:1rem; margin:6px 0;">navdurgabalmitramandal@upi</p>
-      <a class="btn" id="btn-upi-pay" style="background:#27ae60; width:100%; font-size:0.95rem; padding:12px;" href="#">⚡ Pay via UPI App</a>
+      <h3 id="sec-daan-title">🙏 Pavitra Daan / Varthi</h3>
+      <p id="sec-daan-sub">Scan QR Code to contribute to Navdurga Balmitra Mandal:</p>
+      
+      <div style="margin: 14px auto; text-align:center;">
+        <img id="daan-qr-img" style="width:190px; height:190px; margin:0 auto; display:block; border: 2px solid #7a0006; border-radius:10px; padding:6px; background:#fff; box-shadow:0 4px 10px rgba(0,0,0,0.1);" src="" alt="UPI QR">
+        <span style="font-size:0.75rem; color:#777; display:block; margin-top:4px;">(Google Pay, PhonePe, Paytm, BHIM)</span>
+      </div>
+
+      <div style="background:#fef9e7; border:1px dashed #d4af37; border-radius:8px; padding:10px; margin-bottom:12px;">
+        <span style="font-size:0.75rem; color:#666; font-weight:600;">OFFICIAL UPI ID:</span>
+        <p id="txt-upi-id" style="font-weight:900; color:#7a0006; font-size:1.05rem; margin:2px 0 6px;">navdurgabalmitramandal@upi</p>
+        <button class="btn" style="background:#2980b9; padding:6px 12px; font-size:0.75rem;" onclick="copyUpiId()">📋 Copy UPI ID</button>
+      </div>
+
+      <a class="btn" id="btn-upi-pay" style="background:#27ae60; width:100%; font-size:0.95rem; padding:12px;" href="upi://pay?pa=navdurgabalmitramandal@upi&pn=NavdurgaBalmitraMandal&cu=INR">⚡ Pay Directly via UPI App</a>
+    </div>
+
+    <div class="card" style="border-left-color: #2980b9;">
+      <h3>🏛️ Mandal Bank Account Details (NEFT / IMPS)</h3>
+      <p style="font-size:0.8rem; color:#666; margin-bottom:10px;">Devotees can transfer seva contribution directly to the Mandal's bank account:</p>
+
+      <div style="background:#ffffff; border:1px solid #e1d5c1; border-radius:8px; overflow:hidden;">
+        <div class="bank-data-row">
+          <span class="bank-data-lbl">Account Name:</span>
+          <span class="bank-data-val" id="bnk-val-name">NAVDURGA BALMITRA MANDAL</span>
+        </div>
+        <div class="bank-data-row">
+          <span class="bank-data-lbl">Bank Name:</span>
+          <span class="bank-data-val" id="bnk-val-bank">STATE BANK OF INDIA</span>
+        </div>
+        <div class="bank-data-row">
+          <span class="bank-data-lbl">Account Number:</span>
+          <span class="bank-data-val" id="bnk-val-acc">123456789012</span>
+        </div>
+        <div class="bank-data-row">
+          <span class="bank-data-lbl">IFSC Code:</span>
+          <span class="bank-data-val" id="bnk-val-ifsc">SBIN0000000</span>
+        </div>
+        <div class="bank-data-row">
+          <span class="bank-data-lbl">Branch:</span>
+          <span class="bank-data-val" id="bnk-val-branch">MUMBAI MAIN BRANCH</span>
+        </div>
+        <div class="bank-data-row">
+          <span class="bank-data-lbl">Account Type:</span>
+          <span class="bank-data-val" id="bnk-val-type">Savings / Current Account</span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:8px; margin-top:10px;">
+        <button class="btn" style="background:#2980b9; flex:1; font-size:0.75rem;" onclick="copyBankAccount()">📋 Copy Acc No</button>
+        <button class="btn" style="background:#555; flex:1; font-size:0.75rem;" onclick="copyBankIFSC()">📋 Copy IFSC</button>
+      </div>
+      <p id="bank-copy-status" style="color:#2e7d32; font-size:0.75rem; text-align:center; margin-top:6px; display:none; font-weight:bold;">Copied to clipboard!</p>
     </div>
   </section>
 
   <!-- TAB 5: SHARE -->
   <section id="tab-share" class="tab">
     <div class="card" style="border-left-color: #25d366; text-align: center;">
-      <h3>📲 Share Mandal App</h3>
-      <div style="background:#fff; padding:10px; border-radius:8px; border:1px solid #ddd; display:inline-block; margin:10px 0;">
-        <div id="qrcode-container"></div>
+      <h3 id="sec-share-title">📲 Share Mandal App</h3>
+      <p style="font-size: 0.85rem; color:#555;" id="sec-share-sub">Scan this QR code with any mobile camera to instantly install the app:</p>
+      
+      <div style="text-align:center; margin:14px 0; background:#fff; padding:10px; border-radius:8px; border:1px solid #ddd; display:inline-block;">
+        <div id="qrcode-container" style="display:flex; justify-content:center; align-items:center;"></div>
+        <p style="font-size:0.7rem; color:#888; margin-top:6px;" id="sec-share-note">(Scan with any phone camera)</p>
       </div>
-      <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+
+      <div style="display:flex; flex-direction:column; gap:8px; margin-top:10px;">
         <button class="btn" style="background:#25d366;" onclick="shareOnWhatsApp()">💬 Share on WhatsApp</button>
         <button class="btn" style="background:#2980b9;" onclick="copyAppUrl()">📋 Copy App Link</button>
       </div>
-      <p id="copy-status" style="color:#2e7d32; font-size:0.8rem; margin-top:6px; display:none; font-weight:bold;">Link copied!</p>
+      <p id="copy-status" style="color:#2e7d32; font-size:0.8rem; margin-top:6px; display:none; font-weight:bold; text-align:center;">Link copied to clipboard!</p>
     </div>
   </section>
 
-  <!-- TAB 6: INFO & AARTIS -->
+  <!-- TAB 6: INFO, CONTACTS, SOCIAL & AARTIS -->
   <section id="tab-info" class="tab">
+    <div class="card" style="border-left-color: #25d366;">
+      <h3>📱 Connect With Our Mandal</h3>
+      <p style="font-size:0.85rem; color:#555; margin-bottom:12px;">Stay connected with our official Mandal social media handles and group:</p>
+      
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <a id="link-insta-page" href="https://instagram.com" target="_blank" style="display:flex; align-items:center; justify-content:space-between; background:#fafafa; border:1px solid #ddd; padding:10px 14px; border-radius:8px; text-decoration:none; color:#111;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:1.6rem;">📸</span>
+            <div>
+              <div style="font-weight:700; font-size:0.95rem;">Follow on Instagram</div>
+              <div id="txt-insta-handle" style="font-size:0.75rem; color:#e1306c;">@navdurgabalmitramandal</div>
+            </div>
+          </div>
+          <span style="font-size:0.85rem; font-weight:700; color:#e1306c;">Visit ➔</span>
+        </a>
+
+        <a id="link-wa-group" href="https://chat.whatsapp.com" target="_blank" style="display:flex; align-items:center; justify-content:space-between; background:#fafafa; border:1px solid #ddd; padding:10px 14px; border-radius:8px; text-decoration:none; color:#111;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:1.6rem;">💬</span>
+            <div>
+              <div style="font-weight:700; font-size:0.95rem;">Join WhatsApp Group</div>
+              <div style="font-size:0.75rem; color:#25d366;">Official Devotees & Mandal Family</div>
+            </div>
+          </div>
+          <span style="font-size:0.85rem; font-weight:700; color:#25d366;">Join ➔</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 id="sec-info-head">Mandal Office & Contacts</h3>
+      <p>📍 NEW MUNICIPAL BUILDING 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008</p>
+      <div style="margin-top:10px; padding:10px; background:#f9f9f9; border-radius:6px;">
+        <p><strong>Mandal Helpline / Coordinator:</strong></p>
+        <p style="font-size:1.05rem; font-weight:bold; color:var(--primary); margin:4px 0;">📞 9820727275</p>
+        <a class="btn" style="background:#2e7d32; width:100%; margin-top:6px;" href="tel:+919820727275">📲 Tap to Call Helpline</a>
+      </div>
+    </div>
+
     <div class="card" style="border-left-color: #d35400;">
       <h3>🕉️ Devi Aarties & Stutis</h3>
+      <p style="font-size:0.8rem; color:#666; margin-bottom:8px;" id="sec-aarti-sub">Select an Aarti to read lyrics:</p>
       <div class="day-bar" id="aarti-tabs-bar"></div>
       <div id="aarti-content-view" style="margin-top:10px; background:#fffdf7; border:1px solid #f9e2b0; border-radius:8px; padding:12px;"></div>
     </div>
   </section>
 
-  <!-- TAB 7: ADMIN KHATA -->
+  <!-- TAB 7: KHATA (ADMIN - BIFURCATED DASHBOARD) -->
   <section id="tab-admin" class="tab">
+    
+    <!-- LOGIN BOX WITH BIOMETRIC / PASSCODE LOCK -->
     <div id="login-box" class="card" style="text-align:center;">
-      <h3>🔐 Committee Login</h3>
-      <input type="text" id="uid" class="input-box" placeholder="User ID" />
-      <input type="password" id="pin" class="input-box" placeholder="Password" />
-      <div style="display:flex; gap:6px;">
-        <button class="btn" style="background:#7a0006; flex:1;" onclick="doLogin()">🔓 Login</button>
-        <button class="btn" style="background:#2980b9; flex:1;" onclick="authenticateBiometric()">👆 Biometric</button>
+      <h3>🔐 Committee Security & Login</h3>
+      <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">Enter passcode or use Biometric / Face Lock:</p>
+      <input type="text" id="uid" class="input-box" placeholder="User ID (e.g. NBMM)" />
+      <input type="password" id="pin" class="input-box" placeholder="Passcode / Password" />
+      
+      <div style="display:flex; gap:6px; margin-bottom:8px;">
+        <button class="btn" style="background:#7a0006; flex:1;" onclick="doLogin()">🔓 Login via Passcode</button>
+        <button class="btn" style="background:#2980b9; flex:1;" onclick="authenticateBiometric()">👆 Fingerprint / Face Lock</button>
       </div>
-      <p id="err" style="color:red; font-size:0.75rem; margin-top:6px; display:none;">Invalid credentials</p>
+      <p id="err" style="color:red; font-size:0.75rem; margin-top:6px; display:none;">Invalid credentials or biometric failed.</p>
+      
+      <div style="margin-top:14px; border-top:1px solid #eee; padding-top:10px;">
+        <a href="javascript:void(0)" onclick="toggleForgotBox(true)" style="font-size:0.8rem; color:var(--primary); text-decoration:none; font-weight:600;">
+          🔑 Forgot Password / Reset Access?
+        </a>
+      </div>
     </div>
 
+    <!-- FORGOT PASSWORD CARD -->
+    <div id="forgot-box" class="card" style="display:none; border-left-color:#e67e22;">
+      <h3>🔑 Reset Committee Password</h3>
+      <p style="font-size:0.8rem; color:#555; margin-bottom:10px;">
+        Verify via registered Mandal Helpline:
+      </p>
+
+      <label style="font-size:0.75rem; font-weight:600; color:#555;">Mandal Helpline Number *</label>
+      <input type="tel" id="recov-phone" class="input-box" placeholder="e.g. 9820727275" />
+
+      <label style="font-size:0.75rem; font-weight:600; color:#555;">New User ID *</label>
+      <input type="text" id="recov-uid" class="input-box" placeholder="e.g. NBMM" />
+
+      <label style="font-size:0.75rem; font-weight:600; color:#555;">New Password *</label>
+      <input type="password" id="recov-pin" class="input-box" placeholder="Enter new password" />
+
+      <div style="display:flex; gap:8px;">
+        <button class="btn" style="background:#e67e22; flex:1;" onclick="doResetPassword()">🔄 Reset & Update Across All Phones</button>
+        <button class="btn" style="background:#777;" onclick="toggleForgotBox(false)">Cancel</button>
+      </div>
+    </div>
+
+    <!-- ADMIN BIFURCATED DASHBOARD PANEL -->
     <div id="panel-box" style="display:none;">
+
+      <!-- SUB-NAVIGATION TABS BAR -->
       <div class="admin-sub-bar">
-        <button class="admin-sub-btn active" id="asb-receipts" onclick="switchAdminSubTab('receipts')">🧾 पावती</button>
-        <button class="admin-sub-btn" id="asb-bank" onclick="switchAdminSubTab('bank')">🏛️ बँक</button>
-        <button class="admin-sub-btn" id="asb-live" onclick="switchAdminSubTab('live')">🔴 लाईव्ह</button>
+        <button class="admin-sub-btn active" id="asb-receipts" onclick="switchAdminSubTab('receipts')">🧾 पावती व नोंद</button>
+        <button class="admin-sub-btn" id="asb-bank" onclick="switchAdminSubTab('bank')">🏛️ बँक व UPI</button>
+        <button class="admin-sub-btn" id="asb-live" onclick="switchAdminSubTab('live')">🔴 थेट दर्शन</button>
         <button class="admin-sub-btn" id="asb-cctv" onclick="switchAdminSubTab('cctv')">📹 CCTV</button>
         <button class="admin-sub-btn" id="asb-schedule" onclick="switchAdminSubTab('schedule')">📅 कार्यक्रम</button>
-        <button class="admin-sub-btn" id="asb-settings" onclick="switchAdminSubTab('settings')">⚙️ सेटिंग्स</button>
+        <button class="admin-sub-btn" id="asb-settings" onclick="switchAdminSubTab('settings')">⚙️ सुरक्षा व उपकरणे</button>
       </div>
 
-      <!-- RECEIPT SUB-TAB -->
+      <!-- SUB-TAB 1: RECEIPTS, CATEGORY BREAKDOWN & REGISTER -->
       <div id="asv-receipts" class="admin-sub-view active">
         <div class="cat-stat-grid" id="category-summary-cards"></div>
-        <div class="card">
-          <h3>🧾 New Digital Receipt</h3>
-          <input type="text" id="r-name" class="input-box" placeholder="Donor Name" />
+
+        <div class="card" style="border-left-color:#7a0006;">
+          <h3 id="form-title">🧾 पावती नोंदणी / New Digital Receipt</h3>
+          <input type="hidden" id="edit-id" value="" />
+          
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-            <input type="text" id="r-collector" class="input-box" placeholder="Collector Name" />
-            <input type="tel" id="r-phone" class="input-box" placeholder="Phone Number" />
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">वर्गणी दाखल / Category *</label>
+              <select id="r-category" class="input-box">
+                <option value="भंडारा (Bhandara)">भंडारा / Bhandara</option>
+                <option value="वर्गणी (Vargani)">वर्गणी / Vargani</option>
+                <option value="आरती (Aarti Seva)">आरती / Aarti Seva</option>
+                <option value="सजावट (Decoration)">सजावट / Decoration</option>
+                <option value="महाप्रसाद (Maha Prasad)">महाप्रसाद / Maha Prasad</option>
+                <option value="इतर (Other Daan)">इतर / Other</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">प्रकार / Type</label>
+              <select id="r-type" class="input-box">
+                <option value="Income">जमा / Income</option>
+                <option value="Expense">खर्च / Expense</option>
+              </select>
+            </div>
           </div>
+
+          <label style="font-size:0.75rem; font-weight:600; color:#555;">श्री / सौ. देणगीदाराचे नाव / Donor Name *</label>
+          <input type="text" id="r-name" class="input-box" placeholder="Enter Donor Name" />
+
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-            <select id="r-mode" class="input-box" onchange="checkModeAndPromptUPI()">
-              <option value="रोख / Cash">Cash</option>
-              <option value="यूपीआय / UPI">UPI</option>
-              <option value="बाकी / Due">Due</option>
-            </select>
-            <input type="number" id="r-amt" class="input-box" placeholder="Amount ₹" />
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">स्वीकारले / Collected By *</label>
+              <input type="text" id="r-collector" class="input-box" placeholder="Enter Collector Name" />
+            </div>
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">मोबाईल / WhatsApp Phone *</label>
+              <input type="tel" id="r-phone" class="input-box" placeholder="e.g. 9820000000" />
+            </div>
           </div>
-          <button class="btn" style="background:#7a0006; width:100%;" onclick="saveRecord(false)">💾 Generate Receipt</button>
+          
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">माध्यम / Mode *</label>
+              <select id="r-mode" class="input-box" onchange="checkModeAndPromptUPI()">
+                <option value="रोख / Cash">रोख / Cash</option>
+                <option value="यूपीआय / UPI">यूपीआय / UPI</option>
+                <option value="बाकी / Due">बाकी / Due</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">रक्कम / Amount ₹ *</label>
+              <input type="number" id="r-amt" class="input-box" placeholder="e.g. 1100" />
+            </div>
+          </div>
+
+          <div style="display:flex; gap:8px; margin-top:6px;">
+            <button class="btn" id="save-btn" style="background:#7a0006; flex:1;" onclick="saveRecord(false)">💾 पावती तयार करा / Generate Receipt</button>
+            <button class="btn" id="cancel-edit-btn" style="background:#c0392b; display:none;" onclick="cancelEdit()">रद्द करा / Cancel</button>
+          </div>
         </div>
+
         <div class="card">
-          <h3>📋 Ledger</h3>
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+            <h3>📋 पावती पुस्तक / Ledger</h3>
+            <button class="btn" style="background:#27ae60; font-size:0.75rem; padding:6px 10px;" onclick="exportLedgerToExcel()">📊 Export Excel / CSV</button>
+          </div>
+
+          <p style="font-size:0.8rem; margin-bottom:8px;">
+            <strong>एकूण जमा:</strong> ₹<span id="tot-in" style="color:#2e7d32;">0</span> | 
+            <strong>बाकी:</strong> ₹<span id="tot-pending" style="color:#d35400;">0</span> | 
+            <strong>शिल्लक:</strong> ₹<strong id="tot-bal" style="color:var(--primary);">0</strong>
+          </p>
+
+          <div class="day-bar" style="margin-bottom:8px;">
+            <button class="day-btn active" id="btn-cat-all" onclick="filterByCat('all')">सर्व (All)</button>
+            <button class="day-btn" id="btn-cat-bhandara" onclick="filterByCat('भंडारा')">🍲 भंडारा</button>
+            <button class="day-btn" id="btn-cat-vargani" onclick="filterByCat('वर्गणी')">🚩 वर्गणी</button>
+            <button class="day-btn" id="btn-cat-aarti" onclick="filterByCat('आरती')">🪔 आरती</button>
+            <button class="day-btn" id="btn-cat-prasad" onclick="filterByCat('महाप्रसाद')">🍬 महाप्रसाद</button>
+            <button class="day-btn" id="btn-cat-decor" onclick="filterByCat('सजावट')">🌸 सजावट</button>
+            <button class="day-btn" id="btn-cat-other" onclick="filterByCat('इतर')">📦 इतर</button>
+          </div>
+
+          <div style="position:relative; margin-bottom:10px;">
+            <input type="text" id="admin-search-input" class="input-box" style="margin:0; padding-left:32px;" placeholder="Search by donor name, #rec, or mode..." oninput="renderRows()" />
+            <span style="position:absolute; left:10px; top:50%; transform:translateY(-50%); font-size:0.85rem; color:#777;">🔍</span>
+          </div>
+
           <table class="table">
-            <thead><tr><th>Name</th><th>Mode</th><th>₹</th><th>Action</th></tr></thead>
+            <thead><tr><th>पावती / नाव</th><th>माध्यम</th><th>₹</th><th>कृती</th></tr></thead>
             <tbody id="rec-rows"></tbody>
           </table>
         </div>
       </div>
 
-      <!-- SCHEDULE SUB-TAB -->
-      <div id="asv-schedule" class="admin-sub-view">
-        <div class="card">
-          <h3>📅 Festival Schedule Manager</h3>
-          <select id="adm-sched-day-select" class="input-box" onchange="loadAdminScheduleFields()"></select>
-          <input type="text" id="adm-sched-dlabel" class="input-box" placeholder="11/10/2026 - रविवार" />
-          <input type="text" id="adm-sched-devi" class="input-box" placeholder="Puja / Event" />
-          <input type="text" id="adm-sched-clr" class="input-box" placeholder="Color Theme" />
-          <button class="btn" style="background:#8e44ad; width:100%;" onclick="saveScheduleDay()">💾 Save Date</button>
+      <!-- SUB-TAB 2: BANK & UPI DETAILS -->
+      <div id="asv-bank" class="admin-sub-view">
+        <div class="card" style="border-left-color: #27ae60;">
+          <h3>🏛️ Update Pavitra Daan, Bank & Barcode Details</h3>
+          <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Configure the official UPI ID, custom QR barcode image, and bank transfer credentials:</p>
+          
+          <label style="font-size:0.75rem; font-weight:600; color:#555;">Official UPI ID *</label>
+          <input type="text" id="adm-upi-id" class="input-box" placeholder="e.g. navdurgabalmitramandal@upi" />
+
+          <label style="font-size:0.75rem; font-weight:600; color:#555;">Custom UPI Barcode / QR Image Link (Optional)</label>
+          <input type="url" id="adm-qr-url" class="input-box" placeholder="Leave blank to auto-generate from UPI ID" />
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">Account Holder Name</label>
+              <input type="text" id="adm-bank-name-holder" class="input-box" placeholder="e.g. NAVDURGA BALMITRA MANDAL" />
+            </div>
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">Bank Name</label>
+              <input type="text" id="adm-bank-name" class="input-box" placeholder="e.g. State Bank of India" />
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">Account Number</label>
+              <input type="text" id="adm-bank-acc" class="input-box" placeholder="e.g. 123456789012" />
+            </div>
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">IFSC Code</label>
+              <input type="text" id="adm-bank-ifsc" class="input-box" placeholder="e.g. SBIN0000000" />
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">Branch Name</label>
+              <input type="text" id="adm-bank-branch" class="input-box" placeholder="e.g. Sukhlaji Street / Mumbai" />
+            </div>
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">Account Type</label>
+              <input type="text" id="adm-bank-type" class="input-box" placeholder="e.g. Savings / Current Account" />
+            </div>
+          </div>
+
+          <button class="btn" style="background:#27ae60; width:100%;" onclick="saveBankDetails()">💾 Save Bank & UPI Details</button>
         </div>
       </div>
 
-      <!-- SETTINGS SUB-TAB -->
-      <div id="asv-settings" class="admin-sub-view">
-        <div class="card">
-          <h3>⚙️ Settings</h3>
-          <button class="btn" style="background:#333; width:100%;" onclick="doLogout()">🔒 Lock & Sign Out</button>
+      <!-- SUB-TAB 3: LIVE STREAM -->
+      <div id="asv-live" class="admin-sub-view">
+        <div class="card" style="border-left-color: #27ae60;">
+          <h3>🎥 Live Pandal Camera (Projector Screen Feed)</h3>
+          <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">
+            Stream directly from the cameraman's mobile/camera to the projector screen and application (Zero-delay WebRTC, no YouTube):
+          </p>
+
+          <div style="background:#f4f9f4; border:1px dashed #27ae60; padding:10px; border-radius:8px; margin-bottom:10px;">
+            <p style="font-size:0.76rem; color:#333; margin-bottom:6px;"><strong>1. Cameraman Links (Choose Camera):</strong></p>
+            
+            <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:10px;">
+              <a class="btn" style="background:#27ae60; font-size:0.78rem; text-align:center;" href="https://vdo.ninja/?push=nbmm2026pandal&webcam&facing=back&autostart" target="_blank">
+                📷 Open Cameraman Link (Back Camera + Flip Option)
+              </a>
+              <a class="btn" style="background:#2980b9; font-size:0.78rem; text-align:center;" href="https://vdo.ninja/?push=nbmm2026pandal&webcam&facing=front&autostart" target="_blank">
+                🤳 Open Cameraman Link (Front / Selfie Camera)
+              </a>
+            </div>
+
+            <p style="font-size:0.76rem; color:#333; margin-bottom:4px;"><strong>2. Laptop / Projector Fullscreen Link:</strong> Open this on the laptop connected to the projector:</p>
+            <a id="adm-cam-view-link" href="https://vdo.ninja/?view=nbmm2026pandal&cleanoutput&transparent" target="_blank" style="font-size:0.75rem; color:#2980b9; font-weight:bold; word-break:break-all;">
+              https://vdo.ninja/?view=nbmm2026pandal&cleanoutput&transparent
+            </a>
+          </div>
+
+          <div style="display:flex; gap:8px;">
+            <button class="btn" style="background:#27ae60; flex:1;" onclick="togglePandalCamLive(true)">
+              🟢 Show Pandal Camera in App
+            </button>
+            <button class="btn" style="background:#555; padding:8px 12px; font-size:0.75rem;" onclick="togglePandalCamLive(false)">
+              ⏹️ Turn Off
+            </button>
+          </div>
+          <p id="pandal-cam-status-text" style="font-size:0.75rem; font-weight:bold; color:#777; margin-top:6px;">Status: Pandal Camera is currently OFF in App</p>
+        </div>
+
+        <div class="card" style="border-left-color: #c0392b; margin-top: 12px;">
+          <h3>🔴 YouTube Live Stream</h3>
+          <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Paste YouTube Live stream URL when Aarti starts:</p>
+          <input type="url" id="adm-live-url" class="input-box" placeholder="e.g. https://youtu.be/xyz or https://youtube.com/live/..." />
+          <div style="display:flex; gap:8px;">
+            <button class="btn" style="background:#c0392b; flex:1;" onclick="saveLiveStream()">📡 Go Live (YouTube)</button>
+            <button class="btn" style="background:#555; padding:8px 10px; font-size:0.75rem;" onclick="clearLiveStream()">⏹️ End Live</button>
+          </div>
+        </div>
+
+        <div class="card" style="border-left-color: #e1306c; margin-top: 12px;">
+          <h3>📸 Instagram Live Status Controller</h3>
+          <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">
+            When going live from your phone via Instagram, turn this ON to show an instant watch alert to all devotees:
+          </p>
+          <div style="display:flex; gap:8px;">
+            <button class="btn" id="btn-adm-insta-on" style="background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); flex:1;" onclick="toggleInstagramLive(true)">
+              🔴 We Are Live on Instagram Now
+            </button>
+            <button class="btn" id="btn-adm-insta-off" style="background:#555; padding:8px 12px; font-size:0.75rem;" onclick="toggleInstagramLive(false)">
+              ⏹️ End Insta Live
+            </button>
+          </div>
+          <p id="insta-live-active-status" style="font-size:0.75rem; font-weight:bold; color:#777; margin-top:6px;">Status: Instagram Live is currently OFF</p>
         </div>
       </div>
+
+      <!-- SUB-TAB 6: CCTV ACCESS -->
+      <div id="asv-cctv" class="admin-sub-view">
+        <div class="card" style="border-left-color: #2c3e50;">
+          <h3>📹 Restricted Committee CCTV Surveillance</h3>
+          <p style="font-size:0.75rem; color:#555; margin-bottom:10px;">
+            Secure live security camera feeds from around the pandal entrance and donation counter. Visible only to logged-in committee members:
+          </p>
+
+          <label style="font-size:0.75rem; font-weight:600; color:#555;">CCTV Feed URL / Stream Link *</label>
+          <input type="url" id="adm-cctv-url" class="input-box" placeholder="Paste VDO.Ninja, RTSP, or IP camera embed link" />
+          <button class="btn" style="background:#2c3e50; width:100%; margin-bottom:12px;" onclick="saveCCTVStream()">💾 Save & Connect CCTV Stream</button>
+
+          <div id="cctv-player-wrap" style="display:none; position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:8px; background:#000; border:2px solid #2c3e50;">
+            <iframe id="cctv-iframe" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;" src="" allow="camera; autoplay; fullscreen"></iframe>
+          </div>
+          <div id="cctv-offline-msg" style="padding:15px; background:#f4f4f4; border:1px dashed #ccc; border-radius:6px; text-align:center; font-size:0.8rem; color:#666;">
+            🔒 No CCTV link configured yet. Paste your private stream link above.
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-TAB 4: SCHEDULE MANAGER -->
+      <div id="asv-schedule" class="admin-sub-view">
+        <div class="card" style="border-left-color: #8e44ad;">
+          <h3>📅 Festival Schedule Manager (Dates, Weekdays & Poojas)</h3>
+          <p style="font-size:0.75rem; color:#555; margin-bottom:10px;">
+            Manage your festival dates, weekdays (सोमवार, मंगलवार), and events.
+          </p>
+
+          <div style="margin-bottom:10px;">
+            <label style="font-size:0.75rem; font-weight:600; color:#555;">Select Date to Edit or Add New *</label>
+            <div style="display:flex; gap:6px; margin-top:4px;">
+              <select id="adm-sched-day-select" class="input-box" style="margin:0;" onchange="loadAdminScheduleFields()">
+                <!-- Populated dynamically -->
+              </select>
+              <button class="btn" style="background:#27ae60; font-size:0.75rem; white-space:nowrap;" onclick="addNewFestivalDay()">➕ Add Date</button>
+            </div>
+          </div>
+
+          <div style="background:#fcf9ff; border:1px solid #e2cffc; padding:12px; border-radius:8px; margin-bottom:10px;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div>
+                <label style="font-size:0.72rem; font-weight:600; color:#555;">Date & Weekday (तारीख व दिन)</label>
+                <input type="text" id="adm-sched-dlabel" class="input-box" placeholder="11/10/2026 - रविवार" />
+              </div>
+              <div>
+                <label style="font-size:0.72rem; font-weight:600; color:#555;">Calendar Date</label>
+                <input type="text" id="adm-sched-dt" class="input-box" placeholder="11/10/2026" />
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div>
+                <label style="font-size:0.72rem; font-weight:600; color:#555;">Puja / Event / Tithi (कार्यक्रम)</label>
+                <input type="text" id="adm-sched-devi" class="input-box" placeholder="घटस्थापना / माता रानी आगमन" />
+              </div>
+              <div>
+                <label style="font-size:0.72rem; font-weight:600; color:#555;">Color Theme (रंग)</label>
+                <input type="text" id="adm-sched-clr" class="input-box" placeholder="केसरिया (Orange)" />
+              </div>
+            </div>
+
+            <label style="font-size:0.72rem; font-weight:600; color:#555;">Detailed Program Description</label>
+            <input type="text" id="adm-sched-prog" class="input-box" placeholder="घटस्थापना / माता रानी आगमन" />
+
+            <label style="font-size:0.72rem; font-weight:600; color:#555;">Prasad (प्रसाद)</label>
+            <input type="text" id="adm-sched-prasad" class="input-box" placeholder="महाप्रसाद" />
+          </div>
+
+          <div style="display:flex; gap:8px;">
+            <button class="btn" style="background:#8e44ad; flex:1;" onclick="saveScheduleDay()">💾 Save / Update Date</button>
+            <button class="btn" style="background:#c0392b; font-size:0.78rem;" onclick="deleteCurrentScheduleDay()">🗑️ Delete Date</button>
+            <button class="btn" style="background:#555; font-size:0.78rem;" onclick="resetScheduleDefaults()">🔄 Reset Poster Dates</button>
+          </div>
+        </div>
+
+        <!-- REGULAR TIMINGS EDITOR -->
+        <div class="card" style="border-left-color: #e67e22;">
+          <h3>⏰ Edit Regular Daily Timings (नियमित वेळ)</h3>
+          <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Update daily Aarti and program timings shown on the front screen:</p>
+          
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">Subah Aarti Time (सकाळ)</label>
+              <input type="text" id="adm-subah-aarti" class="input-box" placeholder="e.g. 7:30 AM" />
+            </div>
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">Sandhya Aarti Time (संध्याकाळ)</label>
+              <input type="text" id="adm-sandhya-aarti" class="input-box" placeholder="e.g. 7:30 PM" />
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">Garba & Dandiya (रास गरबा)</label>
+              <input type="text" id="adm-garba-time" class="input-box" placeholder="e.g. 8:30 PM – 10:00 PM" />
+            </div>
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">Maha Prasad (महाप्रसाद)</label>
+              <input type="text" id="adm-prasad-time" class="input-box" placeholder="e.g. 10:00 PM onwards" />
+            </div>
+          </div>
+
+          <button class="btn" style="background:#e67e22; width:100%;" onclick="saveRegularTimings()">💾 Save Regular Timings</button>
+        </div>
+
+        <div class="card" style="border-left-color: #f39c12;">
+          <h3>📸 Upload Day-Wise Media Links</h3>
+          <select id="adm-media-day" class="input-box" onchange="loadAdminMediaFields()">
+            <!-- Populated dynamically -->
+          </select>
+          <input type="url" id="adm-photo-link" class="input-box" placeholder="Google Drive / Photos Link" />
+          <input type="url" id="adm-video-link" class="input-box" placeholder="YouTube Highlights Link" />
+          <button class="btn" style="background:#f39c12; color:#000; width:100%;" onclick="saveMediaLink()">💾 Update Links</button>
+        </div>
+      </div>
+
+      <!-- SUB-TAB 5: SETTINGS, SOCIAL, SESSIONS & AARTIS -->
+      <div id="asv-settings" class="admin-sub-view">
+        <div class="card" style="border-left-color: #e74c3c;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <h3>📱 सक्रिय उपकरणे / Active Logged-In Mobiles</h3>
+            <span id="active-device-count" style="background:#e74c3c; color:#fff; font-size:0.7rem; padding:2px 8px; border-radius:10px; font-weight:bold;">0 Active</span>
+          </div>
+          <p style="font-size:0.75rem; color:#555; margin-bottom:10px;">
+            The phones currently logged into Committee Khata are listed below. You can revoke access from any individual device at any time:
+          </p>
+
+          <div id="device-session-list"></div>
+
+          <button class="btn" style="background:#c0392b; width:100%; font-size:0.78rem; padding:8px;" onclick="revokeAllSessions()">
+            ⚠️ सर्व इतर उपकरणांमधून लॉगआउट करा (Sign Out All Other Devices)
+          </button>
+        </div>
+
+        <div class="card" style="border-left-color: #25d366;">
+          <h3>📱 Update Instagram & WhatsApp Links</h3>
+          <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Paste your official Instagram profile and WhatsApp invite link:</p>
+          <label style="font-size:0.75rem; font-weight:600; color:#555;">Instagram URL</label>
+          <input type="url" id="adm-insta-url" class="input-box" placeholder="e.g. https://instagram.com/navdurgabalmitramandal" />
+          <label style="font-size:0.75rem; font-weight:600; color:#555;">WhatsApp Invite Link</label>
+          <input type="url" id="adm-wa-url" class="input-box" placeholder="e.g. https://chat.whatsapp.com/Lxxxxx" />
+          <button class="btn" style="background:#25d366; width:100%;" onclick="saveSocialLinks()">💾 Save Social Links</button>
+        </div>
+
+        <div class="card" style="border-left-color: #2980b9;">
+          <h3>⚙️ Settings & Security</h3>
+          <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Change Committee Login Credentials:</p>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">User ID</label>
+              <input type="text" id="set-uid" class="input-box" placeholder="User ID" />
+            </div>
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">New Password</label>
+              <input type="password" id="set-pin" class="input-box" placeholder="New Password" />
+            </div>
+          </div>
+          <button class="btn" style="background:#2980b9; width:100%;" onclick="updateSettingsPassword()">💾 Save New Credentials</button>
+        </div>
+
+        <div class="card" style="border-left-color: #e67e22;">
+          <h3>🕉️ Add / Manage Festival Aarties</h3>
+          <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Add new Aartis or Bhajans:</p>
+          <input type="text" id="adm-aarti-title" class="input-box" placeholder="Aarti Title (Hindi / Marathi / English)" />
+          <textarea id="adm-aarti-lyrics" class="input-box" rows="4" placeholder="Enter lyrics..."></textarea>
+          <button class="btn" style="background:#e67e22; width:100%; margin-bottom:12px;" onclick="saveNewAarti()">➕ Add Aarti</button>
+          <div id="adm-aarti-list"></div>
+        </div>
+      </div>
+
+      <!-- LOGOUT BUTTON -->
+      <button class="btn" style="background:#333; width:100%; margin-top:10px;" onclick="doLogout()">🔒 Lock & Sign Out</button>
+
     </div>
   </section>
 
-  <!-- MODALS -->
+  <!-- AUTOMATIC UPI PAYMENT POPUP MODAL -->
   <div id="upi-pop-modal">
     <div class="modal-content-wrap">
-      <div class="card" style="text-align:center;">
-        <h3 style="color:#27ae60;">⚡ Scan & Pay via UPI</h3>
-        <img id="pop-upi-qr-img" style="width:190px; height:190px; margin:10px auto; display:block;" src="" alt="QR">
-        <button class="btn" style="background:#7a0006; width:100%;" onclick="confirmUPIPaymentAndGenerateReceipt()">✅ Done & Generate Receipt</button>
-        <button class="btn" style="background:#777; width:100%; margin-top:6px;" onclick="closeUPIPopModal()">Cancel</button>
+      <div class="card" style="text-align:center; border:3px solid #27ae60; border-radius:12px; padding:20px; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+        <h3 style="color:#27ae60; font-size:1.15rem; margin-bottom:2px;">⚡ Scan & Pay via UPI</h3>
+        <p style="font-size:0.78rem; color:#555;">Pre-filled donation payment barcode:</p>
+        
+        <div style="background:#fffdf8; border:1px dashed #d4af37; border-radius:10px; padding:12px; margin:12px 0;">
+          <div style="font-size:1.4rem; font-weight:900; color:#7a0006;">₹ <span id="pop-upi-amt">0</span>/-</div>
+          <div style="font-size:0.75rem; color:#444; font-weight:bold; margin-top:2px;" id="pop-upi-donor">Donor: श्री / सौ.</div>
+          
+          <img id="pop-upi-qr-img" style="width:200px; height:200px; margin:10px auto; display:block; border:2px solid #27ae60; border-radius:8px; padding:6px; background:#fff;" src="" alt="Dynamic UPI QR" />
+          
+          <p style="font-size:0.72rem; color:#666;">(Google Pay, PhonePe, Paytm, BHIM or any Banking App)</p>
+          <a id="btn-pop-upi-deep" class="btn" style="background:#27ae60; width:100%; margin-top:10px; font-size:0.9rem;" href="#" target="_blank">
+            ⚡ Pay Directly via UPI App
+          </a>
+        </div>
+
+        <button class="btn" style="background:#7a0006; width:100%; font-size:0.95rem; padding:12px; font-weight:bold;" onclick="confirmUPIPaymentAndGenerateReceipt()">
+          ✅ पेमेंट पूर्ण झाले (Save & Generate Receipt)
+        </button>
+        <button class="btn" style="background:#777; width:100%; margin-top:8px; font-size:0.8rem; padding:8px;" onclick="closeUPIPopModal()">
+          रद्द करा (Cancel)
+        </button>
       </div>
     </div>
   </div>
 
+  <!-- MODAL: AUTHENTIC TRI-LINGUAL RECEIPT WITH LOGO -->
   <div id="receipt-modal">
     <div class="modal-content-wrap">
-      <div id="capture-receipt" class="mrc-card" style="background:#fff; padding:15px; border:2px solid #7a0006; border-radius:10px;">
-        <h2 style="color:#7a0006; text-align:center;">नवदुर्गा बाल मित्र मंडल</h2>
-        <p style="text-align:center; font-size:0.8rem;">Sukhlaji Street, Mumbai</p>
-        <hr style="margin:8px 0;">
-        <p><strong>Receipt #:</strong> <span id="pr-rec"></span></p>
-        <p><strong>Name:</strong> <span id="pr-name"></span></p>
-        <p><strong>Amount:</strong> ₹<span id="pr-amt"></span>/-</p>
-        <p><strong>Mode:</strong> <span id="pr-mode-txt"></span></p>
+      <div id="capture-receipt" class="mrc-card">
+        <div class="mrc-header">
+          <div class="mrc-top-meta">
+            <span>स्थापना / Estd : 1992</span>
+            <span>नोंदणी झालेली नाही / Unregd.</span>
+          </div>
+          <div class="mrc-header-branding">
+            <img src="icon.jpg" alt="Mandal Logo" class="mrc-logo" onerror="this.style.display='none'" />
+            <div>
+              <div class="mrc-title">नवदुर्गा बाल मित्र मंडल<br><span style="font-size:0.82rem; font-weight:600; letter-spacing:0.5px;">NAVDURGA BALMITRA MANDAL</span></div>
+              <div class="mrc-sub">शुक्लाजी स्ट्रीट, मुंबई • Sukhlaji Street, Mumbai</div>
+            </div>
+          </div>
+          <div style="font-size:0.62rem; color:#ffd1d1; margin-top:5px;">न्यू म्युनिसिपल इमारत, ७६ तेनामेंन्ट, ५वी गल्ली, कामाठीपुरा, मुंबई ४००००८</div>
+        </div>
+
+        <div class="mrc-body">
+          <div class="mrc-badge-box">
+            <span class="mrc-badge-lbl">पावती नं. / Rec. No.</span>
+            <span class="mrc-badge-val" id="pr-rec">2</span>
+          </div>
+          <div class="mrc-badge-box" style="float:right;">
+            <span class="mrc-badge-lbl">दिनांक / Date</span>
+            <span style="padding:4px 10px; font-weight:700; color:#111;" id="pr-date">21 / 09 / 2026</span>
+          </div>
+          <div style="clear:both; margin-bottom:12px;"></div>
+
+          <div class="mrc-field-group">
+            <span class="mrc-lbl">श्री / सौ. / Received From:</span>
+            <div class="mrc-val-lg" id="pr-name"></div>
+          </div>
+
+          <div class="mrc-field-group">
+            <span class="mrc-lbl">यांच्याकडून अक्षरी रुपये / Amount in Words:</span>
+            <div class="mrc-words-mr" id="pr-words-mr"></div>
+            <div class="mrc-words-hi" id="pr-words-hi"></div>
+            <div class="mrc-words-en" id="pr-words-en"></div>
+          </div>
+
+          <div class="mrc-field-group">
+            <span class="mrc-lbl">वर्गणी दाखल / Towards & Collected By:</span>
+            <div style="font-size:0.92rem; font-weight:700; color:#333;">
+              <span id="pr-category-txt">भंडारा</span> • स्वीकारले / By : <span id="pr-collector-txt" style="color:#7a0006;"></span>
+            </div>
+          </div>
+
+          <div class="mrc-mode-row">
+            <span class="mrc-lbl" style="margin-right:4px;">माध्यम / Mode:</span>
+            <span class="mrc-mode-pill" id="pill-cash">रोख / Cash</span>
+            <span class="mrc-mode-pill" id="pill-upi">यूपीआय / UPI</span>
+            <span class="mrc-mode-pill" id="pill-due">बाकी / Due</span>
+          </div>
+
+          <div class="mrc-amount-section">
+            <div class="mrc-amt-banner">
+              <span class="mrc-amt-banner-lbl">रक्कम / Amount</span>
+              <div class="mrc-amt-banner-val">₹ <span id="pr-amt">1100</span>/-</div>
+            </div>
+
+            <div class="mrc-thanks-center">
+              <div style="font-size:0.8rem; color:#7a0006; font-weight:bold;">॥</div>
+              <h3>धन्यवाद</h3>
+              <div style="font-size:0.75rem; color:#666; font-weight:bold;">THANK YOU</div>
+              <div style="color:var(--gold); font-size:0.75rem;">❦</div>
+              <p>आपल्या सहकार्याबद्दल आभार !<br>Thanks for your kind support!</p>
+            </div>
+
+            <div class="mrc-qr-box">
+              <img id="pr-qr-code" src="" alt="QR" />
+              <span>पडताळणी / Scan<br>Verify Receipt</span>
+            </div>
+          </div>
+
+          <div class="mrc-footer-signatures">
+            <div class="mrc-sign-col">
+              <div class="mrc-sign-name">&nbsp;</div>
+              <div class="mrc-sign-title">खजिनदार / Treasurer</div>
+            </div>
+            <div style="color:var(--gold); font-size:1rem;">✦</div>
+            <div class="mrc-sign-col">
+              <div class="mrc-sign-name" id="pr-sign-president">NBMM MEMBERS</div>
+              <div class="mrc-sign-title">अध्यक्ष / President</div>
+            </div>
+          </div>
+        </div>
       </div>
-      <button class="btn" style="background:#25d366; width:100%; margin-top:10px;" id="btn-wa-direct">📲 Send via WhatsApp</button>
-      <button class="btn" style="background:#555; width:100%; margin-top:6px;" onclick="closeReceiptModal()">Close</button>
+
+      <div style="display:flex; flex-direction:column; gap:8px; margin-top:12px;">
+        <button class="btn" style="background:#e74c3c; width:100%; font-size:0.95rem; padding:12px;" onclick="window.print()">📄 Save as PDF / Print</button>
+        <button class="btn" style="background:#25d366; width:100%; font-size:0.95rem; padding:12px;" id="btn-wa-direct">📲 Forward Receipt on WhatsApp</button>
+        <button class="btn" style="background:#555; width:100%;" onclick="closeReceiptModal()">पावती बंद करा / Close</button>
+      </div>
     </div>
   </div>
 
   <script>
+    // -------------------------------------------------------------
+    // 1. FIREBASE CONFIGURATION & REAL-TIME SYNC
+    // -------------------------------------------------------------
     const firebaseConfig = {
       apiKey: "AIzaSyDGlzOKivwNehIUzwIMCd2VLgdkGorkUxk",
       authDomain: "nbmm-khata.firebaseapp.com",
       databaseURL: "https://nbmm-khata-default-rtdb.firebaseio.com",
-      projectId: "nbmm-khata"
+      projectId: "nbmm-khata",
+      storageBucket: "nbmm-khata.firebasestorage.app",
+      messagingSenderId: "662450628091",
+      appId: "1:662450628091:web:8382bccf517c243cfed75e"
     };
 
     let db;
     try {
       firebase.initializeApp(firebaseConfig);
       db = firebase.database();
-    } catch (e) {}
+    } catch (err) {
+      console.warn("Firebase Init fallback:", err);
+    }
 
     const DEFAULT_DAYS = [
-      { d: "11/10/2026 - रविवार", devi: "घटस्थापना / माता रानी आगमन", clr: "केसरिया (Orange)", p: "घटस्थापना", pr: "महाप्रसाद" },
-      { d: "12/10/2026 - सोमवार", devi: "मेहंदी", clr: "सफेद (White)", p: "मेहंदी उत्सव", pr: "महाप्रसाद" },
-      { d: "13/10/2026 - मंगलवार", devi: "गरबा", clr: "लाल (Red)", p: "गरबा नाइट", pr: "महाप्रसाद" }
+      { d: "11/10/2026 - रविवार", dt: "11/10/2026", devi: "घटस्थापना / माता रानी आगमन", clr: "केसरिया (Orange)", p: "घटस्थापना / माता रानी आगमन", pr: "महाप्रसाद" },
+      { d: "12/10/2026 - सोमवार", dt: "12/10/2026", devi: "मेहंदी", clr: "सफेद (White)", p: "मेहंदी", pr: "महाप्रसाद" },
+      { d: "13/10/2026 - मंगलवार", dt: "13/10/2026", devi: "गरबा", clr: "लाल (Red)", p: "गरबा", pr: "महाप्रसाद" },
+      { d: "14/10/2026 - बुधवार", dt: "14/10/2026", devi: "डांडिया", clr: "रॉयल ब्लू (Royal Blue)", p: "डांडिया", pr: "महाप्रसाद" },
+      { d: "15/10/2026 - गुरुवार", dt: "15/10/2026", devi: "फूट पूजा", clr: "येलो (Yellow)", p: "फूट पूजा", pr: "महाप्रसाद" },
+      { d: "16/10/2026 - शुक्रवार", dt: "16/10/2026", devi: "महा आरती", clr: "हरा (Green)", p: "महा आरती", pr: "महाप्रसाद" },
+      { d: "17/10/2026 - शनिवार", dt: "17/10/2026", devi: "हल्दी", clr: "ग्रे (Grey)", p: "हल्दी", pr: "महाप्रसाद" },
+      { d: "18/10/2026 - रविवार", dt: "18/10/2026", devi: "कन्या पूजन", clr: "बैंगनी (Purple)", p: "कन्या पूजन", pr: "महाप्रसाद" },
+      { d: "19/10/2026 - सोमवार", dt: "19/10/2026", devi: "हवन", clr: "पीकाँक ग्रीन (Peacock Green)", p: "हवन", pr: "महाप्रसाद" },
+      { d: "20/10/2026 - मंगलवार", dt: "20/10/2026", devi: "विजयादशमी • महाप्रसाद", clr: "गुलाबी (Pink)", p: "विजयादशमी • महाप्रसाद", pr: "महाप्रसाद" },
+      { d: "21/10/2026 - बुधवार", dt: "21/10/2026", devi: "मूर्ति विसर्जन", clr: "सफेद (White)", p: "मूर्ति विसर्जन", pr: "महाप्रसाद" }
     ];
 
-    let cachedSchedule = JSON.parse(localStorage.getItem('nbmm_sched') || 'null') || DEFAULT_DAYS;
-    let cachedEntries = JSON.parse(localStorage.getItem('nbmm_entries') || '[]');
-    let cachedAuth = { uid: "NBMM", pin: "NBMM1137@" };
+    const DEFAULT_TIMINGS = {
+      subah: "7:30 AM",
+      sandhya: "7:30 PM",
+      garba: "8:30 PM – 10:00 PM",
+      prasad: "10:00 PM onwards"
+    };
 
+    const DEFAULT_AARTIES = [
+      {
+        id: "aarti_1",
+        title: "Jai Ambe Gauri (जय अम्बे गौरी)",
+        lyrics: "जय अम्बे गौरी, मैया जय श्यामा गौरी।\nतुमको निशिदिन ध्यावत, हरि ब्रह्मा शिवरी॥\n\nमांग सिंदूर विराजत, टीको मृगमद को।\nउज्ज्वल से दोउ नैना, चंद्रबदन नीको॥\n\nकनक समान कलेवर, रक्ताम्बर राजै।\nरक्तपुष्प गल माला, कंठन पर साजै॥\n\nकेहरि वाहन राजत, खड्ग खप्परधारी।\nसुर-नर-मुनिजन सेवत, तिनके दुःखहारी॥"
+      },
+      {
+        id: "aarti_2",
+        title: "Durga Aarti - Jagjanani (दुर्गा आरती)",
+        lyrics: "जगजननी जय जय माँ, जगजननी जय जय।\nभयहारिनि भवतारिनि, भवभामिनि जय जय॥\n\nतू ही सत्व-रज-तममय, शब्दब्रह्मरूपा।\nभारती विद्या तू ही, गुणमयी अनूपा॥"
+      }
+    ];
+
+    const DEFAULT_AUTH = { uid: "NBMM", pin: "NBMM1137@" };
+    const DEFAULT_SOCIAL = {
+      insta: "https://instagram.com/navdurgabalmitramandal",
+      wa: "https://chat.whatsapp.com"
+    };
+
+    const DEFAULT_BANK = {
+      upi: "navdurgabalmitramandal@upi",
+      qrImg: "",
+      holder: "NAVDURGA BALMITRA MANDAL",
+      bank: "STATE BANK OF INDIA",
+      acc: "123456789012",
+      ifsc: "SBIN0000000",
+      branch: "SUKHLAJI STREET, MUMBAI",
+      type: "Savings / Current Account"
+    };
+
+    let cachedSchedule = JSON.parse(localStorage.getItem('nbmm_schedule_custom') || 'null') || DEFAULT_DAYS;
+    let cachedTimings = JSON.parse(localStorage.getItem('nbmm_timings') || 'null') || DEFAULT_TIMINGS;
+    let cachedMedia = JSON.parse(localStorage.getItem('nbmm_media') || '{}');
+    let cachedEntries = JSON.parse(localStorage.getItem('nbmm_entries') || '[]');
+    let cachedAarties = JSON.parse(localStorage.getItem('nbmm_aarties') || 'null') || DEFAULT_AARTIES;
+    let cachedAuth = JSON.parse(localStorage.getItem('nbmm_credentials') || 'null') || DEFAULT_AUTH;
+    let cachedLiveStream = localStorage.getItem('nbmm_live_url') || '';
+    let cachedInstaLive = (localStorage.getItem('nbmm_insta_live') === '1');
+    let cachedPandalCam = (localStorage.getItem('nbmm_pandal_cam') === '1');
+    let cachedCCTVStream = localStorage.getItem('nbmm_cctv_url') || '';
+    let cachedSocial = JSON.parse(localStorage.getItem('nbmm_social') || 'null') || DEFAULT_SOCIAL;
+    let cachedBank = JSON.parse(localStorage.getItem('nbmm_bank_details') || 'null') || DEFAULT_BANK;
+    let cachedSessions = {};
+    let currentSelectedCategory = 'all';
+    let currentLang = localStorage.getItem('nbmm_lang') || 'mr';
+
+    let myDeviceId = localStorage.getItem('nbmm_device_id');
+    if (!myDeviceId) {
+      myDeviceId = 'dev_' + Math.random().toString(36).substring(2, 10) + '_' + Date.now();
+      localStorage.setItem('nbmm_device_id', myDeviceId);
+    }
+
+    // Real-Time Listeners
     if (db) {
-      db.ref('schedule').on('value', s => { if(s.val()) { cachedSchedule = s.val(); initDays(); populateScheduleSelects(); } });
-      db.ref('entries').on('value', s => { 
-        cachedEntries = s.val() ? Object.values(s.val()) : [];
+      db.ref('schedule').on('value', (snap) => {
+        const val = snap.val();
+        if (val && Array.isArray(val)) {
+          cachedSchedule = val;
+          localStorage.setItem('nbmm_schedule_custom', JSON.stringify(val));
+          initDays();
+          initMediaDays();
+          populateScheduleSelects();
+        }
+      });
+
+      db.ref('regular_timings').on('value', (snap) => {
+        const val = snap.val();
+        if (val) {
+          cachedTimings = val;
+          localStorage.setItem('nbmm_timings', JSON.stringify(val));
+          renderRegularTimings();
+        }
+      });
+
+      db.ref('media').on('value', (snap) => {
+        const val = snap.val();
+        if (val) {
+          cachedMedia = val;
+          localStorage.setItem('nbmm_media', JSON.stringify(val));
+          initMediaDays();
+        }
+      });
+
+      db.ref('entries').on('value', (snap) => {
+        const val = snap.val();
+        if (val) {
+          const arr = Object.values(val);
+          arr.sort((a, b) => b.id - a.id);
+          cachedEntries = arr;
+          localStorage.setItem('nbmm_entries', JSON.stringify(arr));
+        } else {
+          cachedEntries = [];
+          localStorage.setItem('nbmm_entries', JSON.stringify([]));
+        }
         renderRows();
+      });
+
+      db.ref('aarties').on('value', (snap) => {
+        const val = snap.val();
+        if (val) {
+          cachedAarties = Object.values(val);
+          localStorage.setItem('nbmm_aarties', JSON.stringify(cachedAarties));
+        } else {
+          cachedAarties = DEFAULT_AARTIES;
+          localStorage.setItem('nbmm_aarties', JSON.stringify(DEFAULT_AARTIES));
+        }
+        renderAartiTabs();
+        renderAdminAartiList();
+      });
+
+      db.ref('auth_creds').on('value', (snap) => {
+        const val = snap.val();
+        if (val && val.uid && val.pin) {
+          cachedAuth = val;
+          localStorage.setItem('nbmm_credentials', JSON.stringify(val));
+          const setU = document.getElementById('set-uid');
+          const setP = document.getElementById('set-pin');
+          if (setU) setU.value = val.uid;
+          if (setP) setP.value = val.pin;
+        }
+      });
+
+      db.ref('live_stream').on('value', (snap) => {
+        const val = snap.val() || '';
+        cachedLiveStream = val;
+        localStorage.setItem('nbmm_live_url', val);
+        renderLiveStream(val);
+        const admInput = document.getElementById('adm-live-url');
+        if (admInput) admInput.value = val;
+      });
+
+      db.ref('insta_live').on('value', (snap) => {
+        const isLive = (snap.val() === true);
+        cachedInstaLive = isLive;
+        localStorage.setItem('nbmm_insta_live', isLive ? '1' : '0');
+        renderInstagramLive(isLive);
+      });
+
+      db.ref('pandal_cam_live').on('value', (snap) => {
+        const isLive = (snap.val() === true);
+        cachedPandalCam = isLive;
+        localStorage.setItem('nbmm_pandal_cam', isLive ? '1' : '0');
+        renderPandalCamLive(isLive);
+      });
+
+      db.ref('cctv_stream').on('value', (snap) => {
+        const val = snap.val() || '';
+        cachedCCTVStream = val;
+        localStorage.setItem('nbmm_cctv_url', val);
+        renderCCTVStream(val);
+        const cctvInput = document.getElementById('adm-cctv-url');
+        if (cctvInput) cctvInput.value = val;
+      });
+
+      db.ref('social_links').on('value', (snap) => {
+        const val = snap.val();
+        if (val) {
+          cachedSocial = val;
+          localStorage.setItem('nbmm_social', JSON.stringify(val));
+          renderSocialLinks();
+        }
+      });
+
+      db.ref('bank_details').on('value', (snap) => {
+        const val = snap.val();
+        if (val) {
+          cachedBank = val;
+          localStorage.setItem('nbmm_bank_details', JSON.stringify(val));
+          renderBankDetails();
+        }
+      });
+
+      db.ref('active_sessions').on('value', (snap) => {
+        const val = snap.val() || {};
+        cachedSessions = val;
+        renderDeviceSessions();
       });
     }
 
-    function openDrawer() { document.getElementById('side-drawer').style.left = '0px'; document.getElementById('drawer-overlay').style.display = 'block'; }
-    function closeDrawer() { document.getElementById('side-drawer').style.left = '-290px'; document.getElementById('drawer-overlay').style.display = 'none'; }
-    function switchSection(name, btn) {
-      document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
-      document.getElementById('tab-' + name).classList.add('active');
-      closeDrawer();
-      window.scrollTo(0, 0);
+    // -------------------------------------------------------------
+    // 2. BIOMETRIC / FACE LOCK AUTHENTICATION
+    // -------------------------------------------------------------
+    async function authenticateBiometric() {
+      if (!window.PublicKeyCredential) {
+        alert("Biometric / Face Lock is not supported on this device/browser.");
+        return;
+      }
+      try {
+        const credential = await navigator.credentials.get({
+          publicKey: {
+            challenge: new Uint8Array([21, 31, 105, 78, 18, 45, 67, 89]),
+            timeout: 60000,
+            userVerification: "required"
+          }
+        });
+        if (credential) {
+          localStorage.setItem('nbmm_auth', '1');
+          checkLogin();
+          alert("Biometric verification successful!");
+        }
+      } catch (err) {
+        alert("Biometric authentication cancelled or failed.");
+      }
     }
 
+    // -------------------------------------------------------------
+    // 3. ZERO-DELAY PANDAL PROJECTOR CAM STREAMING ENGINE
+    // -------------------------------------------------------------
+    function renderPandalCamLive(isLive) {
+      const box = document.getElementById('live-pandal-cam-box');
+      const iframe = document.getElementById('live-pandal-iframe');
+      const offline = document.getElementById('live-offline-container');
+      const statusText = document.getElementById('pandal-cam-status-text');
+      const projBtn = document.getElementById('btn-projector-fullscreen');
+
+      const viewUrl = "https://vdo.ninja/?view=nbmm2026pandal&cleanoutput&transparent";
+
+      if (projBtn) projBtn.href = viewUrl;
+
+      if (isLive) {
+        if (box) box.style.display = 'block';
+        if (iframe && !iframe.src) iframe.src = viewUrl;
+        if (offline) offline.style.display = 'none';
+        if (statusText) {
+          statusText.innerText = "Status: 🟢 Pandal Camera is ACTIVE in App & Projector";
+          statusText.style.color = "#27ae60";
+        }
+      } else {
+        if (box) box.style.display = 'none';
+        if (iframe) iframe.src = '';
+        if (!cachedLiveStream && !cachedInstaLive && offline) {
+          offline.style.display = 'block';
+        }
+        if (statusText) {
+          statusText.innerText = "Status: Pandal Camera is currently OFF in App";
+          statusText.style.color = "#777";
+        }
+      }
+    }
+
+    function togglePandalCamLive(turnOn) {
+      cachedPandalCam = turnOn;
+      localStorage.setItem('nbmm_pandal_cam', turnOn ? '1' : '0');
+      if (db) db.ref('pandal_cam_live').set(turnOn);
+      renderPandalCamLive(turnOn);
+      alert(turnOn ? 'Pandal Camera Live is now ACTIVE for all devotees and projector!' : 'Pandal Camera Stream stopped.');
+    }
+
+    // -------------------------------------------------------------
+    // 4. RESTRICTED COMMITTEE CCTV ENGINE
+    // -------------------------------------------------------------
+    function extractYouTubeEmbed(url) {
+      if (!url) return '';
+      const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|live\/|watch\?.+&v=))([\w-]{11})/);
+      return match ? `https://www.youtube.com/embed/${match[1]}?autoplay=1&mute=1&playsinline=1` : url;
+    }
+
+    function renderCCTVStream(url) {
+      const wrap = document.getElementById('cctv-player-wrap');
+      const msg = document.getElementById('cctv-offline-msg');
+      const iframe = document.getElementById('cctv-iframe');
+
+      if (url && url.trim()) {
+        const finalUrl = extractYouTubeEmbed(url.trim());
+        iframe.src = finalUrl;
+        wrap.style.display = 'block';
+        msg.style.display = 'none';
+      } else {
+        iframe.src = '';
+        wrap.style.display = 'none';
+        msg.style.display = 'block';
+      }
+    }
+
+    function saveCCTVStream() {
+      const url = document.getElementById('adm-cctv-url').value.trim();
+      cachedCCTVStream = url;
+      localStorage.setItem('nbmm_cctv_url', url);
+      if (db) db.ref('cctv_stream').set(url);
+      renderCCTVStream(url);
+      alert('CCTV Stream link updated for committee members!');
+    }
+
+    // -------------------------------------------------------------
+    // 5. AUTOMATED UPI PAYMENT POPUP & DELIVERY LOGIC
+    // -------------------------------------------------------------
+    function checkModeAndPromptUPI() {
+      const mode = document.getElementById('r-mode').value;
+      if (mode.includes('UPI') || mode.includes('यूपीआय')) {
+        let amt = parseFloat(document.getElementById('r-amt').value);
+        if (isNaN(amt) || amt <= 0) {
+          const promptedAmt = prompt("कृपया देणगी रक्कम प्रविष्ट करा / Please enter donation amount ₹:");
+          if (promptedAmt && !isNaN(parseFloat(promptedAmt))) {
+            amt = parseFloat(promptedAmt);
+            document.getElementById('r-amt').value = amt;
+          } else {
+            alert("कृपया रक्कम भरा.");
+            return;
+          }
+        }
+        triggerUPIPopModal(amt);
+      }
+    }
+
+    function triggerUPIPopModal(amt) {
+      const upiId = (cachedBank && cachedBank.upi) ? cachedBank.upi : DEFAULT_BANK.upi;
+      const donorName = document.getElementById('r-name').value.trim() || 'Devotee';
+      
+      document.getElementById('pop-upi-amt').innerText = amt;
+      document.getElementById('pop-upi-donor').innerText = `देणगीदार: ${donorName}`;
+
+      const upiDeepLink = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=NavdurgaBalmitraMandal&am=${amt}&cu=INR&tn=Donation`;
+      document.getElementById('btn-pop-upi-deep').href = upiDeepLink;
+
+      const dynamicQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiDeepLink)}`;
+      document.getElementById('pop-upi-qr-img').src = dynamicQrUrl;
+
+      document.getElementById('upi-pop-modal').style.display = 'block';
+    }
+
+    function closeUPIPopModal() {
+      document.getElementById('upi-pop-modal').style.display = 'none';
+    }
+
+    function confirmUPIPaymentAndGenerateReceipt() {
+      closeUPIPopModal();
+      document.getElementById('r-mode').value = 'यूपीआय / UPI';
+      saveRecord(true);
+    }
+
+    // -------------------------------------------------------------
+    // 6. YOUTUBE & INSTAGRAM LIVE STREAM ENGINE
+    // -------------------------------------------------------------
+    function extractYouTubeId(url) {
+      if (!url) return '';
+      url = url.trim();
+      if (/^[\w-]{11}$/.test(url)) return url;
+      const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|live|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+      const match = url.match(regExp);
+      return (match && match[1]) ? match[1] : '';
+    }
+
+    function renderLiveStream(url) {
+      const container = document.getElementById('live-player-container');
+      const offline = document.getElementById('live-offline-container');
+      const iframe = document.getElementById('live-video-iframe');
+      const directBtn = document.getElementById('btn-yt-direct-fallback');
+      
+      const videoId = extractYouTubeId(url);
+
+      if (videoId) {
+        iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1&enablejsapi=1&rel=0`;
+        container.style.display = 'block';
+        offline.style.display = 'none';
+
+        if (directBtn) {
+          directBtn.href = `https://www.youtube.com/watch?v=${videoId}`;
+          directBtn.style.display = 'inline-flex';
+        }
+      } else {
+        iframe.src = '';
+        container.style.display = 'none';
+        if (!cachedInstaLive && !cachedPandalCam) {
+          offline.style.display = 'block';
+        }
+        if (directBtn) directBtn.style.display = 'none';
+      }
+    }
+
+    function saveLiveStream() {
+      const url = document.getElementById('adm-live-url').value.trim();
+      if (!url) {
+        alert('Please paste a valid YouTube Live link.');
+        return;
+      }
+      cachedLiveStream = url;
+      localStorage.setItem('nbmm_live_url', url);
+      if (db) db.ref('live_stream').set(url);
+      renderLiveStream(url);
+      alert('YouTube Live broadcast started across all phones!');
+    }
+
+    function clearLiveStream() {
+      if (!confirm('End YouTube live stream for all devotees?')) return;
+      cachedLiveStream = '';
+      localStorage.removeItem('nbmm_live_url');
+      document.getElementById('adm-live-url').value = '';
+      if (db) db.ref('live_stream').set('');
+      renderLiveStream('');
+      alert('YouTube Live stream ended.');
+    }
+
+    function renderInstagramLive(isLive) {
+      const banner = document.getElementById('live-insta-banner');
+      const offline = document.getElementById('live-offline-container');
+      const btnNow = document.getElementById('btn-insta-live-now');
+      const statusText = document.getElementById('insta-live-active-status');
+
+      const instaProfile = (cachedSocial && cachedSocial.insta) ? cachedSocial.insta : DEFAULT_SOCIAL.insta;
+
+      if (btnNow) btnNow.href = instaProfile;
+
+      if (isLive) {
+        if (banner) banner.style.display = 'block';
+        if (offline) offline.style.display = 'none';
+        if (statusText) {
+          statusText.innerText = "Status: 🔴 Instagram Live is currently ACTIVE";
+          statusText.style.color = "#27ae60";
+        }
+      } else {
+        if (banner) banner.style.display = 'none';
+        if (!cachedLiveStream && !cachedPandalCam && offline) {
+          offline.style.display = 'block';
+        }
+        if (statusText) {
+          statusText.innerText = "Status: Instagram Live is currently OFF";
+          statusText.style.color = "#777";
+        }
+      }
+    }
+
+    function toggleInstagramLive(turnOn) {
+      cachedInstaLive = turnOn;
+      localStorage.setItem('nbmm_insta_live', turnOn ? '1' : '0');
+      if (db) db.ref('insta_live').set(turnOn);
+      renderInstagramLive(turnOn);
+      alert(turnOn ? 'Instagram Live is set to ACTIVE! Devotees will see the live alert.' : 'Instagram Live ended.');
+    }
+
+    // -------------------------------------------------------------
+    // 7. CATEGORY-WISE SECTION FILTER & TOTALS CALCULATION
+    // -------------------------------------------------------------
+    function filterByCat(catKey) {
+      currentSelectedCategory = catKey;
+      document.querySelectorAll('#asv-receipts .day-btn').forEach(b => b.classList.remove('active'));
+
+      const map = {
+        'all': 'btn-cat-all',
+        'भंडारा': 'btn-cat-bhandara',
+        'वर्गणी': 'btn-cat-vargani',
+        'आरती': 'btn-cat-aarti',
+        'महाप्रसाद': 'btn-cat-prasad',
+        'सजावट': 'btn-cat-decor',
+        'इतर': 'btn-cat-other'
+      };
+
+      const btnId = map[catKey] || 'btn-cat-all';
+      const b = document.getElementById(btnId);
+      if (b) b.classList.add('active');
+
+      renderRows();
+    }
+
+    function renderCategoryBreakdownCards() {
+      const container = document.getElementById('category-summary-cards');
+      if (!container) return;
+
+      const categories = [
+        { label: '🍲 भंडारा (Bhandara)', key: 'भंडारा' },
+        { label: '🚩 वर्गणी (Vargani)', key: 'वर्गणी' },
+        { label: '🪔 आरती (Aarti Seva)', key: 'आरती' },
+        { label: '🍬 महाप्रसाद (Prasad)', key: 'महाप्रसाद' },
+        { label: '🌸 सजावट (Decoration)', key: 'सजावट' },
+        { label: '📦 इतर (Other)', key: 'इतर' }
+      ];
+
+      let html = '';
+      categories.forEach(c => {
+        let paid = 0, due = 0;
+        cachedEntries.forEach(x => {
+          if (x.type === 'Income' && (x.category || '').includes(c.key)) {
+            const isPaid = !x.mode.includes('Due') && !x.mode.includes('बाकी');
+            if (isPaid) paid += x.amt; else due += x.amt;
+          }
+        });
+
+        html += `
+          <div class="cat-stat-card">
+            <h4>${c.label}</h4>
+            <div class="cat-amt-paid">₹${paid}</div>
+            <span class="cat-amt-due">बाकी: ₹${due}</span>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    // -------------------------------------------------------------
+    // 8. ACTIVE DEVICE SESSIONS & REMOTE REVOCATION ENGINE
+    // -------------------------------------------------------------
+    function getDeviceName() {
+      const ua = navigator.userAgent;
+      let os = "Mobile Device";
+      if (/android/i.test(ua)) os = "Android Phone";
+      else if (/iPhone|iPad|iPod/i.test(ua)) os = "Apple iPhone / iOS";
+      else if (/Windows/i.test(ua)) os = "Windows PC";
+      else if (/Mac/i.test(ua)) os = "Macbook / macOS";
+
+      let browser = "Browser";
+      if (/chrome|crios/i.test(ua)) browser = "Chrome";
+      else if (/firefox|fxios/i.test(ua)) browser = "Firefox";
+      else if (/safari/i.test(ua)) browser = "Safari";
+
+      return `${os} (${browser})`;
+    }
+
+    function registerDeviceSession() {
+      if (!db) return;
+      const d = new Date();
+      const sessionData = {
+        deviceId: myDeviceId,
+        deviceInfo: getDeviceName(),
+        loginTime: d.toLocaleDateString('en-IN') + ' ' + d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
+        lastActive: Date.now()
+      };
+      db.ref('active_sessions/' + myDeviceId).set(sessionData);
+    }
+
+    function renderDeviceSessions() {
+      const listDiv = document.getElementById('device-session-list');
+      const countBadge = document.getElementById('active-device-count');
+      if (!listDiv) return;
+
+      const keys = Object.keys(cachedSessions);
+      if (countBadge) countBadge.innerText = `${keys.length} Active`;
+
+      if (keys.length === 0) {
+        listDiv.innerHTML = '<p style="font-size:0.8rem; color:#777;">No active devices registered.</p>';
+        return;
+      }
+
+      let html = '';
+      keys.forEach(k => {
+        const item = cachedSessions[k];
+        const isMe = (k === myDeviceId);
+        html += `
+          <div class="device-session-item" style="${isMe ? 'border-color:#27ae60; background:#fafffa;' : ''}">
+            <div>
+              <div style="font-weight:700; font-size:0.88rem; color:#111;">
+                📱 ${item.deviceInfo || 'Mobile'} ${isMe ? '<span style="color:#27ae60; font-size:0.7rem; font-weight:bold;">(हे उपकरण / This Phone)</span>' : ''}
+              </div>
+              <div style="font-size:0.7rem; color:#666;">लॉगिन: ${item.loginTime || ''}</div>
+            </div>
+            <div>
+              ${isMe ? 
+                '<span style="font-size:0.72rem; color:#27ae60; font-weight:bold; padding:4px 8px; background:#e8f8f5; border-radius:4px;">सक्रिय / Active</span>' : 
+                `<button class="btn" style="background:#c0392b; font-size:0.7rem; padding:4px 9px;" onclick="revokeSession('${k}')">🚫 Access काढा</button>`
+              }
+            </div>
+          </div>
+        `;
+      });
+      listDiv.innerHTML = html;
+    }
+
+    function revokeSession(deviceId) {
+      if (!confirm('Are you sure you want to remove committee access from this mobile phone?')) return;
+      if (db) {
+        db.ref('active_sessions/' + deviceId).remove();
+      }
+      alert('Access revoked. That phone will be logged out immediately.');
+    }
+
+    function revokeAllSessions() {
+      if (!confirm('This will sign out ALL committee phones except this one. Proceed?')) return;
+      if (db) {
+        const updates = {};
+        updates['active_sessions'] = {};
+        if (cachedSessions[myDeviceId]) {
+          updates['active_sessions/' + myDeviceId] = cachedSessions[myDeviceId];
+        }
+        db.ref().update(updates);
+      }
+      alert('All other devices have been logged out.');
+    }
+
+    // -------------------------------------------------------------
+    // 9. EXPORT LEDGER TO EXCEL / CSV
+    // -------------------------------------------------------------
+    function exportLedgerToExcel() {
+      if (!cachedEntries || cachedEntries.length === 0) {
+        alert("No entries to export yet!");
+        return;
+      }
+
+      let csv = "Receipt No,Date,Donor Name,Category,Mode,Amount,Status,Collector,Phone\n";
+      cachedEntries.forEach(x => {
+        const isPaid = !x.mode.includes('Due') && !x.mode.includes('बाकी');
+        const cleanName = (x.name || '').replace(/"/g, '""');
+        const cleanCat = (x.category || '').replace(/"/g, '""');
+        const cleanCollector = (x.collector || '').replace(/"/g, '""');
+        const cleanMode = (x.mode || '').replace(/"/g, '""');
+        
+        csv += `"${x.rec}","${x.dateStr || ''}","${cleanName}","${cleanCat}","${cleanMode}",${x.amt},"${isPaid ? 'Paid' : 'Due'}","${cleanCollector}","${x.phone || ''}"\n`;
+      });
+
+      const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `NBMM_Khata_Ledger_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // -------------------------------------------------------------
+    // 10. DEVOTEE RECEIPT SELF-LOOKUP
+    // -------------------------------------------------------------
+    function findDevoteeReceipt() {
+      const q = (document.getElementById('devotee-search-input').value || '').trim().toLowerCase();
+      const resultsDiv = document.getElementById('devotee-search-results');
+      resultsDiv.innerHTML = '';
+
+      if (!q) {
+        alert('Please enter your phone number or receipt number.');
+        return;
+      }
+
+      const matched = cachedEntries.filter(x => {
+        const phone = (x.phone || '').replace(/\D/g, '');
+        const rec = String(x.rec).toLowerCase();
+        return (phone && phone.includes(q.replace(/\D/g, ''))) || rec === q;
+      });
+
+      if (matched.length === 0) {
+        resultsDiv.innerHTML = '<p style="color:#c0392b; font-size:0.8rem; font-weight:bold;">No receipt found matching your search. Please check the number or contact Mandal helpdesk.</p>';
+        return;
+      }
+
+      let html = '<div style="display:flex; flex-direction:column; gap:6px;">';
+      matched.forEach(item => {
+        html += `
+          <div style="background:#fff; border:1px solid #ddd; border-left:4px solid #7a0006; padding:8px 10px; border-radius:6px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-weight:bold; font-size:0.88rem; color:#111;">${item.name}</div>
+              <div style="font-size:0.72rem; color:#666;">Receipt #${item.rec} • ₹${item.amt}/- • ${item.category || 'भंडारा'}</div>
+            </div>
+            <button class="btn" style="background:#7a0006; font-size:0.72rem; padding:6px 10px;" onclick='openReceiptModal(${JSON.stringify(item)})'>🧾 View Receipt</button>
+          </div>
+        `;
+      });
+      html += '</div>';
+      resultsDiv.innerHTML = html;
+    }
+
+    // -------------------------------------------------------------
+    // 11. REGULAR TIMINGS CONTROLLER
+    // -------------------------------------------------------------
+    function renderRegularTimings() {
+      const t = cachedTimings || DEFAULT_TIMINGS;
+      const subah = t.subah || DEFAULT_TIMINGS.subah;
+      const sandhya = t.sandhya || DEFAULT_TIMINGS.sandhya;
+      const garba = t.garba || DEFAULT_TIMINGS.garba;
+      const prasad = t.prasad || DEFAULT_TIMINGS.prasad;
+
+      const elSubah = document.getElementById('dsp-subah-aarti');
+      const elSandhya = document.getElementById('dsp-sandhya-aarti');
+      const elGarba = document.getElementById('dsp-garba-time');
+      const elPrasad = document.getElementById('dsp-prasad-time');
+
+      if (elSubah) elSubah.innerText = subah;
+      if (elSandhya) elSandhya.innerText = sandhya;
+      if (elGarba) elGarba.innerText = garba;
+      if (elPrasad) elPrasad.innerText = prasad;
+
+      const inSubah = document.getElementById('adm-subah-aarti');
+      const inSandhya = document.getElementById('adm-sandhya-aarti');
+      const inGarba = document.getElementById('adm-garba-time');
+      const inPrasad = document.getElementById('adm-prasad-time');
+
+      if (inSubah) inSubah.value = subah;
+      if (inSandhya) inSandhya.value = sandhya;
+      if (inGarba) inGarba.value = garba;
+      if (inPrasad) inPrasad.value = prasad;
+    }
+
+    function saveRegularTimings() {
+      const subah = document.getElementById('adm-subah-aarti').value.trim() || DEFAULT_TIMINGS.subah;
+      const sandhya = document.getElementById('adm-sandhya-aarti').value.trim() || DEFAULT_TIMINGS.sandhya;
+      const garba = document.getElementById('adm-garba-time').value.trim() || DEFAULT_TIMINGS.garba;
+      const prasad = document.getElementById('adm-prasad-time').value.trim() || DEFAULT_TIMINGS.prasad;
+
+      cachedTimings = { subah, sandhya, garba, prasad };
+      localStorage.setItem('nbmm_timings', JSON.stringify(cachedTimings));
+      if (db) db.ref('regular_timings').set(cachedTimings);
+
+      renderRegularTimings();
+      alert('Regular Timings updated and synchronized across all phones!');
+    }
+
+    // -------------------------------------------------------------
+    // 12. KHATA SUB-TAB BIFURCATION CONTROLLER
+    // -------------------------------------------------------------
+    function switchAdminSubTab(tabName) {
+      document.querySelectorAll('.admin-sub-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.admin-sub-view').forEach(view => view.classList.remove('active'));
+
+      const activeBtn = document.getElementById('asb-' + tabName);
+      const activeView = document.getElementById('asv-' + tabName);
+
+      if (activeBtn) activeBtn.classList.add('active');
+      if (activeView) activeView.classList.add('active');
+    }
+
+    // -------------------------------------------------------------
+    // 13. BANK, UPI & BARCODE ENGINE
+    // -------------------------------------------------------------
+    function renderBankDetails() {
+      const b = cachedBank || DEFAULT_BANK;
+      const upiId = b.upi || DEFAULT_BANK.upi;
+
+      document.getElementById('txt-upi-id').innerText = upiId;
+      document.getElementById('btn-upi-pay').href = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=NavdurgaBalmitraMandal&cu=INR`;
+
+      const qrImg = document.getElementById('daan-qr-img');
+      if (b.qrImg && b.qrImg.trim()) {
+        qrImg.src = b.qrImg.trim();
+      } else {
+        qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(`upi://pay?pa=${upiId}&pn=NavdurgaBalmitraMandal&cu=INR`)}`;
+      }
+
+      document.getElementById('bnk-val-name').innerText = b.holder || DEFAULT_BANK.holder;
+      document.getElementById('bnk-val-bank').innerText = b.bank || DEFAULT_BANK.bank;
+      document.getElementById('bnk-val-acc').innerText = b.acc || DEFAULT_BANK.acc;
+      document.getElementById('bnk-val-ifsc').innerText = b.ifsc || DEFAULT_BANK.ifsc;
+      document.getElementById('bnk-val-branch').innerText = b.branch || DEFAULT_BANK.branch;
+      document.getElementById('bnk-val-type').innerText = b.type || DEFAULT_BANK.type;
+
+      const admUpi = document.getElementById('adm-upi-id');
+      const admQr = document.getElementById('adm-qr-url');
+      const admHolder = document.getElementById('adm-bank-name-holder');
+      const admBank = document.getElementById('adm-bank-name');
+      const admAcc = document.getElementById('adm-bank-acc');
+      const admIfsc = document.getElementById('adm-bank-ifsc');
+      const admBranch = document.getElementById('adm-bank-branch');
+      const admType = document.getElementById('adm-bank-type');
+
+      if (admUpi) admUpi.value = upiId;
+      if (admQr) admQr.value = b.qrImg || '';
+      if (admHolder) admHolder.value = b.holder || '';
+      if (admBank) admBank.value = b.bank || '';
+      if (admAcc) admAcc.value = b.acc || '';
+      if (admIfsc) admIfsc.value = b.ifsc || '';
+      if (admBranch) admBranch.value = b.branch || '';
+      if (admType) admType.value = b.type || '';
+    }
+
+    function saveBankDetails() {
+      const upi = document.getElementById('adm-upi-id').value.trim();
+      const qrImg = document.getElementById('adm-qr-url').value.trim();
+      const holder = document.getElementById('adm-bank-name-holder').value.trim();
+      const bank = document.getElementById('adm-bank-name').value.trim();
+      const acc = document.getElementById('adm-bank-acc').value.trim();
+      const ifsc = document.getElementById('adm-bank-ifsc').value.trim();
+      const branch = document.getElementById('adm-bank-branch').value.trim();
+      const type = document.getElementById('adm-bank-type').value.trim();
+
+      if (!upi) {
+        alert('Please enter a valid UPI ID.');
+        return;
+      }
+
+      cachedBank = { upi, qrImg, holder, bank, acc, ifsc, branch, type };
+      localStorage.setItem('nbmm_bank_details', JSON.stringify(cachedBank));
+      if (db) db.ref('bank_details').set(cachedBank);
+
+      renderBankDetails();
+      alert('Bank details & UPI QR updated across all phones!');
+    }
+
+    function copyUpiId() {
+      const id = (cachedBank && cachedBank.upi) ? cachedBank.upi : DEFAULT_BANK.upi;
+      navigator.clipboard.writeText(id).then(() => {
+        alert('UPI ID copied: ' + id);
+      });
+    }
+
+    function copyBankAccount() {
+      const acc = (cachedBank && cachedBank.acc) ? cachedBank.acc : DEFAULT_BANK.acc;
+      navigator.clipboard.writeText(acc).then(() => {
+        showBankCopyMsg('Account number copied: ' + acc);
+      });
+    }
+
+    function copyBankIFSC() {
+      const ifsc = (cachedBank && cachedBank.ifsc) ? cachedBank.ifsc : DEFAULT_BANK.ifsc;
+      navigator.clipboard.writeText(ifsc).then(() => {
+        showBankCopyMsg('IFSC code copied: ' + ifsc);
+      });
+    }
+
+    function showBankCopyMsg(msg) {
+      const s = document.getElementById('bank-copy-status');
+      if (s) {
+        s.innerText = msg;
+        s.style.display = 'block';
+        setTimeout(() => s.style.display = 'none', 3000);
+      }
+    }
+
+    // -------------------------------------------------------------
+    // 14. SOCIAL MEDIA & WHATSAPP ENGINE
+    // -------------------------------------------------------------
+    function renderSocialLinks() {
+      const instaLink = document.getElementById('link-insta-page');
+      const instaQuick = document.getElementById('btn-insta-quick');
+      const waLink = document.getElementById('link-wa-group');
+      const waQuick = document.getElementById('btn-wa-quick');
+      const instaText = document.getElementById('txt-insta-handle');
+      
+      const instaUrl = cachedSocial.insta || DEFAULT_SOCIAL.insta;
+      const waUrl = cachedSocial.wa || DEFAULT_SOCIAL.wa;
+
+      if (instaLink) instaLink.href = instaUrl;
+      if (instaQuick) instaQuick.href = instaUrl;
+      if (waLink) waLink.href = waUrl;
+      if (waQuick) waQuick.href = waUrl;
+
+      try {
+        const parts = instaUrl.split('instagram.com/')[1] || '';
+        const user = parts.split('/')[0].split('?')[0];
+        if (user && instaText) {
+          instaText.innerText = '@' + user;
+        }
+      } catch(e) {}
+
+      const admInsta = document.getElementById('adm-insta-url');
+      const admWa = document.getElementById('adm-wa-url');
+      if (admInsta) admInsta.value = instaUrl;
+      if (admWa) admWa.value = waUrl;
+    }
+
+    function saveSocialLinks() {
+      const insta = document.getElementById('adm-insta-url').value.trim();
+      const wa = document.getElementById('adm-wa-url').value.trim();
+
+      if (!insta || !wa) {
+        alert('Please provide both Instagram and WhatsApp group links.');
+        return;
+      }
+
+      cachedSocial = { insta, wa };
+      localStorage.setItem('nbmm_social', JSON.stringify(cachedSocial));
+      if (db) db.ref('social_links').set(cachedSocial);
+
+      renderSocialLinks();
+      alert('Instagram & WhatsApp group links updated across all phones!');
+    }
+
+    // -------------------------------------------------------------
+    // 15. SHARE TAB & BUILT-IN QR CODE GENERATOR
+    // -------------------------------------------------------------
+    function getCleanInstallUrl() {
+      let base = window.location.origin + window.location.pathname;
+      if (!base.endsWith('/')) base += '/';
+      return base + '?install=true';
+    }
+
+    function initShare() {
+      const installUrl = getCleanInstallUrl();
+      const container = document.getElementById('qrcode-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const qrImg = document.createElement('img');
+      qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent(installUrl);
+      qrImg.alt = 'App QR Code';
+      qrImg.style.width = '180px';
+      qrImg.style.height = '180px';
+      qrImg.style.display = 'block';
+      qrImg.style.margin = '0 auto';
+      qrImg.onerror = function() {
+        container.innerHTML = `<a href="${installUrl}" target="_blank" style="font-size:0.85rem; color:#7a0006; font-weight:bold; word-break:break-all;">${installUrl}</a>`;
+      };
+      container.appendChild(qrImg);
+    }
+
+    function shareOnWhatsApp() {
+      const installUrl = getCleanInstallUrl();
+      const msg = '🚩 *नवदुर्गा बाल मित्र मंडल | NAVDURGA BALMITRA MANDAL* 🚩\n📍 शुक्लाजी स्ट्रीट, कामाठीपुरा, मुंबई ४००००८ (Sukhlaji Street, Mumbai 400008)\n\nआमच्या मंडळाचे अधिकृत ॲप डाऊनलोड करा / Download our official App:\n📅 दैनंदिन कार्यक्रम / Festival Schedule\n🕉️ देवीच्या आरत्या / Devi Aarties\n📸 फोटो व व्हिडिओ / Photos & Videos\n🔴 थेट दर्शन / Live Darshan\n🙏 ऑनलाईन पावती व बँक तपशील / Digital Receipts & UPI\n🗺️ Google Maps: https://goo.gl/maps/TxZFq3YUEzNL9uU58?g_st=ac\n\n📲 *इन्स्टॉल करा / Install Now:* ' + installUrl + '\n📞 Helpline: 9820727275';
+      window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msg), '_blank');
+    }
+
+    function copyAppUrl() {
+      const installUrl = getCleanInstallUrl();
+      navigator.clipboard.writeText(installUrl).then(() => {
+        const s = document.getElementById('copy-status');
+        if (s) {
+          s.style.display = 'block';
+          setTimeout(() => s.style.display = 'none', 2500);
+        }
+      });
+    }
+
+    // -------------------------------------------------------------
+    // 16. SCHEDULE & MEDIA MANAGER (OPTIMIZED & LAG-FREE)
+    // -------------------------------------------------------------
     function initDays() {
       const b = document.getElementById('day-bar');
       if (!b) return;
+      
+      if (!cachedSchedule || !Array.isArray(cachedSchedule) || cachedSchedule.length === 0) {
+        cachedSchedule = DEFAULT_DAYS;
+      }
+
       let html = '';
       cachedSchedule.forEach((x, i) => {
-        html += `<button class="day-btn ${i === 0 ? 'active' : ''}" onclick="selectDay(${i})">${x.d}</button>`;
+        html += `<button class="day-btn ${i === 0 ? 'active' : ''}" onclick="selectFestivalDay(${i})">${x.d || ('Date ' + (i+1))}</button>`;
       });
       b.innerHTML = html;
       renderDay(0);
     }
 
-    function selectDay(i) {
-      document.querySelectorAll('#day-bar .day-btn').forEach((b, idx) => b.classList.toggle('active', idx === i));
+    function selectFestivalDay(i) {
+      const buttons = document.querySelectorAll('#day-bar .day-btn');
+      buttons.forEach((btn, idx) => {
+        if (idx === i) btn.classList.add('active');
+        else btn.classList.remove('active');
+      });
       renderDay(i);
     }
 
     function renderDay(i) {
       const x = cachedSchedule[i] || DEFAULT_DAYS[0];
-      document.getElementById('day-view').innerHTML = `
-        <h4 style="color:var(--primary);">${x.d}</h4>
-        <p><strong>रंग:</strong> ${x.clr}</p>
-        <p><strong>पूजा/कार्यक्रम:</strong> ${x.devi}</p>
-        <p><strong>विशेष:</strong> ${x.p}</p>
+      const view = document.getElementById('day-view');
+      if (!view) return;
+      view.innerHTML = `
+        <h4 style="color:var(--primary); font-size:1.02rem; margin-bottom:6px;">📅 दिनांक व वार / Date & Day: ${x.d || ''}</h4>
+        <p><strong>रंग (Color Theme):</strong> <span style="font-weight:700; color:#d4af37;">${x.clr || ''}</span></p>
+        <p><strong>कार्यक्रम / Puja / Tithi:</strong> ${x.devi || ''}</p>
+        <p><strong>विशेष कार्यक्रम:</strong> ${x.p || ''}</p>
+        <p><strong>प्रसाद:</strong> ${x.pr || ''}</p>
       `;
     }
 
     function populateScheduleSelects() {
       const sel = document.getElementById('adm-sched-day-select');
+      const mediaSel = document.getElementById('adm-media-day');
       if (!sel) return;
+
       let opts = '';
-      cachedSchedule.forEach((x, idx) => { opts += `<option value="${idx}">${x.d}</option>`; });
+      let mediaOpts = '';
+      cachedSchedule.forEach((x, idx) => {
+        opts += `<option value="${idx}">${x.d || ('Date ' + (idx+1))} - ${x.devi || ''}</option>`;
+        if (mediaSel) {
+          mediaOpts += `<option value="${idx}">${x.d || ('Date ' + (idx+1))}</option>`;
+        }
+      });
       sel.innerHTML = opts;
+      if (mediaSel) mediaSel.innerHTML = mediaOpts;
+      
       loadAdminScheduleFields();
+      loadAdminMediaFields();
     }
 
     function loadAdminScheduleFields() {
-      const idx = document.getElementById('adm-sched-day-select').value || 0;
+      const sel = document.getElementById('adm-sched-day-select');
+      if (!sel) return;
+      const idx = parseInt(sel.value) || 0;
       const x = cachedSchedule[idx] || {};
+
       document.getElementById('adm-sched-dlabel').value = x.d || '';
-      document.getElementById('adm-sched-devi').value = x.devi || '';
+      document.getElementById('adm-sched-dt').value = x.dt || '';
       document.getElementById('adm-sched-clr').value = x.clr || '';
+      document.getElementById('adm-sched-devi').value = x.devi || '';
+      document.getElementById('adm-sched-prog').value = x.p || '';
+      document.getElementById('adm-sched-prasad').value = x.pr || '';
+    }
+
+    function addNewFestivalDay() {
+      const newDay = {
+        d: "22/10/2026 - गुरुवार",
+        dt: "22/10/2026",
+        devi: "विशेष कार्यक्रम",
+        clr: "गुलाबी (Pink)",
+        p: "विशेष कार्यक्रम",
+        pr: "महाप्रसाद"
+      };
+      cachedSchedule.push(newDay);
+      localStorage.setItem('nbmm_schedule_custom', JSON.stringify(cachedSchedule));
+      if (db) db.ref('schedule').set(cachedSchedule);
+
+      initDays();
+      initMediaDays();
+      populateScheduleSelects();
+      document.getElementById('adm-sched-day-select').value = cachedSchedule.length - 1;
+      loadAdminScheduleFields();
+      alert(`New Date added successfully!`);
     }
 
     function saveScheduleDay() {
-      const idx = document.getElementById('adm-sched-day-select').value;
-      cachedSchedule[idx].d = document.getElementById('adm-sched-dlabel').value;
-      cachedSchedule[idx].devi = document.getElementById('adm-sched-devi').value;
-      cachedSchedule[idx].clr = document.getElementById('adm-sched-clr').value;
-      localStorage.setItem('nbmm_sched', JSON.stringify(cachedSchedule));
+      const sel = document.getElementById('adm-sched-day-select');
+      if (!sel) return;
+      const idx = parseInt(sel.value) || 0;
+
+      cachedSchedule[idx] = {
+        d: document.getElementById('adm-sched-dlabel').value.trim() || 'Date',
+        dt: document.getElementById('adm-sched-dt').value.trim(),
+        clr: document.getElementById('adm-sched-clr').value.trim(),
+        devi: document.getElementById('adm-sched-devi').value.trim(),
+        p: document.getElementById('adm-sched-prog').value.trim(),
+        pr: document.getElementById('adm-sched-prasad').value.trim()
+      };
+
+      localStorage.setItem('nbmm_schedule_custom', JSON.stringify(cachedSchedule));
       if (db) db.ref('schedule').set(cachedSchedule);
+
       initDays();
-      alert('Updated!');
+      initMediaDays();
+      populateScheduleSelects();
+      alert('Schedule updated and synced across all devices!');
     }
 
-    function checkModeAndPromptUPI() {
-      if (document.getElementById('r-mode').value.includes('UPI')) {
-        let amt = parseFloat(document.getElementById('r-amt').value) || 500;
-        document.getElementById('pop-upi-qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=navdurgabalmitramandal@upi&am=${amt}`;
-        document.getElementById('upi-pop-modal').style.display = 'block';
+    function deleteCurrentScheduleDay() {
+      const sel = document.getElementById('adm-sched-day-select');
+      if (!sel) return;
+      const idx = parseInt(sel.value) || 0;
+
+      if (cachedSchedule.length <= 1) {
+        alert('You must keep at least one date.');
+        return;
+      }
+
+      if (!confirm(`Are you sure you want to delete ${cachedSchedule[idx].d}?`)) return;
+
+      cachedSchedule.splice(idx, 1);
+      localStorage.setItem('nbmm_schedule_custom', JSON.stringify(cachedSchedule));
+      if (db) db.ref('schedule').set(cachedSchedule);
+
+      initDays();
+      initMediaDays();
+      populateScheduleSelects();
+      alert('Date deleted successfully.');
+    }
+
+    function resetScheduleDefaults() {
+      if (!confirm('Reset schedule back to official Navratri 2026 poster dates?')) return;
+      cachedSchedule = DEFAULT_DAYS;
+      localStorage.setItem('nbmm_schedule_custom', JSON.stringify(DEFAULT_DAYS));
+      if (db) db.ref('schedule').set(DEFAULT_DAYS);
+      initDays();
+      initMediaDays();
+      populateScheduleSelects();
+      alert('Schedule reset to official poster dates.');
+    }
+
+    function initMediaDays() {
+      const mb = document.getElementById('media-day-bar');
+      if (!mb) return;
+      mb.innerHTML = '';
+      cachedSchedule.forEach((x, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'day-btn ' + (i === 0 ? 'active' : '');
+        btn.innerText = x.d || `Date ${i+1}`;
+        btn.onclick = function() {
+          document.querySelectorAll('#media-day-bar .day-btn').forEach(k => k.classList.remove('active'));
+          btn.classList.add('active');
+          renderMediaDay(i);
+        };
+        mb.appendChild(btn);
+      });
+      renderMediaDay(0);
+    }
+
+    function renderMediaDay(idx) {
+      const x = cachedSchedule[idx] || DEFAULT_DAYS[0];
+      const current = cachedMedia[idx] || {};
+      const view = document.getElementById('media-content-view');
+      if (!view) return;
+
+      let html = `
+        <div style="background:#fffaf0; border:1px solid #fce8cc; padding:14px; border-radius:8px;">
+          <h4 style="color:var(--primary); margin-bottom:4px;">${x.d || ''} - ${x.devi || ''}</h4>
+          <p style="font-size:0.8rem; color:#666; margin-bottom:12px;">Events: ${x.p || ''}</p>
+      `;
+
+      if (current.photo) {
+        html += `<a class="btn" style="background:#2980b9; width:100%; margin-bottom:8px;" href="${current.photo}" target="_blank">📁 Open Photos (Drive/Photos)</a>`;
+      } else {
+        html += `<div style="padding:10px; background:#fff; border:1px dashed #ccc; border-radius:6px; text-align:center; font-size:0.8rem; color:#777; margin-bottom:8px;">⏳ Photos will be uploaded soon!</div>`;
+      }
+
+      if (current.video) {
+        html += `<a class="btn" style="background:#c0392b; width:100%;" href="${current.video}" target="_blank">▶️ Watch Video Highlights</a>`;
+      }
+
+      html += `</div>`;
+      view.innerHTML = html;
+    }
+
+    function loadAdminMediaFields() {
+      const mediaSel = document.getElementById('adm-media-day');
+      if (!mediaSel) return;
+      const day = mediaSel.value || 0;
+      const current = cachedMedia[day] || {};
+      document.getElementById('adm-photo-link').value = current.photo || '';
+      document.getElementById('adm-video-link').value = current.video || '';
+    }
+
+    function saveMediaLink() {
+      const mediaSel = document.getElementById('adm-media-day');
+      if (!mediaSel) return;
+      const day = mediaSel.value;
+      const photo = document.getElementById('adm-photo-link').value.trim();
+      const video = document.getElementById('adm-video-link').value.trim();
+
+      cachedMedia[day] = { photo, video };
+      localStorage.setItem('nbmm_media', JSON.stringify(cachedMedia));
+      if (db) db.ref('media/' + day).set({ photo, video });
+      alert(`Media links updated!`);
+      renderMediaDay(day);
+    }
+
+    // -------------------------------------------------------------
+    // 17. AUTHENTICATION & SETTINGS (FIXED PERSISTENT LOGIN)
+    // -------------------------------------------------------------
+    function toggleForgotBox(show) {
+      document.getElementById('login-box').style.display = show ? 'none' : 'block';
+      document.getElementById('forgot-box').style.display = show ? 'block' : 'none';
+      if (show) {
+        document.getElementById('recov-phone').value = '';
+        document.getElementById('recov-uid').value = cachedAuth.uid;
+        document.getElementById('recov-pin').value = '';
       }
     }
-    function closeUPIPopModal() { document.getElementById('upi-pop-modal').style.display = 'none'; }
-    function confirmUPIPaymentAndGenerateReceipt() { closeUPIPopModal(); saveRecord(true); }
 
-    function saveRecord(autoDeliver) {
-      const name = document.getElementById('r-name').value.trim();
-      const amt = parseFloat(document.getElementById('r-amt').value);
-      if (!name || isNaN(amt)) return alert('Enter name and amount');
-      const item = { id: Date.now(), rec: String(cachedEntries.length + 1), name, amt, mode: document.getElementById('r-mode').value, phone: document.getElementById('r-phone').value };
-      if (db) db.ref('entries/' + item.id).set(item);
-      openReceiptModal(item);
-    }
+    function doResetPassword() {
+      const phoneInput = document.getElementById('recov-phone').value.replace(/\D/g, '');
+      const newU = document.getElementById('recov-uid').value.trim();
+      const newP = document.getElementById('recov-pin').value.trim();
 
-    function openReceiptModal(item) {
-      document.getElementById('pr-rec').innerText = item.rec;
-      document.getElementById('pr-name').innerText = item.name;
-      document.getElementById('pr-amt').innerText = item.amt;
-      document.getElementById('pr-mode-txt').innerText = item.mode;
-      document.getElementById('receipt-modal').style.display = 'block';
-    }
-    function closeReceiptModal() { document.getElementById('receipt-modal').style.display = 'none'; }
+      if (!phoneInput.endsWith('9820727275')) {
+        alert('Verification Failed: Number does not match Mandal helpline.');
+        return;
+      }
 
-    function renderRows() {
-      const tb = document.getElementById('rec-rows');
-      if (!tb) return;
-      let html = '';
-      cachedEntries.forEach(x => {
-        html += `<tr><td>${x.name}</td><td>${x.mode}</td><td>₹${x.amt}</td><td><button class="btn" style="padding:2px 6px; font-size:0.65rem;" onclick='openReceiptModal(${JSON.stringify(x)})'>View</button></td></tr>`;
-      });
-      tb.innerHTML = html;
+      if (!newU || !newP) {
+        alert('Please enter valid credentials.');
+        return;
+      }
+
+      cachedAuth = { uid: newU, pin: newP };
+      localStorage.setItem('nbmm_credentials', JSON.stringify(cachedAuth));
+      if (db) db.ref('auth_creds').set(cachedAuth);
+
+      alert('Password reset successfully!');
+      toggleForgotBox(false);
+      document.getElementById('uid').value = newU;
+      document.getElementById('pin').value = newP;
     }
 
-    function switchAdminSubTab(name) {
-      document.querySelectorAll('.admin-sub-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.admin-sub-view').forEach(v => v.classList.remove('active'));
-      document.getElementById('asb-' + name).classList.add('active');
-      document.getElementById('asv-' + name).classList.add('active');
+    function updateSettingsPassword() {
+      const newU = document.getElementById('set-uid').value.trim();
+      const newP = document.getElementById('set-pin').value.trim();
+
+      if (!newU || !newP) {
+        alert('User ID and Password cannot be blank.');
+        return;
+      }
+
+      cachedAuth = { uid: newU, pin: newP };
+      localStorage.setItem('nbmm_credentials', JSON.stringify(cachedAuth));
+      if (db) db.ref('auth_creds').set(cachedAuth);
+      alert('Credentials updated!');
     }
 
-    function doLogin() {
-      if (document.getElementById('uid').value === cachedAuth.uid && document.getElementById('pin').value === cachedAuth.pin) {
-        localStorage.setItem('nbmm_auth', '1');
-        checkLogin();
-      } else { alert('Invalid login'); }
-    }
-    async function authenticateBiometric() {
-      localStorage.setItem('nbmm_auth', '1');
-      checkLogin();
-    }
     function checkLogin() {
       if (localStorage.getItem('nbmm_auth') === '1') {
         document.getElementById('login-box').style.display = 'none';
+        document.getElementById('forgot-box').style.display = 'none';
         document.getElementById('panel-box').style.display = 'block';
+        
+        document.getElementById('set-uid').value = cachedAuth.uid;
+        document.getElementById('set-pin').value = cachedAuth.pin;
+        document.getElementById('adm-live-url').value = cachedLiveStream;
+        document.getElementById('adm-cctv-url').value = cachedCCTVStream;
+
         populateScheduleSelects();
+        renderAdminAartiList();
+        renderSocialLinks();
+        renderBankDetails();
+        renderRegularTimings();
+        renderDeviceSessions();
+        renderCategoryBreakdownCards();
+        renderInstagramLive(cachedInstaLive);
+        renderPandalCamLive(cachedPandalCam);
+        renderCCTVStream(cachedCCTVStream);
+        renderRows();
       }
     }
-    function doLogout() {
+
+    function doLogin() {
+      const u = document.getElementById('uid').value.trim();
+      const p = document.getElementById('pin').value.trim();
+
+      if (u === cachedAuth.uid && p === cachedAuth.pin) {
+        localStorage.setItem('nbmm_auth', '1');
+        document.getElementById('login-box').style.display = 'none';
+        document.getElementById('forgot-box').style.display = 'none';
+        document.getElementById('panel-box').style.display = 'block';
+        document.getElementById('err').style.display = 'none';
+
+        document.getElementById('set-uid').value = cachedAuth.uid;
+        document.getElementById('set-pin').value = cachedAuth.pin;
+        document.getElementById('adm-live-url').value = cachedLiveStream;
+        document.getElementById('adm-cctv-url').value = cachedCCTVStream;
+
+        registerDeviceSession();
+
+        populateScheduleSelects();
+        renderAdminAartiList();
+        renderSocialLinks();
+        renderBankDetails();
+        renderRegularTimings();
+        renderDeviceSessions();
+        renderCategoryBreakdownCards();
+        renderInstagramLive(cachedInstaLive);
+        renderPandalCamLive(cachedPandalCam);
+        renderCCTVStream(cachedCCTVStream);
+        renderRows();
+      } else {
+        document.getElementById('err').style.display = 'block';
+      }
+    }
+
+    function doLogout(silent) {
       localStorage.removeItem('nbmm_auth');
+      if (db) {
+        db.ref('active_sessions/' + myDeviceId).remove();
+      }
       document.getElementById('panel-box').style.display = 'none';
       document.getElementById('login-box').style.display = 'block';
+      document.getElementById('forgot-box').style.display = 'none';
+      document.getElementById('uid').value = '';
+      document.getElementById('pin').value = '';
+      cancelEdit();
+      if (!silent) {
+        alert('Signed out successfully.');
+      }
     }
 
-    function initShare() {
-      const url = window.location.origin + window.location.pathname + '?install=true';
-      document.getElementById('qrcode-container').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=170x170&data=${encodeURIComponent(url)}" style="width:170px; height:170px; display:block;" />`;
-    }
-    function copyAppUrl() {
-      navigator.clipboard.writeText(window.location.origin + window.location.pathname + '?install=true');
-      const s = document.getElementById('copy-status');
-      s.style.display = 'block';
-      setTimeout(() => s.style.display = 'none', 2000);
+    // -------------------------------------------------------------
+    // 18. KHATA & RECEIPT GENERATOR WITH AUTO-DELIVERY
+    // -------------------------------------------------------------
+    function saveRecord(autoDeliver) {
+      const name = document.getElementById('r-name').value.trim();
+      const amt = parseFloat(document.getElementById('r-amt').value);
+      const category = document.getElementById('r-category').value;
+      const collector = document.getElementById('r-collector').value.trim() || 'Committee Member';
+      const mode = document.getElementById('r-mode').value;
+      const type = document.getElementById('r-type').value;
+      const phone = document.getElementById('r-phone').value.trim();
+
+      if (!name || isNaN(amt) || amt <= 0) {
+        alert('Please enter a valid donor name and amount.');
+        return;
+      }
+
+      const wordsMr = numberToMarathiWords(amt);
+      const wordsHi = numberToHindiWords(amt);
+      const wordsEn = numberToWords(amt);
+      const editId = document.getElementById('edit-id').value;
+
+      if (editId) {
+        const idx = cachedEntries.findIndex(x => x.id == editId);
+        if (idx !== -1) {
+          const updatedItem = {
+            ...cachedEntries[idx],
+            category: category,
+            type: type,
+            name: name,
+            collector: collector,
+            phone: phone,
+            mode: mode,
+            amt: amt,
+            wordsMr: wordsMr,
+            wordsHi: wordsHi,
+            wordsEn: wordsEn
+          };
+          cachedEntries[idx] = updatedItem;
+          localStorage.setItem('nbmm_entries', JSON.stringify(cachedEntries));
+          if (db) db.ref('entries/' + editId).set(updatedItem);
+        }
+        cancelEdit();
+      } else {
+        const d = new Date();
+        const newId = Date.now();
+        const recNumber = String(cachedEntries.length + 1);
+
+        const item = {
+          id: newId,
+          rec: recNumber,
+          category: category,
+          type: type,
+          name: name,
+          collector: collector,
+          phone: phone,
+          mode: mode,
+          amt: amt,
+          wordsMr: wordsMr,
+          wordsHi: wordsHi,
+          wordsEn: wordsEn,
+          dateStr: `${String(d.getDate()).padStart(2, '0')} / ${String(d.getMonth() + 1).padStart(2, '0')} / ${d.getFullYear()}`
+        };
+
+        cachedEntries.unshift(item);
+        localStorage.setItem('nbmm_entries', JSON.stringify(cachedEntries));
+        if (db) db.ref('entries/' + newId).set(item);
+        cancelEdit();
+        
+        if (item.type === 'Income') {
+          openReceiptModal(item);
+
+          if (autoDeliver && item.phone) {
+            setTimeout(() => {
+              waSend(item);
+            }, 600);
+          }
+        }
+      }
+      renderRows();
     }
 
-    // Bootstrap
+    function editRow(id) {
+      const item = cachedEntries.find(x => x.id == id);
+      if (!item) return;
+
+      switchAdminSubTab('receipts');
+
+      document.getElementById('edit-id').value = item.id;
+      document.getElementById('r-category').value = item.category || 'भंडारा (Bhandara)';
+      document.getElementById('r-type').value = item.type || 'Income';
+      document.getElementById('r-name').value = item.name;
+      document.getElementById('r-collector').value = item.collector || '';
+      document.getElementById('r-phone').value = item.phone || '';
+      document.getElementById('r-mode').value = item.mode || 'रोख / Cash';
+      document.getElementById('r-amt').value = item.amt;
+
+      document.getElementById('form-title').innerText = '✏️ पावती संपादन / Edit Receipt #' + item.rec;
+      document.getElementById('save-btn').innerText = '🔄 पावती अपडेट करा / Update';
+      document.getElementById('save-btn').style.background = '#2980b9';
+      document.getElementById('cancel-edit-btn').style.display = 'inline-flex';
+      window.scrollTo(0, 0);
+    }
+
+    function cancelEdit() {
+      document.getElementById('edit-id').value = '';
+      document.getElementById('r-name').value = '';
+      document.getElementById('r-collector').value = '';
+      document.getElementById('r-amt').value = '';
+      document.getElementById('r-phone').value = '';
+      document.getElementById('form-title').innerText = '🧾 पावती नोंदणी / New Digital Receipt';
+      document.getElementById('save-btn').innerText = '💾 पावती तयार करा / Generate Receipt';
+      document.getElementById('save-btn').style.background = '#7a0006';
+      document.getElementById('cancel-edit-btn').style.display = 'none';
+    }
+
+    function deleteRow(id) {
+      if (!confirm('Delete this receipt across all devices?')) return;
+      cachedEntries = cachedEntries.filter(x => x.id != id);
+      localStorage.setItem('nbmm_entries', JSON.stringify(cachedEntries));
+      if (db) db.ref('entries/' + id).remove();
+      renderRows();
+    }
+
+    // -------------------------------------------------------------
+    // 19. FILTER & RENDER LEDGER TABLE (CATEGORY-AWARE)
+    // -------------------------------------------------------------
+    function renderRows() {
+      let incPaid = 0, incPending = 0, exp = 0;
+      const tb = document.getElementById('rec-rows');
+      if (!tb) return;
+      tb.innerHTML = '';
+
+      const searchInput = document.getElementById('admin-search-input');
+      const q = searchInput ? searchInput.value.trim().toLowerCase() : '';
+      
+      cachedEntries.forEach(x => {
+        const isPaid = !x.mode.includes('Due') && !x.mode.includes('बाकी');
+        if (x.type === 'Income') {
+          if (isPaid) incPaid += x.amt; else incPending += x.amt;
+        } else {
+          exp += x.amt;
+        }
+
+        if (currentSelectedCategory !== 'all') {
+          if (!(x.category || '').includes(currentSelectedCategory)) {
+            return;
+          }
+        }
+
+        if (q) {
+          const matchName = (x.name || '').toLowerCase().includes(q);
+          const matchRec = String(x.rec).toLowerCase().includes(q);
+          const matchCat = (x.category || '').toLowerCase().includes(q);
+          const matchMode = (x.mode || '').toLowerCase().includes(q);
+          const matchCollector = (x.collector || '').toLowerCase().includes(q);
+          const matchPhone = (x.phone || '').toLowerCase().includes(q);
+
+          if (!matchName && !matchRec && !matchCat && !matchMode && !matchCollector && !matchPhone) {
+            return;
+          }
+        }
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>
+            <strong>${x.name}</strong><br>
+            <small style="color:#777;">#${x.rec} • <span style="color:#7a0006; font-weight:600;">${x.category || 'वर्गणी'}</span> • ${x.collector ? 'By: ' + x.collector : ''}</small>
+          </td>
+          <td>
+            <span class="${isPaid ? 'badge-paid' : 'badge-unpaid'}">
+              ${x.mode || 'Cash'}
+            </span>
+          </td>
+          <td style="color:${x.type === 'Income' ? (isPaid ? '#2e7d32' : '#d35400') : '#c0392b'}; font-weight:bold;">
+            ₹${x.amt}
+          </td>
+          <td style="white-space:nowrap;">
+            <button class="btn" style="padding:4px 6px; font-size:0.68rem; background:#2980b9;" onclick="editRow(${x.id})">✏️</button>
+            <button class="btn" style="padding:4px 6px; font-size:0.68rem; background:#c0392b;" onclick="deleteRow(${x.id})">🗑️</button>
+            ${x.type === 'Income' ? `<button class="btn" style="padding:4px 6px; font-size:0.68rem; background:#7a0006;" onclick='openReceiptModal(${JSON.stringify(x)})'>🧾</button>` : ''}
+          </td>
+        `;
+        tb.appendChild(tr);
+      });
+
+      document.getElementById('tot-in').innerText = incPaid;
+      document.getElementById('tot-pending').innerText = incPending;
+      document.getElementById('tot-ex').innerText = exp;
+      document.getElementById('tot-bal').innerText = (incPaid - exp);
+
+      renderCategoryBreakdownCards();
+    }
+
+    // -------------------------------------------------------------
+    // 20. POPULATE TRI-LINGUAL RECEIPT MODAL
+    // -------------------------------------------------------------
+    function openReceiptModal(item) {
+      document.getElementById('pr-rec').innerText = item.rec;
+      document.getElementById('pr-date').innerText = item.dateStr || '21 / 09 / 2026';
+      document.getElementById('pr-name').innerText = `${item.name} - ${item.category || 'भंडारा'}`;
+      
+      document.getElementById('pr-words-mr').innerText = `मराठी: ${item.wordsMr || numberToMarathiWords(item.amt)}`;
+      document.getElementById('pr-words-hi').innerText = `हिंदी: ${item.wordsHi || numberToHindiWords(item.amt)}`;
+      document.getElementById('pr-words-en').innerText = `English: ${item.wordsEn || numberToWords(item.amt)}`;
+      
+      document.getElementById('pr-category-txt').innerText = item.category || 'भंडारा / Bhandara';
+      document.getElementById('pr-collector-txt').innerText = item.collector || 'Committee Member';
+      document.getElementById('pr-sign-president').innerText = 'NBMM MEMBERS';
+      document.getElementById('pr-amt').innerText = item.amt;
+
+      const pCash = document.getElementById('pill-cash');
+      const pUpi = document.getElementById('pill-upi');
+      const pDue = document.getElementById('pill-due');
+
+      pCash.classList.remove('active');
+      pUpi.classList.remove('active');
+      pDue.classList.remove('active');
+
+      if (item.mode && (item.mode.includes('UPI') || item.mode.includes('यूपीआय'))) {
+        pUpi.classList.add('active');
+      } else if (item.mode && (item.mode.includes('Due') || item.mode.includes('बाकी'))) {
+        pDue.classList.add('active');
+      } else {
+        pCash.classList.add('active');
+      }
+
+      const verifyData = `https://nbmm.org/verify?rec=${item.rec}&amt=${item.amt}&name=${encodeURIComponent(item.name)}`;
+      document.getElementById('pr-qr-code').src = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' + encodeURIComponent(verifyData);
+
+      document.getElementById('btn-wa-direct').onclick = function() {
+        waSend(item);
+      };
+
+      document.getElementById('receipt-modal').style.display = 'block';
+    }
+
+    function closeReceiptModal() {
+      document.getElementById('receipt-modal').style.display = 'none';
+    }
+
+    function waSend(x) {
+      const txt = `🚩 *नवदुर्गा बाल मित्र मंडल | NAVDURGA BALMITRA MANDAL* 🚩%0A📍 शुक्लाजी स्ट्रीट, कामाठीपुरा, मुंबई ४००००८%0A(स्थापना / Estd : 1992)%0A%0A*अधिकृत देणगी पावती / Digital Donation Receipt*%0A──────────────────────%0A🧾 *पावती क्र. / Rec No:* ${x.rec}%0A📅 *दिनांक / Date:* ${x.dateStr || ''}%0A👤 *नाव / Donor:* ${x.name}%0A🏷️ *वर्गणी दाखल / Towards:* ${x.category || 'भंडारा'}%0A💰 *रक्कम / Amount:* ₹${x.amt}/-%0A📝 *मराठी अक्षरी:* ${x.wordsMr || ''}%0A📝 *हिंदी अक्षरी:* ${x.wordsHi || ''}%0A🔤 *In Words:* ${x.wordsEn || ''}%0A💳 *माध्यम / Mode:* ${x.mode || 'Cash'}%0A✍️ *स्वीकारले / Collector:* ${x.collector || 'Committee Member'}%0A👥 *अध्यक्ष / Authority:* NBMM MEMBERS%0A──────────────────────%0A॥ *धन्यवाद | THANK YOU* ॥%0Aआपल्या सहकार्याबद्दल मनःपूर्वक आभार ! 🙏`;
+      const p = (x.phone || '').replace(/\D/g, '');
+      const url = p.length >= 10 ? `https://wa.me/91${p.slice(-10)}?text=${txt}` : `https://api.whatsapp.com/send?text=${txt}`;
+      window.open(url, '_blank');
+    }
+
+    // -------------------------------------------------------------
+    // 21. BOOTSTRAP
+    // -------------------------------------------------------------
+    setLanguage(currentLang);
     initDays();
+    initMediaDays();
+    renderAartiTabs();
     initShare();
+    renderSocialLinks();
+    renderBankDetails();
+    renderRegularTimings();
+    renderInstagramLive(cachedInstaLive);
+    renderPandalCamLive(cachedPandalCam);
+    renderCCTVStream(cachedCCTVStream);
+    renderLiveStream(cachedLiveStream);
     checkLogin();
   </script>
 </body>
-</html>
+</html> 
