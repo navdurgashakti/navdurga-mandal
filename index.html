@@ -581,41 +581,133 @@
     </div>
   </section>
 
-    <!-- TAB 2: MEDIA GALLERY -->
-  <section id="tab-media" class="tab">
-    <div class="card">
-      <h3>📸 Utsav Media Gallery (Day-Wise Links)</h3>
-      <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">Select a day to view Photos, Videos, Reels, and AV links:</p>
-      
-      <div class="day-bar" id="media-day-bar"></div>
-      <div id="media-content-view"></div>
-    </div>
-  </section>
+<!-- DEVOTEE VIEW: 4-SECTION DAY-WISE MEDIA GALLERY -->
+<div class="card">
+  <h3>📸 Utsav Media Gallery (Day-Wise Links)</h3>
+  <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">Select a day to view Photos, Videos, Reels, and AV links:</p>
+  
+  <div class="day-bar" id="media-day-bar"></div>
+  <div id="media-content-view"></div>
+</div>
 
-  <!-- ADMIN MEDIA PANEL (Place inside your Admin Section sub-tabs) -->
-  <div id="asv-media" class="admin-sub-view">
-    <div class="card" style="border-left-color: #f39c12;">
-      <h3>📸 Manage Day-Wise Media Links</h3>
-      <p style="font-size:0.75rem; color:#666; margin-bottom:8px;">Select a day and paste multiple links (one per line).</p>
-      
-      <label style="font-size:0.75rem; font-weight:700;">Select Day to Edit:</label>
-      <select id="adm-media-day-select" class="input-box" onchange="loadAdminMediaFields()"></select>
-      
-      <label style="font-size:0.75rem; font-weight:700; color:#2980b9;">📁 Photos Links (One per line)</label>
-      <textarea id="adm-photo-link" class="input-box" rows="2" placeholder="https://..."></textarea>
-      
-      <label style="font-size:0.75rem; font-weight:700; color:#c0392b;">▶️ Videos Links (One per line)</label>
-      <textarea id="adm-video-link" class="input-box" rows="2" placeholder="https://..."></textarea>
-      
-      <label style="font-size:0.75rem; font-weight:700; color:#e67e22;">🎥 Instagram Reels Links (One per line)</label>
-      <textarea id="adm-reel-link" class="input-box" rows="2" placeholder="https://..."></textarea>
-      
-      <label style="font-size:0.75rem; font-weight:700; color:#8e44ad;">🔴 AV / YouTube Links (One per line)</label>
-      <textarea id="adm-yt-link" class="input-box" rows="2" placeholder="https://..."></textarea>
-      
-      <button class="btn" style="background:#f39c12; color:#000;" onclick="saveMediaLinksPerDay()">💾 Save Media Links for this Day</button>
-    </div>
-  </div>
+<!-- ADMIN VIEW: MANAGE 4 SECTIONS PER DAY -->
+<div class="card" style="border-left-color: #f39c12;">
+  <h3>📸 Manage Day-Wise Media Links</h3>
+  <p style="font-size:0.75rem; color:#666; margin-bottom:8px;">Select a day and paste multiple links (one per line).</p>
+  
+  <label style="font-size:0.75rem; font-weight:700;">Select Day to Edit:</label>
+  <select id="adm-media-day-select" class="input-box" onchange="loadAdminMediaFields()"></select>
+  
+  <label style="font-size:0.75rem; font-weight:700; color:#2980b9;">📁 Photos Links (One per line)</label>
+  <textarea id="adm-photo-link" class="input-box" rows="2" placeholder="https://..."></textarea>
+  
+  <label style="font-size:0.75rem; font-weight:700; color:#c0392b;">▶️ Videos Links (One per line)</label>
+  <textarea id="adm-video-link" class="input-box" rows="2" placeholder="https://..."></textarea>
+  
+  <label style="font-size:0.75rem; font-weight:700; color:#e67e22;">🎥 Instagram Reels Links (One per line)</label>
+  <textarea id="adm-reel-link" class="input-box" rows="2" placeholder="https://..."></textarea>
+  
+  <label style="font-size:0.75rem; font-weight:700; color:#8e44ad;">🔴 AV / YouTube Links (One per line)</label>
+  <textarea id="adm-yt-link" class="input-box" rows="2" placeholder="https://..."></textarea>
+  
+  <button class="btn" style="background:#f39c12; color:#000;" onclick="saveMediaLinksPerDay()">💾 Save Media Links for this Day</button>
+</div>
+
+<script>
+  let dayWiseMedia = JSON.parse(localStorage.getItem('nbmm_daywise_media') || '{}');
+  
+  // Assumes cachedSchedule is your array of 10 days
+  const scheduleDays = typeof cachedSchedule !== 'undefined' ? cachedSchedule : [
+    { d: "11/10/2026", devi: "घटस्थापना" }, { d: "12/10/2026", devi: "ब्रह्मचारिणी" },
+    { d: "13/10/2026", devi: "चन्द्रघंटा" }, { d: "14/10/2026", devi: "कूष्माण्डा" },
+    { d: "15/10/2026", devi: "स्कन्दमाता" }, { d: "16/10/2026", devi: "कात्यायनी" },
+    { d: "17/10/2026", devi: "कालरात्रि" }, { d: "18/10/2026", devi: "महागौरी" },
+    { d: "19/10/2026", devi: "सिद्धिदात्री" }, { d: "20/10/2026", devi: "विसर्जन" }
+  ];
+
+  function initMediaGallery() {
+    let barHtml = '';
+    scheduleDays.forEach((x, i) => {
+      barHtml += `<button class="day-btn ${i === 0 ? 'active' : ''}" onclick="renderMediaGalleryDay(${i})">Day ${i+1}</button>`;
+    });
+    const mBar = document.getElementById('media-day-bar');
+    if (mBar) mBar.innerHTML = barHtml;
+
+    let selHtml = '';
+    scheduleDays.forEach((x, i) => {
+      selHtml += `<option value="${i}">Day ${i+1}: ${x.d} - ${x.devi}</option>`;
+    });
+    const mSel = document.getElementById('adm-media-day-select');
+    if (mSel) mSel.innerHTML = selHtml;
+
+    renderMediaGalleryDay(0);
+    loadAdminMediaFields();
+  }
+
+  function renderMediaGalleryDay(idx) {
+    document.querySelectorAll('#media-day-bar .day-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+    
+    const dayInfo = scheduleDays[idx] || { d: `Day ${idx+1}`, devi: '' };
+    const cur = dayWiseMedia[idx] || {};
+    
+    let html = `<div style="background:#fffaf0; border:1px solid #fce8cc; padding:12px; border-radius:8px; margin-top:8px;">`;
+    html += `<h4 style="color:#7a0006; margin-bottom:6px;">Day ${idx+1} — ${dayInfo.d} (${dayInfo.devi})</h4>`;
+
+    const cats = [
+      { key: 'photos', label: '📁 Photos Albums', color: '#2980b9' },
+      { key: 'videos', label: '▶️ Video Highlights', color: '#c0392b' },
+      { key: 'reels', label: '🎥 Instagram Reels', color: '#e67e22' },
+      { key: 'av', label: '🔴 AV / YouTube Stream', color: '#8e44ad' }
+    ];
+
+    let found = false;
+    cats.forEach(c => {
+      if (cur[c.key] && cur[c.key].trim()) {
+        found = true;
+        html += `<span style="font-size:0.78rem; font-weight:700; margin-top:8px; margin-bottom:4px; display:block; color:${c.color}; text-transform:uppercase;">${c.label}</span>`;
+        cur[c.key].split('\n').map(l => l.trim()).filter(l => l).forEach(url => {
+          let finalUrl = url.startsWith('http') ? url : 'https://' + url;
+          html += `<a class="btn" style="background:${c.color}; width:100%; display:block; text-align:center; padding:8px; margin-bottom:4px; color:#fff; text-decoration:none; border-radius:6px; font-size:0.8rem;" href="${finalUrl}" target="_blank">Open ${c.label} Link</a>`;
+        });
+      }
+    });
+
+    if (!found) {
+      html += `<p style="font-size:0.8rem; color:#777; font-style:italic; margin-top:6px;">No media links added for this day yet.</p>`;
+    }
+    html += `</div>`;
+    
+    const mView = document.getElementById('media-content-view');
+    if (mView) mView.innerHTML = html;
+  }
+
+  function loadAdminMediaFields() {
+    const sel = document.getElementById('adm-media-day-select');
+    if (!sel) return;
+    const day = sel.value || 0;
+    const cur = dayWiseMedia[day] || {};
+    document.getElementById('adm-photo-link').value = cur.photos || '';
+    document.getElementById('adm-video-link').value = cur.videos || '';
+    document.getElementById('adm-reel-link').value = cur.reels || '';
+    document.getElementById('adm-yt-link').value = cur.av || '';
+  }
+
+  function saveMediaLinksPerDay() {
+    const day = document.getElementById('adm-media-day-select').value;
+    dayWiseMedia[day] = {
+      photos: document.getElementById('adm-photo-link').value.trim(),
+      videos: document.getElementById('adm-video-link').value.trim(),
+      reels: document.getElementById('adm-reel-link').value.trim(),
+      av: document.getElementById('adm-yt-link').value.trim()
+    };
+    localStorage.setItem('nbmm_daywise_media', JSON.stringify(dayWiseMedia));
+    alert('Media links successfully saved for Day ' + (parseInt(day)+1) + '!');
+    renderMediaGalleryDay(parseInt(day));
+  }
+
+  initMediaGallery();
+</script>
+  
   
 
   <!-- TAB 3: LIVE DARSHAN -->
@@ -2827,7 +2919,6 @@
     renderCCTVStream(cachedCCTVStream);
     renderLiveStream(cachedLiveStream);
     checkLogin();
-    initMediaGallery();
     
   </script>
 </body>
