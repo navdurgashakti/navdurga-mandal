@@ -775,14 +775,14 @@
   <!-- TAB 7: KHATA (ADMIN - BIFURCATED DASHBOARD) -->
   <section id="tab-admin" class="tab">
     
-    <!-- LOGIN BOX WITH PASSCODE LOCK -->
+    <!-- LOGIN BOX WITH STANDARD ID & PASSWORD ONLY -->
     <div id="login-box" class="card" style="text-align:center;">
       <h3>🔐 Committee Login</h3>
-      <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">Enter Committee ID and Password:</p>
-      <input type="text" id="uid" class="input-box" placeholder="User ID (e.g. NBMM)" />
-      <input type="password" id="pin" class="input-box" placeholder="Password" />
+      <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">Enter User ID and Password:</p>
+      <input type="text" id="uid" class="input-box" placeholder="User ID (NBMM)" />
+      <input type="password" id="pin" class="input-box" placeholder="Password (NBMM1137@)" />
       
-      <button class="btn" style="background:#7a0006; width:100%; margin-bottom:8px;" onclick="doLogin()">🔓 Login</button>
+      <button class="btn" style="background:#7a0006; width:100%; margin-bottom:8px;" onclick="doLogin()">🔓 Sign In</button>
       <p id="err" style="color:red; font-size:0.75rem; margin-top:6px; display:none;">Invalid ID or Password.</p>
       
       <div style="margin-top:14px; border-top:1px solid #eee; padding-top:10px;">
@@ -2619,7 +2619,7 @@
     }
 
     // -------------------------------------------------------------
-    // 13. AARTI VIEWER & ADMIN MANAGER
+    // 12. AARTI VIEWER & ADMIN MANAGER
     // -------------------------------------------------------------
     let selectedAartiIdx = 0;
 
@@ -2714,7 +2714,7 @@
     }
 
     // -------------------------------------------------------------
-    // 14. BOOTSTRAP INITIALIZATION
+    // 13. BOOTSTRAP INITIALIZATION
     // -------------------------------------------------------------
     setLanguage(currentLang);
     initDays();
