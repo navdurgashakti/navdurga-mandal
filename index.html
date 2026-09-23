@@ -15,7 +15,7 @@
     header { 
       background: linear-gradient(135deg, var(--primary), #520004); 
       color: #fff; 
-      padding: 8px 12px 12px; 
+      padding: 10px 14px 12px; 
       border-bottom: 4px solid var(--gold); 
       position: sticky; 
       top: 0; 
@@ -41,8 +41,8 @@
     }
     .drawer-header { background: linear-gradient(135deg, var(--primary), #520004); color: #fff; padding: 18px 16px; border-bottom: 3px solid var(--gold); position: relative; }
     .drawer-close { position: absolute; top: 10px; right: 12px; background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; }
-    .drawer-links { display: flex; flex-direction: column; padding: 10px 0; }
-    .drawer-links button { background: none; border: none; text-align: left; padding: 14px 20px; font-size: 0.95rem; color: #333; cursor: pointer; border-bottom: 1px solid #eee; font-weight: 500; width: 100%; }
+    .drawer-links { display: flex; flex-direction: column; padding: 10px 0; overflow-y: auto; }
+    .drawer-links button { background: none; border: none; text-align: left; padding: 14px 20px; font-size: 0.95rem; color: #333; cursor: pointer; border-bottom: 1px solid #eee; font-weight: 500; width: 100%; display: flex; align-items: center; gap: 10px; }
     .drawer-links button.active { color: var(--primary); background: #fff5f5; font-weight: 700; border-left: 6px solid var(--primary); }
     
     #drawer-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 150; }
@@ -61,8 +61,8 @@
     .table th, .table td { border: 1px solid #eee; padding: 6px; text-align: left; vertical-align: middle; }
     .table th { background: #f5f5f5; }
 
-    .admin-sub-bar { display: flex; overflow-x: auto; gap: 4px; background: #fdf3e7; border: 1px solid #e2cfb8; border-radius: 8px; padding: 6px; margin-bottom: 14px; }
-    .admin-sub-btn { flex: 0 0 auto; background: #fff; border: 1px solid #d5c0a5; padding: 6px 9px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; color: #444; cursor: pointer; }
+    .admin-sub-bar { display: flex; overflow-x: auto; gap: 6px; background: #fdf3e7; border: 1px solid #e2cfb8; border-radius: 8px; padding: 6px; margin-bottom: 14px; }
+    .admin-sub-btn { flex: 0 0 auto; background: #fff; border: 1px solid #d5c0a5; padding: 7px 11px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; color: #444; cursor: pointer; }
     .admin-sub-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
     .admin-sub-view { display: none; }
     .admin-sub-view.active { display: block; }
@@ -97,7 +97,7 @@
       </div>
     </div>
     <div class="header-title-wrap">
-      <h1 id="hdr-title">🚩 नवदुर्गा बाल मित्र मंडल</h1>
+      <h1>🚩 नवदुर्गा बाल मित्र मंडल</h1>
       <p style="font-size:0.75rem; color:#ffe0b2;">Navratri Utsav 2026</p>
       <div class="header-addr">📍 शुक्लाजी स्ट्रीट, कामाठीपुरा, मुंबई ४००००८</div>
     </div>
@@ -108,14 +108,15 @@
     <div class="drawer-header">
       <button class="drawer-close" onclick="closeDrawer()">✕</button>
       <h3 style="font-size:1.05rem;">Mandal Menu</h3>
+      <p style="font-size:0.75rem; color:#ffe0b2; margin-top:2px;">Kamathipura, Mumbai 400008</p>
     </div>
     <div class="drawer-links">
-      <button class="active" onclick="switchSection('schedule', this)">📅 Daily Schedule</button>
-      <button onclick="switchSection('media', this)">📸 Photos & Videos</button>
-      <button onclick="switchSection('live', this)">🔴 Live Darshan</button>
+      <button class="active" onclick="switchSection('schedule', this)">📅 Daily Schedule & Tithi</button>
+      <button onclick="switchSection('media', this)">📸 Photos & Videos (4 Sec)</button>
+      <button onclick="switchSection('live', this)">🔴 Live Darshan / Feed</button>
       <button onclick="switchSection('donate', this)">🙏 Pavitra Daan & Bank</button>
       <button onclick="switchSection('share', this)">📤 Share App / QR</button>
-      <button onclick="switchSection('info', this)">📜 Aartis & Social</button>
+      <button onclick="switchSection('info', this)">🕉️ Devi Aarties & Stutis</button>
       <button onclick="switchSection('admin', this)">🔐 पावती पुस्तक (Khata)</button>
     </div>
   </aside>
@@ -167,9 +168,6 @@
   <section id="tab-live" class="tab">
     <div class="card" style="border-left-color: #c0392b; text-align: center;">
       <h3>🔴 Live Darshan & Projector Feed</h3>
-      <div id="live-player-container" style="display:none; position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:8px; margin-bottom: 10px; background:#000;">
-        <iframe id="live-video-iframe" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;" src="" allowfullscreen></iframe>
-      </div>
       <div id="live-offline-container" style="background:#fff8e7; border:1px dashed #d4af37; border-radius:8px; padding:20px; text-align:center;">
         <span style="font-size:2rem;">🪔</span>
         <h4 style="color:var(--primary); margin:8px 0 4px;">Pandal Live Stream Offline</h4>
@@ -213,7 +211,7 @@
     </div>
   </section>
 
-  <!-- TAB 7: ADMIN WITH ALL 7 SUB-TABS -->
+  <!-- TAB 7: ADMIN -->
   <section id="tab-admin" class="tab">
     <div id="login-box" class="card" style="text-align:center;">
       <h3>🔐 Committee Login</h3>
@@ -224,18 +222,13 @@
     </div>
 
     <div id="panel-box" style="display:none;">
-      <!-- FULL 7 SUB-TABS BAR -->
       <div class="admin-sub-bar">
         <button class="admin-sub-btn active" id="asb-receipts" onclick="switchAdminSubTab('receipts')">🧾 पावती</button>
-        <button class="admin-sub-btn" id="asb-schedule" onclick="switchAdminSubTab('schedule')">📅 कार्यक्रम</button>
-        <button class="admin-sub-btn" id="asb-timings" onclick="switchAdminSubTab('timings')">⏰ वेळ</button>
-        <button class="admin-sub-btn" id="asb-media" onclick="switchAdminSubTab('media')">📸 मीडिया</button>
+        <button class="admin-sub-btn" id="asb-schedule" onclick="switchAdminSubTab('schedule')">📅 Day Add / Remove</button>
+        <button class="admin-sub-btn" id="asb-media" onclick="switchAdminSubTab('media')">📸 ४ मीडिया</button>
         <button class="admin-sub-btn" id="asb-aarties" onclick="switchAdminSubTab('aarties')">🕉️ आरत्या</button>
-        <button class="admin-sub-btn" id="asb-bank" onclick="switchAdminSubTab('bank')">🏦 बँक/UPI</button>
-        <button class="admin-sub-btn" id="asb-security" onclick="switchAdminSubTab('security')">🔒 लॉक</button>
       </div>
 
-      <!-- SUB-TAB 1: RECEIPTS -->
       <div id="asv-receipts" class="admin-sub-view active">
         <div class="card" style="border-left-color:#7a0006;">
           <h3>🧾 पावती नोंदणी / Add Receipt</h3>
@@ -252,43 +245,30 @@
         </div>
       </div>
 
-      <!-- SUB-TAB 2: SCHEDULE & TITHI (ADD, EDIT, DELETE) -->
       <div id="asv-schedule" class="admin-sub-view">
-        <div class="card" style="border-left-color: #8e44ad;">
-          <h3>📅 Add New Festival Day / Tithi</h3>
+        <div class="card" style="border-left-color: #27ae60;">
+          <h3>➕ Add Day / Tithi</h3>
           <input type="text" id="new-sched-d" class="input-box" placeholder="Day / Date e.g. सोमवार (12/10/2026)" />
-          <input type="text" id="new-sched-devi" class="input-box" placeholder="Puja / Tithi e.g. घटस्थापना / मेहंदी" />
-          <button class="btn" style="background:#27ae60; width:100%;" onclick="addNewFestivalDay()">➕ Add Date & Tithi</button>
-        </div>
-
-        <div class="card" style="border-left-color: #2980b9;">
-          <h3>✏️ Edit / Update Existing Day & Tithi</h3>
-          <select id="adm-edit-sched-select" class="input-box" onchange="loadAdminScheduleEditFields()"></select>
-          <input type="text" id="edit-sched-d" class="input-box" placeholder="Edit Day/Date" />
-          <input type="text" id="edit-sched-devi" class="input-box" placeholder="Edit Puja/Tithi" />
-          <button class="btn" style="background:#2980b9; width:100%;" onclick="saveEditedFestivalDay()">💾 Save Changes</button>
+          <input type="text" id="new-sched-devi" class="input-box" placeholder="Puja / Tithi e.g. घटस्थापना / मेहंदी / गरबा" />
+          <button class="btn" style="background:#27ae60; width:100%;" onclick="addNewFestivalDay()">➕ Add New Day</button>
         </div>
 
         <div class="card" style="border-left-color: #c0392b;">
-          <h3>🗑️ Delete Festival Day</h3>
+          <h3>🗑️ Remove (Delete) Day</h3>
           <select id="adm-del-sched-select" class="input-box"></select>
-          <button class="btn" style="background:#c0392b; width:100%;" onclick="deleteFestivalDay()">🗑️ Delete Selected Day</button>
+          <button class="btn" style="background:#c0392b; width:100%;" onclick="deleteFestivalDay()">🗑️ Remove Selected Day</button>
         </div>
-      </div>
 
-      <!-- SUB-TAB 3: TIMINGS -->
-      <div id="asv-timings" class="admin-sub-view">
         <div class="card" style="border-left-color: #e67e22;">
           <h3>⏰ Edit & Save Regular Daily Timings</h3>
           <input type="text" id="adm-subah-aarti" class="input-box" placeholder="Subah Aarti Time" />
           <input type="text" id="adm-sandhya-aarti" class="input-box" placeholder="Sandhya Aarti Time" />
           <input type="text" id="adm-garba-time" class="input-box" placeholder="Garba Time" />
           <input type="text" id="adm-prasad-time" class="input-box" placeholder="Maha Prasad Time" />
-          <button class="btn" style="background:#e67e22; width:100%;" onclick="saveRegularTimings()">💾 Save Regular Timings</button>
+          <button class="btn" style="background:#e67e22; width:100%;" onclick="saveRegularTimings()">💾 Save Timings</button>
         </div>
       </div>
 
-      <!-- SUB-TAB 4: MEDIA -->
       <div id="asv-media" class="admin-sub-view">
         <div class="card" style="border-left-color: #f39c12;">
           <h3>📸 Manage 4 Media Sections (1 link per line)</h3>
@@ -305,7 +285,6 @@
         </div>
       </div>
 
-      <!-- SUB-TAB 5: AARTIES -->
       <div id="asv-aarties" class="admin-sub-view">
         <div class="card" style="border-left-color: #d35400;">
           <h3>🕉️ Add New Aarti</h3>
@@ -319,24 +298,7 @@
         </div>
       </div>
 
-      <!-- SUB-TAB 6: BANK & UPI -->
-      <div id="asv-bank" class="admin-sub-view">
-        <div class="card" style="border-left-color: #27ae60;">
-          <h3>🏦 Update UPI ID & QR Code</h3>
-          <input type="text" id="adm-upi-input" class="input-box" placeholder="navdurgabalmitramandal@upi" />
-          <button class="btn" style="background:#27ae60; width:100%;" onclick="saveBankDetails()">💾 Save UPI Details</button>
-        </div>
-      </div>
-
-      <!-- SUB-TAB 7: SECURITY & LOCK -->
-      <div id="asv-security" class="admin-sub-view">
-        <div class="card" style="border-left-color: #333; text-align:center;">
-          <h3>🔒 Committee Security</h3>
-          <p style="font-size:0.85rem; color:#555; margin-bottom:10px;">Lock your admin panel session immediately.</p>
-          <button class="btn" style="background:#333; width:100%;" onclick="doLogout()">🔒 Lock & Sign Out</button>
-        </div>
-      </div>
-
+      <button class="btn" style="background:#333; width:100%; margin-top:10px;" onclick="doLogout()">🔒 Lock & Sign Out</button>
     </div>
   </section>
 
@@ -374,9 +336,16 @@
     try { firebase.initializeApp(firebaseConfig); db = firebase.database(); } catch (err) {}
 
     const DEFAULT_DAYS = [
-      { d: "11/10/2026 - रविवार", devi: "घटस्थापना" },
-      { d: "12/10/2026 - सोमवार", devi: "मेहंदी" },
-      { d: "13/10/2026 - मंगलवार", devi: "गरबा" }
+      { d: "11/10/2026 - रविवार", devi: "घटस्थापना (Pratipada)" },
+      { d: "12/10/2026 - सोमवार", devi: "माँ ब्रह्मचारिणी / मेहंदी (Dwitiya)" },
+      { d: "13/10/2026 - मंगलवार", devi: "माँ चन्द्रघंटा / गरबा (Tritiya)" },
+      { d: "14/10/2026 - बुधवार", devi: "माँ कूष्माण्डा / महापूजा (Chaturthi)" },
+      { d: "15/10/2026 - गुरुवार", devi: "माँ स्कन्दमाता / ललिता पंचमी (Panchami)" },
+      { d: "16/10/2026 - शुक्रवार", devi: "माँ Katyayani / महासप्तमी (Shashthi/Saptami)" },
+      { d: "17/10/2026 - शनिवार", devi: "माँ कालरात्रि / महाष्मी हवन (Ashtami)" },
+      { d: "18/10/2026 - रविवार", devi: "माँ महागौरी / महाकन्या पूजन (Navami)" },
+      { d: "19/10/2026 - सोमवार", devi: "विजया दशमी / दशहरा (Dashami)" },
+      { d: "20/10/2026 - मंगलवार", devi: "मूर्ति विसर्जन व समापन (Visarjan)" }
     ];
 
     const DEFAULT_TIMINGS = { subah: "7:30 AM", sandhya: "7:30 PM", garba: "8:30 PM – 10:00 PM", prasad: "10:00 PM onwards" };
@@ -398,17 +367,6 @@
       document.getElementById('txt-upi-id').innerText = upiId;
       document.getElementById('btn-upi-pay').href = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=NavdurgaBalmitraMandal&cu=INR`;
       document.getElementById('daan-qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(`upi://pay?pa=${encodeURIComponent(upiId)}&pn=NavdurgaBalmitraMandal&cu=INR`)}`;
-      if (document.getElementById('adm-upi-input')) document.getElementById('adm-upi-input').value = upiId;
-    }
-
-    function saveBankDetails() {
-      const upi = document.getElementById('adm-upi-input').value.trim();
-      if (!upi) { alert('Enter UPI ID'); return; }
-      cachedBank = { upi };
-      localStorage.setItem('nbmm_bank_details', JSON.stringify(cachedBank));
-      if (db) db.ref('bank_details').set(cachedBank);
-      renderBankDetails();
-      alert('UPI Details Updated Successfully!');
     }
 
     function renderRegularTimings() {
@@ -489,25 +447,6 @@
       alert('Festival Day & Tithi Added Successfully!');
     }
 
-    function loadAdminScheduleEditFields() {
-      const idx = document.getElementById('adm-edit-sched-select').value;
-      const x = cachedSchedule[idx] || {};
-      document.getElementById('edit-sched-d').value = x.d || '';
-      document.getElementById('edit-sched-devi').value = x.devi || '';
-    }
-
-    function saveEditedFestivalDay() {
-      const idx = document.getElementById('adm-edit-sched-select').value;
-      const d = document.getElementById('edit-sched-d').value.trim();
-      const devi = document.getElementById('edit-sched-devi').value.trim();
-      if (!d || !devi) { alert('Please fill in both fields.'); return; }
-      cachedSchedule[idx] = { d, devi };
-      localStorage.setItem('nbmm_schedule_custom', JSON.stringify(cachedSchedule));
-      if (db) db.ref('schedule').set(cachedSchedule);
-      initDays(); initMediaDays(); populateScheduleSelects();
-      alert('Festival Day & Tithi Updated and Saved Successfully!');
-    }
-
     function deleteFestivalDay() {
       const idx = parseInt(document.getElementById('adm-del-sched-select').value);
       if (cachedSchedule.length <= 1) { alert('Must keep at least one day.'); return; }
@@ -516,26 +455,22 @@
       localStorage.setItem('nbmm_schedule_custom', JSON.stringify(cachedSchedule));
       if (db) db.ref('schedule').set(cachedSchedule);
       initDays(); initMediaDays(); populateScheduleSelects();
-      alert('Day deleted successfully.');
+      alert('Day removed successfully.');
     }
 
     function populateScheduleSelects() {
-      const editSel = document.getElementById('adm-edit-sched-select');
       const delSel = document.getElementById('adm-del-sched-select');
       const mediaSel = document.getElementById('adm-media-day');
-      if (!editSel) return;
+      if (!delSel) return;
 
-      let opts = '', delOpts = '', mediaOpts = '';
+      let delOpts = '', mediaOpts = '';
       cachedSchedule.forEach((x, idx) => {
-        opts += `<option value="${idx}">${x.d} - ${x.devi}</option>`;
         delOpts += `<option value="${idx}">${x.d} - ${x.devi}</option>`;
         mediaOpts += `<option value="${idx}">${x.d}</option>`;
       });
 
-      editSel.innerHTML = opts;
       delSel.innerHTML = delOpts;
       if (mediaSel) mediaSel.innerHTML = mediaOpts;
-      loadAdminScheduleEditFields();
       loadAdminMediaFields();
     }
 
@@ -680,7 +615,7 @@
       if (localStorage.getItem('nbmm_auth') === '1') {
         document.getElementById('login-box').style.display = 'none';
         document.getElementById('panel-box').style.display = 'block';
-        setTimeout(() => { populateScheduleSelects(); renderRegularTimings(); renderAartiTabs(); renderBankDetails(); }, 30);
+        setTimeout(() => { populateScheduleSelects(); renderRegularTimings(); renderAartiTabs(); }, 30);
       }
     }
     function doLogin() {
