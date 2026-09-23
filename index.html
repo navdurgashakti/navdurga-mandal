@@ -2740,6 +2740,50 @@
       });
     }
 
+        // -------------------------------------------------------------
+    // REGULAR TIMINGS MANAGER
+    // -------------------------------------------------------------
+    function renderRegularTimings() {
+      const t = cachedTimings || DEFAULT_TIMINGS;
+      const subahEl = document.getElementById('dsp-subah-aarti');
+      const sandhyaEl = document.getElementById('dsp-sandhya-aarti');
+      const garbaEl = document.getElementById('dsp-garba-time');
+      const prasadEl = document.getElementById('dsp-prasad-time');
+
+      if (subahEl) subahEl.innerText = t.subah || DEFAULT_TIMINGS.subah;
+      if (sandhyaEl) sandhyaEl.innerText = t.sandhya || DEFAULT_TIMINGS.sandhya;
+      if (garbaEl) garbaEl.innerText = t.garba || DEFAULT_TIMINGS.garba;
+      if (prasadEl) prasadEl.innerText = t.prasad || DEFAULT_TIMINGS.prasad;
+
+      // Populate admin inputs if visible
+      if (document.getElementById('adm-subah-aarti')) {
+        document.getElementById('adm-subah-aarti').value = t.subah || DEFAULT_TIMINGS.subah;
+        document.getElementById('adm-sandhya-aarti').value = t.sandhya || DEFAULT_TIMINGS.sandhya;
+        document.getElementById('adm-garba-time').value = t.garba || DEFAULT_TIMINGS.garba;
+        document.getElementById('adm-prasad-time').value = t.prasad || DEFAULT_TIMINGS.prasad;
+      }
+    }
+
+    function saveRegularTimings() {
+      const subah = document.getElementById('adm-subah-aarti').value.trim();
+      const sandhya = document.getElementById('adm-sandhya-aarti').value.trim();
+      const garba = document.getElementById('adm-garba-time').value.trim();
+      const prasad = document.getElementById('adm-prasad-time').value.trim();
+
+      if (!subah || !sandhya) {
+        alert('Please enter valid Aarti timings.');
+        return;
+      }
+
+      cachedTimings = { subah, sandhya, garba, prasad };
+      localStorage.setItem('nbmm_timings', JSON.stringify(cachedTimings));
+      if (db) db.ref('regular_timings').set(cachedTimings);
+
+      renderRegularTimings();
+      alert('Regular timings updated and synced across all devices!');
+    }
+    
+
     // -------------------------------------------------------------
     // BOOTSTRAP INITIALIZATION
     // -------------------------------------------------------------
