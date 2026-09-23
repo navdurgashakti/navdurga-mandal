@@ -1568,7 +1568,7 @@
     }
 
     // -------------------------------------------------------------
-    // 2. BIOMETRIC / FACE LOCK AUTHENTICATION
+    // 2. BIOMETRIC / / FACE LOCK AUTHENTICATION
     // -------------------------------------------------------------
     async function authenticateBiometric() {
       if (!window.PublicKeyCredential) {
@@ -1818,429 +1818,217 @@
     }
 
     // -------------------------------------------------------------
-    // 7. CATEGORY-WISE SECTION FILTER & TOTALS CALCULATION
+    // 7. NAVIGATION, DRAWER & LANGUAGE SWITCHER FUNCTIONS
     // -------------------------------------------------------------
-    function filterByCat(catKey) {
-      currentSelectedCategory = catKey;
-      document.querySelectorAll('#asv-receipts .day-btn').forEach(b => b.classList.remove('active'));
-
-      const map = {
-        'all': 'btn-cat-all',
-        'भंडारा': 'btn-cat-bhandara',
-        'वर्गणी': 'btn-cat-vargani',
-        'आरती': 'btn-cat-aarti',
-        'महाप्रसाद': 'btn-cat-prasad',
-        'सजावट': 'btn-cat-decor',
-        'इतर': 'btn-cat-other'
-      };
-
-      const btnId = map[catKey] || 'btn-cat-all';
-      const b = document.getElementById(btnId);
-      if (b) b.classList.add('active');
-
-      renderRows();
+    function openDrawer() {
+      document.getElementById('side-drawer').style.left = '0px';
+      document.getElementById('drawer-overlay').style.display = 'block';
     }
 
-    function renderCategoryBreakdownCards() {
-      const container = document.getElementById('category-summary-cards');
-      if (!container) return;
-
-      const categories = [
-        { label: '🍲 भंडारा (Bhandara)', key: 'भंडारा' },
-        { label: '🚩 वर्गणी (Vargani)', key: 'वर्गणी' },
-        { label: '🪔 आरती (Aarti Seva)', key: 'आरती' },
-        { label: '🍬 महाप्रसाद (Prasad)', key: 'महाप्रसाद' },
-        { label: '🌸 सजावट (Decoration)', key: 'सजावट' },
-        { label: '📦 इतर (Other)', key: 'इतर' }
-      ];
-
-      let html = '';
-      categories.forEach(c => {
-        let paid = 0, due = 0;
-        cachedEntries.forEach(x => {
-          if (x.type === 'Income' && (x.category || '').includes(c.key)) {
-            const isPaid = !x.mode.includes('Due') && !x.mode.includes('बाकी');
-            if (isPaid) paid += x.amt; else due += x.amt;
-          }
-        });
-
-        html += `
-          <div class="cat-stat-card">
-            <h4>${c.label}</h4>
-            <div class="cat-amt-paid">₹${paid}</div>
-            <span class="cat-amt-due">बाकी: ₹${due}</span>
-          </div>
-        `;
-      });
-
-      container.innerHTML = html;
+    function closeDrawer() {
+      document.getElementById('side-drawer').style.left = '-290px';
+      document.getElementById('drawer-overlay').style.display = 'none';
     }
 
-    // -------------------------------------------------------------
-    // 8. ACTIVE DEVICE SESSIONS & REMOTE REVOCATION ENGINE
-    // -------------------------------------------------------------
-    function getDeviceName() {
-      const ua = navigator.userAgent;
-      let os = "Mobile Device";
-      if (/android/i.test(ua)) os = "Android Phone";
-      else if (/iPhone|iPad|iPod/i.test(ua)) os = "Apple iPhone / iOS";
-      else if (/Windows/i.test(ua)) os = "Windows PC";
-      else if (/Mac/i.test(ua)) os = "Macbook / macOS";
-
-      let browser = "Browser";
-      if (/chrome|crios/i.test(ua)) browser = "Chrome";
-      else if (/firefox|fxios/i.test(ua)) browser = "Firefox";
-      else if (/safari/i.test(ua)) browser = "Safari";
-
-      return `${os} (${browser})`;
+    function switchSection(name, btn) {
+      document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.drawer-links button').forEach(b => b.classList.remove('active'));
+      const target = document.getElementById('tab-' + name);
+      if (target) target.classList.add('active');
+      if (btn) btn.classList.add('active');
+      closeDrawer();
+      window.scrollTo(0, 0);
     }
 
-    function registerDeviceSession() {
-      if (!db) return;
-      const d = new Date();
-      const sessionData = {
-        deviceId: myDeviceId,
-        deviceInfo: getDeviceName(),
-        loginTime: d.toLocaleDateString('en-IN') + ' ' + d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
-        lastActive: Date.now()
-      };
-      db.ref('active_sessions/' + myDeviceId).set(sessionData);
-    }
-
-    function renderDeviceSessions() {
-      const listDiv = document.getElementById('device-session-list');
-      const countBadge = document.getElementById('active-device-count');
-      if (!listDiv) return;
-
-      const keys = Object.keys(cachedSessions);
-      if (countBadge) countBadge.innerText = `${keys.length} Active`;
-
-      if (keys.length === 0) {
-        listDiv.innerHTML = '<p style="font-size:0.8rem; color:#777;">No active devices registered.</p>';
-        return;
+    const I18N = {
+      en: {
+        title: "🚩 NAVDURGA BALMITRA MANDAL",
+        addr: "📍 Sukhlaji Street, Kamathipura, Mumbai 400008",
+        navSched: "📅 Daily Schedule",
+        navMedia: "📸 Photos & Videos",
+        navLive: "🔴 Live Darshan",
+        navDonate: "🙏 Pavitra Daan & Bank",
+        navShare: "📤 Share App / QR",
+        navInfo: "📜 Aartis & Social",
+        navAdmin: "🔐 Receipt Book (Khata)",
+        pandalTitle: "Pandal Address & Helpdesk",
+        selectDay: "Select Festival Day",
+        timingsTitle: "Regular Timings",
+        mediaTitle: "📸 Utsav Photos & Videos",
+        mediaSub: "Select any day to open full-resolution photos and videos:",
+        liveTitle: "🔴 Live Darshan & Aarti",
+        liveSub: "Watch Aarti live from our Sukhlaji Street pandal:",
+        liveOffHead: "Pandal Live Stream Offline",
+        liveOffDesc: "The live broadcast is currently offline.<br><strong>Subah Aarti:</strong> 7:30 AM | <strong>Sandhya Aarti:</strong> 7:30 PM",
+        daanTitle: "🙏 Pavitra Daan / Seva",
+        daanSub: "Contribute to Navdurga Balmitra Mandal via UPI or Bank:",
+        shareTitle: "📲 Share Mandal App",
+        shareSub: "Scan this QR code with any camera to install the app:",
+        aartiHead: "🕉️ Devi Aarties & Stutis"
+      },
+      hi: {
+        title: "🚩 नवदुर्गा बाल मित्र मंडल",
+        addr: "📍 शुक्लाजी स्ट्रीट, कामाठीपुरा, मुंबई ४००००८",
+        navSched: "📅 दैनिक कार्यक्रम (Schedule)",
+        navMedia: "📸 फोटो और वीडियो (Media)",
+        navLive: "🔴 लाइव दर्शन (Live)",
+        navDonate: "🙏 पवित्र दान व बैंक खाता",
+        navShare: "📤 ऐप शेयर / QR कोड",
+        navInfo: "📜 आरतियां व सोशल",
+        navAdmin: "🔐 पावती पुस्तक (खाता)",
+        pandalTitle: "पंडाल का पता व सहायता केंद्र",
+        selectDay: "त्योहार का दिन चुनें",
+        timingsTitle: "नियमित आरती समय",
+        mediaTitle: "📸 उत्सव फोटो और वीडियो",
+        mediaSub: "दैनिक फोटो और वीडियो देखने के लिए दिन चुनें:",
+        liveTitle: "🔴 लाइव दर्शन एवं आरती",
+        liveSub: "शुक्लाजी स्ट्रीट पंडाल से सीधा लाइव प्रसारण देखें:",
+        liveOffHead: "लाइव प्रसारण अभी बंद है",
+        liveOffDesc: "लाइव प्रसारण अभी सक्रिय नहीं है।<br><strong>सुबह की आरती:</strong> 7:30 AM | <strong>संध्या आरती:</strong> 7:30 PM",
+        daanTitle: "🙏 पवित्र दान व बैंक विवरण",
+        daanSub: "नवदुर्गा बाल मित्र मंडल को UPI या बैंक खाते द्वारा सहयोग करें:",
+        shareTitle: "📲 मंडल ऐप शेयर करें",
+        shareSub: "ऐप डाउनलोड और इंस्टॉल करने के लिए QR कोड स्कैन करें:",
+        aartiHead: "🕉️ देवी आरतियां व स्तुति"
+      },
+      mr: {
+        title: "🚩 नवदुर्गा बाल मित्र मंडल",
+        addr: "📍 शुक्लाजी स्ट्रीट, कामाठीपुरा, मुंबई ४००००८",
+        navSched: "📅 दैनंदिन कार्यक्रम पत्रिका",
+        navMedia: "📸 फोटो व व्हिडिओ दालन",
+        navLive: "🔴 थेट प्रक्षेपण (Live Darshan)",
+        navDonate: "🙏 पवित्र दान व बँक खाते",
+        navShare: "📤 ॲप शेअर / QR कोड",
+        navInfo: "📜 आरत्या व सोशल ग्रुप",
+        navAdmin: "🔐 पावती पुस्तक (खतावणी)",
+        pandalTitle: "मंडप पत्ता व मदत केंद्र",
+        selectDay: "उत्सवाचा दिवस निवडा",
+        timingsTitle: "नियमित आरत्यांची वेळ",
+        mediaTitle: "📸 उत्सव फोटो व व्हिडिओ अल्बम",
+        mediaSub: "फोटो आणि व्हिडिओ पाहण्यासाठी दिवस निवडा:",
+        liveTitle: "🔴 थेट दर्शन व आरती (Live)",
+        liveSub: "शुक्लाजी स्ट्रीट मंडपातून थेट आरतीचे दर्शन घ्या:",
+        liveOffHead: "थेट प्रक्षेपण सध्या बंद आहे",
+        liveOffDesc: "लाईव्ह आरती प्रक्षेपण सध्या सुरू नाही.<br><strong>सकाळची आरती:</strong> 7:30 AM | <strong>संध्याकाळची आरती:</strong> 7:30 PM",
+        daanTitle: "🙏 पवित्र दान व बँक तपशील",
+        daanSub: "नवदुर्गा बाल मित्र मंडळास UPI किंवा बँकेद्वारे सहकार्य करा:",
+        shareTitle: "📲 मंडळाचे ॲप शेअर करा",
+        shareSub: "ॲप इन्स्टॉल करण्यासाठी हा QR कोड स्कॅन करा:",
+        aartiHead: "🕉️ देवीच्या आरत्या व स्तुती"
       }
+    };
 
-      let html = '';
-      keys.forEach(k => {
-        const item = cachedSessions[k];
-        const isMe = (k === myDeviceId);
-        html += `
-          <div class="device-session-item" style="${isMe ? 'border-color:#27ae60; background:#fafffa;' : ''}">
-            <div>
-              <div style="font-weight:700; font-size:0.88rem; color:#111;">
-                📱 ${item.deviceInfo || 'Mobile'} ${isMe ? '<span style="color:#27ae60; font-size:0.7rem; font-weight:bold;">(हे उपकरण / This Phone)</span>' : ''}
-              </div>
-              <div style="font-size:0.7rem; color:#666;">लॉगिन: ${item.loginTime || ''}</div>
-            </div>
-            <div>
-              ${isMe ? 
-                '<span style="font-size:0.72rem; color:#27ae60; font-weight:bold; padding:4px 8px; background:#e8f8f5; border-radius:4px;">सक्रिय / Active</span>' : 
-                `<button class="btn" style="background:#c0392b; font-size:0.7rem; padding:4px 9px;" onclick="revokeSession('${k}')">🚫 Access काढा</button>`
-              }
-            </div>
-          </div>
-        `;
-      });
-      listDiv.innerHTML = html;
-    }
-
-    function revokeSession(deviceId) {
-      if (!confirm('Are you sure you want to remove committee access from this mobile phone?')) return;
-      if (db) {
-        db.ref('active_sessions/' + deviceId).remove();
-      }
-      alert('Access revoked. That phone will be logged out immediately.');
-    }
-
-    function revokeAllSessions() {
-      if (!confirm('This will sign out ALL committee phones except this one. Proceed?')) return;
-      if (db) {
-        const updates = {};
-        updates['active_sessions'] = {};
-        if (cachedSessions[myDeviceId]) {
-          updates['active_sessions/' + myDeviceId] = cachedSessions[myDeviceId];
-        }
-        db.ref().update(updates);
-      }
-      alert('All other devices have been logged out.');
-    }
-
-    // -------------------------------------------------------------
-    // 9. EXPORT LEDGER TO EXCEL / CSV
-    // -------------------------------------------------------------
-    function exportLedgerToExcel() {
-      if (!cachedEntries || cachedEntries.length === 0) {
-        alert("No entries to export yet!");
-        return;
-      }
-
-      let csv = "Receipt No,Date,Donor Name,Category,Mode,Amount,Status,Collector,Phone\n";
-      cachedEntries.forEach(x => {
-        const isPaid = !x.mode.includes('Due') && !x.mode.includes('बाकी');
-        const cleanName = (x.name || '').replace(/"/g, '""');
-        const cleanCat = (x.category || '').replace(/"/g, '""');
-        const cleanCollector = (x.collector || '').replace(/"/g, '""');
-        const cleanMode = (x.mode || '').replace(/"/g, '""');
-        
-        csv += `"${x.rec}","${x.dateStr || ''}","${cleanName}","${cleanCat}","${cleanMode}",${x.amt},"${isPaid ? 'Paid' : 'Due'}","${cleanCollector}","${x.phone || ''}"\n`;
-      });
-
-      const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.setAttribute("href", url);
-      link.setAttribute("download", `NBMM_Khata_Ledger_${new Date().toISOString().slice(0,10)}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-
-    // -------------------------------------------------------------
-    // 10. DEVOTEE RECEIPT SELF-LOOKUP
-    // -------------------------------------------------------------
-    function findDevoteeReceipt() {
-      const q = (document.getElementById('devotee-search-input').value || '').trim().toLowerCase();
-      const resultsDiv = document.getElementById('devotee-search-results');
-      resultsDiv.innerHTML = '';
-
-      if (!q) {
-        alert('Please enter your phone number or receipt number.');
-        return;
-      }
-
-      const matched = cachedEntries.filter(x => {
-        const phone = (x.phone || '').replace(/\D/g, '');
-        const rec = String(x.rec).toLowerCase();
-        return (phone && phone.includes(q.replace(/\D/g, ''))) || rec === q;
-      });
-
-      if (matched.length === 0) {
-        resultsDiv.innerHTML = '<p style="color:#c0392b; font-size:0.8rem; font-weight:bold;">No receipt found matching your search. Please check the number or contact Mandal helpdesk.</p>';
-        return;
-      }
-
-      let html = '<div style="display:flex; flex-direction:column; gap:6px;">';
-      matched.forEach(item => {
-        html += `
-          <div style="background:#fff; border:1px solid #ddd; border-left:4px solid #7a0006; padding:8px 10px; border-radius:6px; display:flex; justify-content:space-between; align-items:center;">
-            <div>
-              <div style="font-weight:bold; font-size:0.88rem; color:#111;">${item.name}</div>
-              <div style="font-size:0.72rem; color:#666;">Receipt #${item.rec} • ₹${item.amt}/- • ${item.category || 'भंडारा'}</div>
-            </div>
-            <button class="btn" style="background:#7a0006; font-size:0.72rem; padding:6px 10px;" onclick='openReceiptModal(${JSON.stringify(item)})'>🧾 View Receipt</button>
-          </div>
-        `;
-      });
-      html += '</div>';
-      resultsDiv.innerHTML = html;
-    }
-
-    // -------------------------------------------------------------
-    // 11. REGULAR TIMINGS CONTROLLER
-    // -------------------------------------------------------------
-    function renderRegularTimings() {
-      const t = cachedTimings || DEFAULT_TIMINGS;
-      const subah = t.subah || DEFAULT_TIMINGS.subah;
-      const sandhya = t.sandhya || DEFAULT_TIMINGS.sandhya;
-      const garba = t.garba || DEFAULT_TIMINGS.garba;
-      const prasad = t.prasad || DEFAULT_TIMINGS.prasad;
-
-      const elSubah = document.getElementById('dsp-subah-aarti');
-      const elSandhya = document.getElementById('dsp-sandhya-aarti');
-      const elGarba = document.getElementById('dsp-garba-time');
-      const elPrasad = document.getElementById('dsp-prasad-time');
-
-      if (elSubah) elSubah.innerText = subah;
-      if (elSandhya) elSandhya.innerText = sandhya;
-      if (elGarba) elGarba.innerText = garba;
-      if (elPrasad) elPrasad.innerText = prasad;
-
-      const inSubah = document.getElementById('adm-subah-aarti');
-      const inSandhya = document.getElementById('adm-sandhya-aarti');
-      const inGarba = document.getElementById('adm-garba-time');
-      const inPrasad = document.getElementById('adm-prasad-time');
-
-      if (inSubah) inSubah.value = subah;
-      if (inSandhya) inSandhya.value = sandhya;
-      if (inGarba) inGarba.value = garba;
-      if (inPrasad) inPrasad.value = prasad;
-    }
-
-    function saveRegularTimings() {
-      const subah = document.getElementById('adm-subah-aarti').value.trim() || DEFAULT_TIMINGS.subah;
-      const sandhya = document.getElementById('adm-sandhya-aarti').value.trim() || DEFAULT_TIMINGS.sandhya;
-      const garba = document.getElementById('adm-garba-time').value.trim() || DEFAULT_TIMINGS.garba;
-      const prasad = document.getElementById('adm-prasad-time').value.trim() || DEFAULT_TIMINGS.prasad;
-
-      cachedTimings = { subah, sandhya, garba, prasad };
-      localStorage.setItem('nbmm_timings', JSON.stringify(cachedTimings));
-      if (db) db.ref('regular_timings').set(cachedTimings);
-
-      renderRegularTimings();
-      alert('Regular Timings updated and synchronized across all phones!');
-    }
-
-    // -------------------------------------------------------------
-    // 12. KHATA SUB-TAB BIFURCATION CONTROLLER
-    // -------------------------------------------------------------
-    function switchAdminSubTab(tabName) {
-      document.querySelectorAll('.admin-sub-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.admin-sub-view').forEach(view => view.classList.remove('active'));
-
-      const activeBtn = document.getElementById('asb-' + tabName);
-      const activeView = document.getElementById('asv-' + tabName);
-
-      if (activeBtn) activeBtn.classList.add('active');
-      if (activeView) activeView.classList.add('active');
-    }
-
-    // -------------------------------------------------------------
-    // 13. BANK, UPI & BARCODE ENGINE
-    // -------------------------------------------------------------
-    function renderBankDetails() {
-      const b = cachedBank || DEFAULT_BANK;
-      const upiId = b.upi || DEFAULT_BANK.upi;
-
-      document.getElementById('txt-upi-id').innerText = upiId;
-      document.getElementById('btn-upi-pay').href = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=NavdurgaBalmitraMandal&cu=INR`;
-
-      const qrImg = document.getElementById('daan-qr-img');
-      if (b.qrImg && b.qrImg.trim()) {
-        qrImg.src = b.qrImg.trim();
-      } else {
-        qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(`upi://pay?pa=${upiId}&pn=NavdurgaBalmitraMandal&cu=INR`)}`;
-      }
-
-      document.getElementById('bnk-val-name').innerText = b.holder || DEFAULT_BANK.holder;
-      document.getElementById('bnk-val-bank').innerText = b.bank || DEFAULT_BANK.bank;
-      document.getElementById('bnk-val-acc').innerText = b.acc || DEFAULT_BANK.acc;
-      document.getElementById('bnk-val-ifsc').innerText = b.ifsc || DEFAULT_BANK.ifsc;
-      document.getElementById('bnk-val-branch').innerText = b.branch || DEFAULT_BANK.branch;
-      document.getElementById('bnk-val-type').innerText = b.type || DEFAULT_BANK.type;
-
-      const admUpi = document.getElementById('adm-upi-id');
-      const admQr = document.getElementById('adm-qr-url');
-      const admHolder = document.getElementById('adm-bank-name-holder');
-      const admBank = document.getElementById('adm-bank-name');
-      const admAcc = document.getElementById('adm-bank-acc');
-      const admIfsc = document.getElementById('adm-bank-ifsc');
-      const admBranch = document.getElementById('adm-bank-branch');
-      const admType = document.getElementById('adm-bank-type');
-
-      if (admUpi) admUpi.value = upiId;
-      if (admQr) admQr.value = b.qrImg || '';
-      if (admHolder) admHolder.value = b.holder || '';
-      if (admBank) admBank.value = b.bank || '';
-      if (admAcc) admAcc.value = b.acc || '';
-      if (admIfsc) admIfsc.value = b.ifsc || '';
-      if (admBranch) admBranch.value = b.branch || '';
-      if (admType) admType.value = b.type || '';
-    }
-
-    function saveBankDetails() {
-      const upi = document.getElementById('adm-upi-id').value.trim();
-      const qrImg = document.getElementById('adm-qr-url').value.trim();
-      const holder = document.getElementById('adm-bank-name-holder').value.trim();
-      const bank = document.getElementById('adm-bank-name').value.trim();
-      const acc = document.getElementById('adm-bank-acc').value.trim();
-      const ifsc = document.getElementById('adm-bank-ifsc').value.trim();
-      const branch = document.getElementById('adm-bank-branch').value.trim();
-      const type = document.getElementById('adm-bank-type').value.trim();
-
-      if (!upi) {
-        alert('Please enter a valid UPI ID.');
-        return;
-      }
-
-      cachedBank = { upi, qrImg, holder, bank, acc, ifsc, branch, type };
-      localStorage.setItem('nbmm_bank_details', JSON.stringify(cachedBank));
-      if (db) db.ref('bank_details').set(cachedBank);
-
-      renderBankDetails();
-      alert('Bank details & UPI QR updated across all phones!');
-    }
-
-    function copyUpiId() {
-      const id = (cachedBank && cachedBank.upi) ? cachedBank.upi : DEFAULT_BANK.upi;
-      navigator.clipboard.writeText(id).then(() => {
-        alert('UPI ID copied: ' + id);
-      });
-    }
-
-    function copyBankAccount() {
-      const acc = (cachedBank && cachedBank.acc) ? cachedBank.acc : DEFAULT_BANK.acc;
-      navigator.clipboard.writeText(acc).then(() => {
-        showBankCopyMsg('Account number copied: ' + acc);
-      });
-    }
-
-    function copyBankIFSC() {
-      const ifsc = (cachedBank && cachedBank.ifsc) ? cachedBank.ifsc : DEFAULT_BANK.ifsc;
-      navigator.clipboard.writeText(ifsc).then(() => {
-        showBankCopyMsg('IFSC code copied: ' + ifsc);
-      });
-    }
-
-    function showBankCopyMsg(msg) {
-      const s = document.getElementById('bank-copy-status');
-      if (s) {
-        s.innerText = msg;
-        s.style.display = 'block';
-        setTimeout(() => s.style.display = 'none', 3000);
-      }
-    }
-
-    // -------------------------------------------------------------
-    // 14. SOCIAL MEDIA & WHATSAPP ENGINE
-    // -------------------------------------------------------------
-    function renderSocialLinks() {
-      const instaLink = document.getElementById('link-insta-page');
-      const instaQuick = document.getElementById('btn-insta-quick');
-      const waLink = document.getElementById('link-wa-group');
-      const waQuick = document.getElementById('btn-wa-quick');
-      const instaText = document.getElementById('txt-insta-handle');
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('nbmm_lang', lang);
       
-      const instaUrl = cachedSocial.insta || DEFAULT_SOCIAL.insta;
-      const waUrl = cachedSocial.wa || DEFAULT_SOCIAL.wa;
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById('l-' + lang);
+      if (activeBtn) activeBtn.classList.add('active');
 
-      if (instaLink) instaLink.href = instaUrl;
-      if (instaQuick) instaQuick.href = instaUrl;
-      if (waLink) waLink.href = waUrl;
-      if (waQuick) waQuick.href = waUrl;
+      const dict = I18N[lang] || I18N['mr'];
+      document.getElementById('hdr-title').innerText = dict.title;
+      document.getElementById('hdr-addr').innerText = dict.addr;
+      document.getElementById('nav-sched').innerText = dict.navSched;
+      document.getElementById('nav-media').innerText = dict.navMedia;
+      document.getElementById('nav-live').innerText = dict.navLive;
+      document.getElementById('nav-donate').innerText = dict.navDonate;
+      document.getElementById('nav-share').innerText = dict.navShare;
+      document.getElementById('nav-info').innerText = dict.navInfo;
+      document.getElementById('nav-admin').innerText = dict.navAdmin;
 
-      try {
-        const parts = instaUrl.split('instagram.com/')[1] || '';
-        const user = parts.split('/')[0].split('?')[0];
-        if (user && instaText) {
-          instaText.innerText = '@' + user;
-        }
-      } catch(e) {}
-
-      const admInsta = document.getElementById('adm-insta-url');
-      const admWa = document.getElementById('adm-wa-url');
-      if (admInsta) admInsta.value = instaUrl;
-      if (admWa) admWa.value = waUrl;
-    }
-
-    function saveSocialLinks() {
-      const insta = document.getElementById('adm-insta-url').value.trim();
-      const wa = document.getElementById('adm-wa-url').value.trim();
-
-      if (!insta || !wa) {
-        alert('Please provide both Instagram and WhatsApp group links.');
-        return;
-      }
-
-      cachedSocial = { insta, wa };
-      localStorage.setItem('nbmm_social', JSON.stringify(cachedSocial));
-      if (db) db.ref('social_links').set(cachedSocial);
-
-      renderSocialLinks();
-      alert('Instagram & WhatsApp group links updated across all phones!');
+      document.getElementById('sec-pandal-title').innerText = dict.pandalTitle;
+      document.getElementById('sec-select-day').innerText = dict.selectDay;
+      document.getElementById('sec-timings-title').innerText = dict.timingsTitle;
+      document.getElementById('sec-media-title').innerText = dict.mediaTitle;
+      document.getElementById('sec-media-sub').innerText = dict.mediaSub;
+      document.getElementById('sec-live-title').innerText = dict.liveTitle;
+      document.getElementById('sec-live-sub').innerText = dict.liveSub;
+      document.getElementById('live-off-head').innerText = dict.liveOffHead;
+      document.getElementById('live-off-desc').innerHTML = dict.liveOffDesc;
+      document.getElementById('sec-daan-title').innerText = dict.daanTitle;
+      document.getElementById('sec-daan-sub').innerText = dict.daanSub;
+      document.getElementById('sec-share-title').innerText = dict.shareTitle;
+      document.getElementById('sec-share-sub').innerText = dict.shareSub;
+      document.getElementById('sec-aarti-sub').innerText = dict.aartiHead;
     }
 
     // -------------------------------------------------------------
-    // 15. SHARE TAB & BUILT-IN QR CODE GENERATOR
+    // 8. NUMBER CONVERTERS
+    // -------------------------------------------------------------
+    function numberToMarathiWords(n) {
+      n = parseInt(n);
+      if (!n || isNaN(n)) return "शून्य रुपये फक्त";
+      const ones = ['', 'एक', 'दोन', 'तीन', 'चार', 'पाच', 'सहा', 'सात', 'आठ', 'नऊ', 'दहा', 'अकरा', 'बारा', 'तेरा', 'चौदा', 'पंधरा', 'सोळा', 'सतरा', 'अठरा', 'एकोणीस', 'वीस', 'एकवीस', 'बावीस', 'तेवीस', 'चोवीस', 'पंचवीस', 'सव्वीस', 'सत्तावीस', 'अठ्ठावीस', 'एकोणतीस', 'तीस', 'एकतीस', 'बत्तीस', 'तेहेतीस', 'चौतीस', 'पस्तीस', 'छत्तीस', 'सदतीस', 'अडतीस', 'एकोणचाळीस', 'चाळीस', 'एक्केचाळीस', 'बेचाळीस', 'त्रेचाळीस', 'चव्वेचाळीस', 'पंचेचाळीस', 'ठेचाळीस', 'सत्तेचाळीस', 'अठ्ठेचाळीस', 'एकोणपन्नास', 'पन्नास', 'एक्कावन्न', 'बावन्न', 'त्रेपन्न', 'चौपन्न', 'पंचावन्न', 'छप्पन्न', 'सत्तावन्न', 'अठ्ठावन्न', 'एकोणसाठ', 'साठ', 'एकसष्ठ', 'बासष्ठ', 'त्रेसष्ठ', 'चौसष्ठ', 'पासष्ठ', 'सहासष्ठ', 'सदुसष्ठ', 'अडुसष्ठ', 'एकोणसत्तर', 'सत्तर', 'एकाहत्तर', 'बाहत्तर', 'त्र्याहत्तर', 'चौऱ्याहत्तर', 'पंच्याहत्तर', 'शहात्तर', 'सत्त्याहत्तर', 'अठ्ठ्याहत्तर', 'एकोणऐंशी', 'ऐंशी', 'एक्क्यांशी', 'ब्यांशी', 'त्र्यांशी', 'चौऱ्यांशी', 'पंच्यांशी', 'शहांशी', 'सत्त्यांशी', 'अठ्ठ्यांशी', 'एकोणनव्वद', 'नव्वद', 'एक्क्याण्णव', 'ब्याण्णव', 'त्र्याण्णव', 'चौऱ्याण्णव', 'पंच्याण्णव', 'शहाण्णव', 'सत्त्याण्णव', 'अठ्ठ्याण्णव', 'नऊवाण्णव'];
+
+      function convert(num) {
+        if (num < 100) return ones[num];
+        if (num < 1000) {
+          const h = Math.floor(num / 100);
+          const r = num % 100;
+          return (h === 1 ? 'शंभर' : ones[h] + 'शे') + (r ? ' ' + ones[r] : '');
+        }
+        if (num < 100000) {
+          const th = Math.floor(num / 1000);
+          const r = num % 1000;
+          return ones[th] + ' हजार' + (r ? ' ' + convert(r) : '');
+        }
+        if (num < 10000000) {
+          const lk = Math.floor(num / 100000);
+          const r = num % 100000;
+          return ones[lk] + ' लाख' + (r ? ' ' + convert(r) : '');
+        }
+        return num.toString();
+      }
+      return convert(n) + " रुपये फक्त";
+    }
+
+    function numberToHindiWords(n) {
+      n = parseInt(n);
+      if (!n || isNaN(n)) return "शून्य रुपये मात्र";
+      const ones = ['', 'एक', 'दो', 'तीन', 'चार', 'पाँच', 'छह', 'सात', 'आठ', 'नौ', 'दस', 'ग्यारह', 'बारह', 'तेरह', 'चौदह', 'पंद्रह', 'सोलह', 'सत्रह', 'अठारह', 'उन्नीस', 'बीस', 'इक्कीस', 'बाईस', 'तेईस', 'चौबीस', 'पच्चीस', 'छब्बीस', 'सत्ताईस', 'अट्ठाईस', 'उनतीस', 'तीस', 'इकतीस', 'बत्तीस', 'तैंतीस', 'चौंतीस', 'पैंतीस', 'छत्तीस', 'सैंतीस', 'अड़तीस', 'उनतालीस', 'चालीस', 'इकतालीस', 'बयालीस', 'तैंतालीस', 'चवालीस', 'पैंतालीस', 'छियालीस', 'सैंतालीस', 'अड़तालीस', 'उनचास', 'पचास', 'इक्यावन', 'बावन', 'तिरेपन', 'चौवन', 'पचपन', 'छप्पन', 'सत्तावन', 'अट्ठावन', 'उनसठ', 'साठ', 'इकसठ', 'बासठ', 'तिरसठ', 'चौंसठ', 'पैंसठ', 'छियासठ', 'सरसठ', 'अड़सठ', 'उनहत्तर', 'सत्तर', 'इकहत्तर', 'बहत्तर', 'तिहत्तर', 'चौहत्तर', 'पचहत्तर', 'छिहत्तर', 'सतहत्तर', 'अठहत्तर', 'उनासी', 'अस्सी', 'इक्यासी', 'बयासी', 'तिरासी', 'चौरासी', 'पचासी', 'छियासी', 'सत्तासी', 'अट्ठासी', 'नवासी', 'नब्बे', 'इक्यानवे', 'बानवे', 'तिरानवे', 'चौरानवे', 'पंचानवे', 'छियानवे', 'सत्तानवे', 'अट्ठानवे', 'निन्यानवे'];
+
+      function convert(num) {
+        if (num < 100) return ones[num];
+        if (num < 1000) {
+          const h = Math.floor(num / 100);
+          const r = num % 100;
+          return (h === 1 ? 'एक सौ' : ones[h] + ' सौ') + (r ? ' ' + ones[r] : '');
+        }
+        if (num < 100000) {
+          const th = Math.floor(num / 1000);
+          const r = num % 1000;
+          return ones[th] + ' हज़ार' + (r ? ' ' + convert(r) : '');
+        }
+        if (num < 10000000) {
+          const lk = Math.floor(num / 100000);
+          const r = num % 100000;
+          return ones[lk] + ' लाख' + (r ? ' ' + convert(r) : '');
+        }
+        return num.toString();
+      }
+      return convert(n) + " रुपये मात्र";
+    }
+
+    function numberToWords(num) {
+      const a = ['', 'One ', 'Two ', 'Three ', 'Four ', 'Five ', 'Six ', 'Seven ', 'Eight ', 'Nine ', 'Ten ', 'Eleven ', 'Twelve ', 'Thirteen ', 'Fourteen ', 'Fifteen ', 'Sixteen ', 'Seventeen ', 'Eighteen ', 'Nineteen '];
+      const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+      num = parseInt(num);
+      if (!num) return 'Zero Rupees Only';
+      
+      function inWords(n) {
+        if (n < 20) return a[n];
+        if (n < 100) return b[Math.floor(n / 10)] + (n % 10 ? ' ' + a[n % 10] : '');
+        if (n < 1000) return a[Math.floor(n / 100)] + 'Hundred ' + (n % 100 ? 'and ' + inWords(n % 100) : '');
+        if (n < 100000) return inWords(Math.floor(n / 1000)) + 'Thousand ' + (n % 1000 ? inWords(n % 1000) : '');
+        if (n < 10000000) return inWords(Math.floor(n / 100000)) + 'Lakh ' + (n % 100000 ? inWords(n % 100000) : '');
+        return inWords(Math.floor(n / 10000000)) + 'Crore ' + (n % 10000000 ? inWords(n % 10000000) : '');
+      }
+      return inWords(num).trim() + ' Rupees Only';
+    }
+
+    // -------------------------------------------------------------
+    // 9. SHARE TAB & BUILT-IN QR CODE GENERATOR
     // -------------------------------------------------------------
     function getCleanInstallUrl() {
       let base = window.location.origin + window.location.pathname;
@@ -2285,7 +2073,135 @@
     }
 
     // -------------------------------------------------------------
-    // 16. SCHEDULE & MEDIA MANAGER (OPTIMIZED & LAG-FREE)
+    // 10. AUTHENTICATION & SETTINGS
+    // -------------------------------------------------------------
+    function toggleForgotBox(show) {
+      document.getElementById('login-box').style.display = show ? 'none' : 'block';
+      document.getElementById('forgot-box').style.display = show ? 'block' : 'none';
+      if (show) {
+        document.getElementById('recov-phone').value = '';
+        document.getElementById('recov-uid').value = cachedAuth.uid;
+        document.getElementById('recov-pin').value = '';
+      }
+    }
+
+    function doResetPassword() {
+      const phoneInput = document.getElementById('recov-phone').value.replace(/\D/g, '');
+      const newU = document.getElementById('recov-uid').value.trim();
+      const newP = document.getElementById('recov-pin').value.trim();
+
+      if (!phoneInput.endsWith('9820727275')) {
+        alert('Verification Failed: Number does not match Mandal helpline.');
+        return;
+      }
+
+      if (!newU || !newP) {
+        alert('Please enter valid credentials.');
+        return;
+      }
+
+      cachedAuth = { uid: newU, pin: newP };
+      localStorage.setItem('nbmm_credentials', JSON.stringify(cachedAuth));
+      if (db) db.ref('auth_creds').set(cachedAuth);
+
+      alert('Password reset successfully!');
+      toggleForgotBox(false);
+      document.getElementById('uid').value = newU;
+      document.getElementById('pin').value = newP;
+    }
+
+    function updateSettingsPassword() {
+      const newU = document.getElementById('set-uid').value.trim();
+      const newP = document.getElementById('set-pin').value.trim();
+
+      if (!newU || !newP) {
+        alert('User ID and Password cannot be blank.');
+        return;
+      }
+
+      cachedAuth = { uid: newU, pin: newP };
+      localStorage.setItem('nbmm_credentials', JSON.stringify(cachedAuth));
+      if (db) db.ref('auth_creds').set(cachedAuth);
+      alert('Credentials updated!');
+    }
+
+    function checkLogin() {
+      if (localStorage.getItem('nbmm_auth') === '1') {
+        document.getElementById('login-box').style.display = 'none';
+        document.getElementById('forgot-box').style.display = 'none';
+        document.getElementById('panel-box').style.display = 'block';
+        
+        document.getElementById('set-uid').value = cachedAuth.uid;
+        document.getElementById('set-pin').value = cachedAuth.pin;
+        document.getElementById('adm-live-url').value = cachedLiveStream;
+        document.getElementById('adm-cctv-url').value = cachedCCTVStream;
+
+        populateScheduleSelects();
+        renderAdminAartiList();
+        renderSocialLinks();
+        renderBankDetails();
+        renderRegularTimings();
+        renderDeviceSessions();
+        renderCategoryBreakdownCards();
+        renderInstagramLive(cachedInstaLive);
+        renderPandalCamLive(cachedPandalCam);
+        renderCCTVStream(cachedCCTVStream);
+        renderRows();
+      }
+    }
+
+    function doLogin() {
+      const u = document.getElementById('uid').value.trim();
+      const p = document.getElementById('pin').value.trim();
+
+      if (u === cachedAuth.uid && p === cachedAuth.pin) {
+        localStorage.setItem('nbmm_auth', '1');
+        document.getElementById('login-box').style.display = 'none';
+        document.getElementById('forgot-box').style.display = 'none';
+        document.getElementById('panel-box').style.display = 'block';
+        document.getElementById('err').style.display = 'none';
+
+        document.getElementById('set-uid').value = cachedAuth.uid;
+        document.getElementById('set-pin').value = cachedAuth.pin;
+        document.getElementById('adm-live-url').value = cachedLiveStream;
+        document.getElementById('adm-cctv-url').value = cachedCCTVStream;
+
+        registerDeviceSession();
+
+        populateScheduleSelects();
+        renderAdminAartiList();
+        renderSocialLinks();
+        renderBankDetails();
+        renderRegularTimings();
+        renderDeviceSessions();
+        renderCategoryBreakdownCards();
+        renderInstagramLive(cachedInstaLive);
+        renderPandalCamLive(cachedPandalCam);
+        renderCCTVStream(cachedCCTVStream);
+        renderRows();
+      } else {
+        document.getElementById('err').style.display = 'block';
+      }
+    }
+
+    function doLogout(silent) {
+      localStorage.removeItem('nbmm_auth');
+      if (db) {
+        db.ref('active_sessions/' + myDeviceId).remove();
+      }
+      document.getElementById('panel-box').style.display = 'none';
+      document.getElementById('login-box').style.display = 'block';
+      document.getElementById('forgot-box').style.display = 'none';
+      document.getElementById('uid').value = '';
+      document.getElementById('pin').value = '';
+      cancelEdit();
+      if (!silent) {
+        alert('Signed out successfully.');
+      }
+    }
+
+    // -------------------------------------------------------------
+    // 11. SCHEDULE & MEDIA MANAGER
     // -------------------------------------------------------------
     function initDays() {
       const b = document.getElementById('day-bar');
@@ -2504,135 +2420,7 @@
     }
 
     // -------------------------------------------------------------
-    // 17. AUTHENTICATION & SETTINGS (FIXED PERSISTENT LOGIN)
-    // -------------------------------------------------------------
-    function toggleForgotBox(show) {
-      document.getElementById('login-box').style.display = show ? 'none' : 'block';
-      document.getElementById('forgot-box').style.display = show ? 'block' : 'none';
-      if (show) {
-        document.getElementById('recov-phone').value = '';
-        document.getElementById('recov-uid').value = cachedAuth.uid;
-        document.getElementById('recov-pin').value = '';
-      }
-    }
-
-    function doResetPassword() {
-      const phoneInput = document.getElementById('recov-phone').value.replace(/\D/g, '');
-      const newU = document.getElementById('recov-uid').value.trim();
-      const newP = document.getElementById('recov-pin').value.trim();
-
-      if (!phoneInput.endsWith('9820727275')) {
-        alert('Verification Failed: Number does not match Mandal helpline.');
-        return;
-      }
-
-      if (!newU || !newP) {
-        alert('Please enter valid credentials.');
-        return;
-      }
-
-      cachedAuth = { uid: newU, pin: newP };
-      localStorage.setItem('nbmm_credentials', JSON.stringify(cachedAuth));
-      if (db) db.ref('auth_creds').set(cachedAuth);
-
-      alert('Password reset successfully!');
-      toggleForgotBox(false);
-      document.getElementById('uid').value = newU;
-      document.getElementById('pin').value = newP;
-    }
-
-    function updateSettingsPassword() {
-      const newU = document.getElementById('set-uid').value.trim();
-      const newP = document.getElementById('set-pin').value.trim();
-
-      if (!newU || !newP) {
-        alert('User ID and Password cannot be blank.');
-        return;
-      }
-
-      cachedAuth = { uid: newU, pin: newP };
-      localStorage.setItem('nbmm_credentials', JSON.stringify(cachedAuth));
-      if (db) db.ref('auth_creds').set(cachedAuth);
-      alert('Credentials updated!');
-    }
-
-    function checkLogin() {
-      if (localStorage.getItem('nbmm_auth') === '1') {
-        document.getElementById('login-box').style.display = 'none';
-        document.getElementById('forgot-box').style.display = 'none';
-        document.getElementById('panel-box').style.display = 'block';
-        
-        document.getElementById('set-uid').value = cachedAuth.uid;
-        document.getElementById('set-pin').value = cachedAuth.pin;
-        document.getElementById('adm-live-url').value = cachedLiveStream;
-        document.getElementById('adm-cctv-url').value = cachedCCTVStream;
-
-        populateScheduleSelects();
-        renderAdminAartiList();
-        renderSocialLinks();
-        renderBankDetails();
-        renderRegularTimings();
-        renderDeviceSessions();
-        renderCategoryBreakdownCards();
-        renderInstagramLive(cachedInstaLive);
-        renderPandalCamLive(cachedPandalCam);
-        renderCCTVStream(cachedCCTVStream);
-        renderRows();
-      }
-    }
-
-    function doLogin() {
-      const u = document.getElementById('uid').value.trim();
-      const p = document.getElementById('pin').value.trim();
-
-      if (u === cachedAuth.uid && p === cachedAuth.pin) {
-        localStorage.setItem('nbmm_auth', '1');
-        document.getElementById('login-box').style.display = 'none';
-        document.getElementById('forgot-box').style.display = 'none';
-        document.getElementById('panel-box').style.display = 'block';
-        document.getElementById('err').style.display = 'none';
-
-        document.getElementById('set-uid').value = cachedAuth.uid;
-        document.getElementById('set-pin').value = cachedAuth.pin;
-        document.getElementById('adm-live-url').value = cachedLiveStream;
-        document.getElementById('adm-cctv-url').value = cachedCCTVStream;
-
-        registerDeviceSession();
-
-        populateScheduleSelects();
-        renderAdminAartiList();
-        renderSocialLinks();
-        renderBankDetails();
-        renderRegularTimings();
-        renderDeviceSessions();
-        renderCategoryBreakdownCards();
-        renderInstagramLive(cachedInstaLive);
-        renderPandalCamLive(cachedPandalCam);
-        renderCCTVStream(cachedCCTVStream);
-        renderRows();
-      } else {
-        document.getElementById('err').style.display = 'block';
-      }
-    }
-
-    function doLogout(silent) {
-      localStorage.removeItem('nbmm_auth');
-      if (db) {
-        db.ref('active_sessions/' + myDeviceId).remove();
-      }
-      document.getElementById('panel-box').style.display = 'none';
-      document.getElementById('login-box').style.display = 'block';
-      document.getElementById('forgot-box').style.display = 'none';
-      document.getElementById('uid').value = '';
-      document.getElementById('pin').value = '';
-      cancelEdit();
-      if (!silent) {
-        alert('Signed out successfully.');
-      }
-    }
-
-    // -------------------------------------------------------------
-    // 18. KHATA & RECEIPT GENERATOR WITH AUTO-DELIVERY
+    // 12. KHATA & RECEIPTS MANAGER
     // -------------------------------------------------------------
     function saveRecord(autoDeliver) {
       const name = document.getElementById('r-name').value.trim();
@@ -2702,11 +2490,8 @@
         
         if (item.type === 'Income') {
           openReceiptModal(item);
-
           if (autoDeliver && item.phone) {
-            setTimeout(() => {
-              waSend(item);
-            }, 600);
+            setTimeout(() => waSend(item), 600);
           }
         }
       }
@@ -2755,9 +2540,6 @@
       renderRows();
     }
 
-    // -------------------------------------------------------------
-    // 19. FILTER & RENDER LEDGER TABLE (CATEGORY-AWARE)
-    // -------------------------------------------------------------
     function renderRows() {
       let incPaid = 0, incPending = 0, exp = 0;
       const tb = document.getElementById('rec-rows');
@@ -2776,9 +2558,7 @@
         }
 
         if (currentSelectedCategory !== 'all') {
-          if (!(x.category || '').includes(currentSelectedCategory)) {
-            return;
-          }
+          if (!(x.category || '').includes(currentSelectedCategory)) return;
         }
 
         if (q) {
@@ -2789,9 +2569,7 @@
           const matchCollector = (x.collector || '').toLowerCase().includes(q);
           const matchPhone = (x.phone || '').toLowerCase().includes(q);
 
-          if (!matchName && !matchRec && !matchCat && !matchMode && !matchCollector && !matchPhone) {
-            return;
-          }
+          if (!matchName && !matchRec && !matchCat && !matchMode && !matchCollector && !matchPhone) return;
         }
 
         const tr = document.createElement('tr');
@@ -2801,9 +2579,7 @@
             <small style="color:#777;">#${x.rec} • <span style="color:#7a0006; font-weight:600;">${x.category || 'वर्गणी'}</span> • ${x.collector ? 'By: ' + x.collector : ''}</small>
           </td>
           <td>
-            <span class="${isPaid ? 'badge-paid' : 'badge-unpaid'}">
-              ${x.mode || 'Cash'}
-            </span>
+            <span class="${isPaid ? 'badge-paid' : 'badge-unpaid'}">${x.mode || 'Cash'}</span>
           </td>
           <td style="color:${x.type === 'Income' ? (isPaid ? '#2e7d32' : '#d35400') : '#c0392b'}; font-weight:bold;">
             ₹${x.amt}
@@ -2819,15 +2595,10 @@
 
       document.getElementById('tot-in').innerText = incPaid;
       document.getElementById('tot-pending').innerText = incPending;
-      document.getElementById('tot-ex').innerText = exp;
       document.getElementById('tot-bal').innerText = (incPaid - exp);
-
       renderCategoryBreakdownCards();
     }
 
-    // -------------------------------------------------------------
-    // 20. POPULATE TRI-LINGUAL RECEIPT MODAL
-    // -------------------------------------------------------------
     function openReceiptModal(item) {
       document.getElementById('pr-rec').innerText = item.rec;
       document.getElementById('pr-date').innerText = item.dateStr || '21 / 09 / 2026';
@@ -2839,7 +2610,6 @@
       
       document.getElementById('pr-category-txt').innerText = item.category || 'भंडारा / Bhandara';
       document.getElementById('pr-collector-txt').innerText = item.collector || 'Committee Member';
-      document.getElementById('pr-sign-president').innerText = 'NBMM MEMBERS';
       document.getElementById('pr-amt').innerText = item.amt;
 
       const pCash = document.getElementById('pill-cash');
@@ -2861,10 +2631,7 @@
       const verifyData = `https://nbmm.org/verify?rec=${item.rec}&amt=${item.amt}&name=${encodeURIComponent(item.name)}`;
       document.getElementById('pr-qr-code').src = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' + encodeURIComponent(verifyData);
 
-      document.getElementById('btn-wa-direct').onclick = function() {
-        waSend(item);
-      };
-
+      document.getElementById('btn-wa-direct').onclick = function() { waSend(item); };
       document.getElementById('receipt-modal').style.display = 'block';
     }
 
@@ -2880,7 +2647,7 @@
     }
 
     // -------------------------------------------------------------
-    // 21. BOOTSTRAP
+    // 13. BOOTSTRAP INITIALIZATION
     // -------------------------------------------------------------
     setLanguage(currentLang);
     initDays();
