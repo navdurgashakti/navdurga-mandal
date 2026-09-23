@@ -583,12 +583,20 @@
 
   <!-- TAB 2: PHOTOS & VIDEOS -->
   <section id="tab-media" class="tab">
-    <div class="card">
-      <h3 id="sec-media-title">📸 Utsav Photos & Videos</h3>
-      <p style="font-size:0.85rem; color:#555; margin-bottom:10px;" id="sec-media-sub">Select any day to open full-resolution photo albums and video recordings:</p>
-      <div class="day-bar" id="media-day-bar"></div>
-      <div id="media-content-view" style="margin-top:10px;"></div>
-    </div>
+            <div class="card" style="border-left-color: #f39c12;">
+          <h3>📸 Upload Multiple Media Links (1 per line)</h3>
+          <select id="adm-media-day" class="input-box" onchange="loadAdminMediaFields()">
+            <!-- Populated dynamically -->
+          </select>
+          <label style="font-size:0.75rem; font-weight:600; color:#555;">Photo / Album Links (एक लिंक प्रति ओळ)</label>
+          <textarea id="adm-photo-link" class="input-box" rows="3" placeholder="Paste links here, one per line..."></textarea>
+          
+          <label style="font-size:0.75rem; font-weight:600; color:#555;">Video / YouTube Links (एक लिंक प्रति ओळ)</label>
+          <textarea id="adm-video-link" class="input-box" rows="2" placeholder="Paste video links here, one per line..."></textarea>
+          
+          <button class="btn" style="background:#f39c12; color:#000; width:100%; margin-top:6px;" onclick="saveMediaLink()">💾 Update All Links</button>
+            </div>
+    
   </section>
 
   <!-- TAB 3: LIVE DARSHAN -->
@@ -2227,18 +2235,44 @@
       renderDay(i);
     }
 
-    function renderDay(i) {
-      const x = cachedSchedule[i] || DEFAULT_DAYS[0];
-      const view = document.getElementById('day-view');
+        function renderMediaDay(idx) {
+      const x = cachedSchedule[idx] || DEFAULT_DAYS[0];
+      const current = cachedMedia[idx] || {};
+      const view = document.getElementById('media-content-view');
       if (!view) return;
-      view.innerHTML = `
-        <h4 style="color:var(--primary); font-size:1.02rem; margin-bottom:6px;">📅 दिनांक व वार / Date & Day: ${x.d || ''}</h4>
-        <p><strong>रंग (Color Theme):</strong> <span style="font-weight:700; color:#d4af37;">${x.clr || ''}</span></p>
-        <p><strong>कार्यक्रम / Puja / Tithi:</strong> ${x.devi || ''}</p>
-        <p><strong>विशेष कार्यक्रम:</strong> ${x.p || ''}</p>
-        <p><strong>प्रसाद:</strong> ${x.pr || ''}</p>
+
+      let html = `
+        <div style="background:#fffaf0; border:1px solid #fce8cc; padding:14px; border-radius:8px;">
+          <h4 style="color:var(--primary); margin-bottom:4px;">${x.d || ''} - ${x.devi || ''}</h4>
+          <p style="font-size:0.8rem; color:#666; margin-bottom:12px;">Events: ${x.p || ''}</p>
       `;
-    }
+
+      // Handle Multiple Photo Links (split by newline)
+      if (current.photo && current.photo.trim()) {
+        const photoLinks = current.photo.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        photoLinks.forEach((link, i) => {
+          let pUrl = link;
+          if (!pUrl.startsWith('http://') && !pUrl.startsWith('https://')) pUrl = 'https://' + pUrl;
+          html += `<a class="btn" style="background:#2980b9; width:100%; margin-bottom:6px;" href="${pUrl}" target="_blank" rel="noopener noreferrer">📁 Open Photo Album ${photoLinks.length > 1 ? (i + 1) : ''}</a>`;
+        });
+      } else {
+        html += `<div style="padding:8px; background:#fff; border:1px dashed #ccc; border-radius:6px; text-align:center; font-size:0.78rem; color:#777; margin-bottom:8px;">⏳ Photos will be uploaded soon!</div>`;
+      }
+
+      // Handle Multiple Video Links (split by newline)
+      if (current.video && current.video.trim()) {
+        const videoLinks = current.video.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        videoLinks.forEach((link, i) => {
+          let vUrl = link;
+          if (!vUrl.startsWith('http://') && !vUrl.startsWith('https://')) vUrl = 'https://' + vUrl;
+          html += `<a class="btn" style="background:#c0392b; width:100%; margin-bottom:6px;" href="${vUrl}" target="_blank" rel="noopener noreferrer">▶️ Watch Video Highlight ${videoLinks.length > 1 ? (i + 1) : ''}</a>`;
+        });
+      }
+
+      html += `</div>`;
+      view.innerHTML = html;
+        }
+    
 
     function populateScheduleSelects() {
       const sel = document.getElementById('adm-sched-day-select');
