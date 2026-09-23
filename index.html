@@ -1563,7 +1563,82 @@
         renderDeviceSessions();
       });
     }
+    // -------------------------------------------------------------
+    // FIXED: PAVITRA DAAN QR CODE RENDERER
+    // -------------------------------------------------------------
+    function renderBankDetails() {
+      const b = cachedBank || DEFAULT_BANK;
+      const upiId = b.upi || DEFAULT_BANK.upi;
 
+      const txtUpi = document.getElementById('txt-upi-id');
+      if (txtUpi) txtUpi.innerText = upiId;
+
+      const upiPayBtn = document.getElementById('btn-upi-pay');
+      if (upiPayBtn) upiPayBtn.href = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=NavdurgaBalmitraMandal&cu=INR`;
+
+      const qrImg = document.getElementById('daan-qr-img');
+      if (qrImg) {
+        const upiLink = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=NavdurgaBalmitraMandal&cu=INR`;
+        qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiLink)}`;
+        qrImg.onerror = function() {
+          qrImg.style.display = 'none';
+          if (!document.getElementById('qr-fallback-txt')) {
+            const fallback = document.createElement('div');
+            fallback.id = 'qr-fallback-txt';
+            fallback.style = 'padding:15px; background:#fff; border:1px solid #7a0006; border-radius:8px; font-size:0.78rem; color:#7a0006; font-weight:bold; word-break:break-all; text-align:center;';
+            fallback.innerHTML = `UPI Link: <br>${upiLink}`;
+            qrImg.parentNode.appendChild(fallback);
+          }
+        };
+      }
+    }
+
+    // -------------------------------------------------------------
+    // FIXED: PERSISTENT LOGIN (NO RE-PROMPTING ON REFRESH)
+    // -------------------------------------------------------------
+    function checkLogin() {
+      if (localStorage.getItem('nbmm_auth') === '1') {
+        const loginBox = document.getElementById('login-box');
+        const forgotBox = document.getElementById('forgot-box');
+        const panelBox = document.getElementById('panel-box');
+        
+        if (loginBox) loginBox.style.display = 'none';
+        if (forgotBox) forgotBox.style.display = 'none';
+        if (panelBox) panelBox.style.display = 'block';
+
+        setTimeout(() => {
+          try {
+            if (document.getElementById('set-uid')) document.getElementById('set-uid').value = cachedAuth.uid;
+            if (document.getElementById('set-pin')) document.getElementById('set-pin').value = cachedAuth.pin;
+            if (typeof populateScheduleSelects === 'function') populateScheduleSelects();
+            if (typeof renderAdminAartiList === 'function') renderAdminAartiList();
+            if (typeof renderSocialLinks === 'function') renderSocialLinks();
+            if (typeof renderBankDetails === 'function') renderBankDetails();
+            if (typeof renderRegularTimings === 'function') renderRegularTimings();
+            if (typeof renderRows === 'function') renderRows();
+          } catch (e) {
+            console.warn("Panel init note:", e);
+          }
+        }, 30);
+      }
+    }
+
+    function doLogin() {
+      const u = document.getElementById('uid').value.trim();
+      const p = document.getElementById('pin').value.trim();
+
+      if (u === cachedAuth.uid && p === cachedAuth.pin) {
+        localStorage.setItem('nbmm_auth', '1');
+        const err = document.getElementById('err');
+        if (err) err.style.display = 'none';
+        checkLogin();
+        registerDeviceSession();
+      } else {
+        const err = document.getElementById('err');
+        if (err) err.style.display = 'block';
+      }
+    }
+    
     // -------------------------------------------------------------
     // 2. ZERO-DELAY PANDAL PROJECTOR CAM STREAMING ENGINE
     // -------------------------------------------------------------
