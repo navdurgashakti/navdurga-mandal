@@ -1568,7 +1568,7 @@
     }
 
     // -------------------------------------------------------------
-    // 2. BIOMETRIC / / FACE LOCK AUTHENTICATION
+    // 2. BIOMETRIC / FACE LOCK AUTHENTICATION
     // -------------------------------------------------------------
     async function authenticateBiometric() {
       if (!window.PublicKeyCredential) {
@@ -1838,6 +1838,17 @@
       if (btn) btn.classList.add('active');
       closeDrawer();
       window.scrollTo(0, 0);
+    }
+
+    function switchAdminSubTab(tabName) {
+      document.querySelectorAll('.admin-sub-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.admin-sub-view').forEach(view => view.classList.remove('active'));
+
+      const activeBtn = document.getElementById('asb-' + tabName);
+      const activeView = document.getElementById('asv-' + tabName);
+
+      if (activeBtn) activeBtn.classList.add('active');
+      if (activeView) activeView.classList.add('active');
     }
 
     const I18N = {
@@ -2127,26 +2138,34 @@
 
     function checkLogin() {
       if (localStorage.getItem('nbmm_auth') === '1') {
-        document.getElementById('login-box').style.display = 'none';
-        document.getElementById('forgot-box').style.display = 'none';
-        document.getElementById('panel-box').style.display = 'block';
+        const loginBox = document.getElementById('login-box');
+        const forgotBox = document.getElementById('forgot-box');
+        const panelBox = document.getElementById('panel-box');
         
-        document.getElementById('set-uid').value = cachedAuth.uid;
-        document.getElementById('set-pin').value = cachedAuth.pin;
-        document.getElementById('adm-live-url').value = cachedLiveStream;
-        document.getElementById('adm-cctv-url').value = cachedCCTVStream;
+        if (loginBox) loginBox.style.display = 'none';
+        if (forgotBox) forgotBox.style.display = 'none';
+        if (panelBox) panelBox.style.display = 'block';
+        
+        if (document.getElementById('set-uid')) document.getElementById('set-uid').value = cachedAuth.uid;
+        if (document.getElementById('set-pin')) document.getElementById('set-pin').value = cachedAuth.pin;
+        if (document.getElementById('adm-live-url')) document.getElementById('adm-live-url').value = cachedLiveStream;
+        if (document.getElementById('adm-cctv-url')) document.getElementById('adm-cctv-url').value = cachedCCTVStream;
 
-        populateScheduleSelects();
-        renderAdminAartiList();
-        renderSocialLinks();
-        renderBankDetails();
-        renderRegularTimings();
-        renderDeviceSessions();
-        renderCategoryBreakdownCards();
-        renderInstagramLive(cachedInstaLive);
-        renderPandalCamLive(cachedPandalCam);
-        renderCCTVStream(cachedCCTVStream);
-        renderRows();
+        try {
+          populateScheduleSelects();
+          if (typeof renderAdminAartiList === 'function') renderAdminAartiList();
+          renderSocialLinks();
+          renderBankDetails();
+          renderRegularTimings();
+          renderDeviceSessions();
+          renderCategoryBreakdownCards();
+          renderInstagramLive(cachedInstaLive);
+          renderPandalCamLive(cachedPandalCam);
+          renderCCTVStream(cachedCCTVStream);
+          renderRows();
+        } catch (e) {
+          console.warn("Admin panel init warning:", e);
+        }
       }
     }
 
@@ -2156,31 +2175,13 @@
 
       if (u === cachedAuth.uid && p === cachedAuth.pin) {
         localStorage.setItem('nbmm_auth', '1');
-        document.getElementById('login-box').style.display = 'none';
-        document.getElementById('forgot-box').style.display = 'none';
-        document.getElementById('panel-box').style.display = 'block';
-        document.getElementById('err').style.display = 'none';
-
-        document.getElementById('set-uid').value = cachedAuth.uid;
-        document.getElementById('set-pin').value = cachedAuth.pin;
-        document.getElementById('adm-live-url').value = cachedLiveStream;
-        document.getElementById('adm-cctv-url').value = cachedCCTVStream;
-
+        const err = document.getElementById('err');
+        if (err) err.style.display = 'none';
+        checkLogin();
         registerDeviceSession();
-
-        populateScheduleSelects();
-        renderAdminAartiList();
-        renderSocialLinks();
-        renderBankDetails();
-        renderRegularTimings();
-        renderDeviceSessions();
-        renderCategoryBreakdownCards();
-        renderInstagramLive(cachedInstaLive);
-        renderPandalCamLive(cachedPandalCam);
-        renderCCTVStream(cachedCCTVStream);
-        renderRows();
       } else {
-        document.getElementById('err').style.display = 'block';
+        const err = document.getElementById('err');
+        if (err) err.style.display = 'block';
       }
     }
 
@@ -2647,7 +2648,102 @@
     }
 
     // -------------------------------------------------------------
-    // 13. BOOTSTRAP INITIALIZATION
+    // 13. AARTI VIEWER & ADMIN MANAGER
+    // -------------------------------------------------------------
+    let selectedAartiIdx = 0;
+
+    function renderAartiTabs() {
+      const bar = document.getElementById('aarti-tabs-bar');
+      if (!bar) return;
+      bar.innerHTML = '';
+
+      if (cachedAarties.length === 0) {
+        document.getElementById('aarti-content-view').innerHTML = '<p style="color:#777; font-size:0.85rem;">No Aartis added yet.</p>';
+        return;
+      }
+
+      if (selectedAartiIdx >= cachedAarties.length) selectedAartiIdx = 0;
+
+      cachedAarties.forEach((a, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'day-btn ' + (idx === selectedAartiIdx ? 'active' : '');
+        btn.innerText = '🪔 ' + a.title;
+        btn.onclick = function() {
+          document.querySelectorAll('#aarti-tabs-bar .day-btn').forEach(k => k.classList.remove('active'));
+          btn.classList.add('active');
+          selectedAartiIdx = idx;
+          showAarti(idx);
+        };
+        bar.appendChild(btn);
+      });
+
+      showAarti(selectedAartiIdx);
+    }
+
+    function showAarti(idx) {
+      const a = cachedAarties[idx];
+      if (!a) return;
+      document.getElementById('aarti-content-view').innerHTML = `
+        <h4 style="color:var(--primary); font-size:1.05rem; margin-bottom:8px; border-bottom:1px dashed #d4af37; padding-bottom:4px;">${a.title}</h4>
+        <p style="white-space: pre-line; line-height: 1.8; font-size: 0.88rem; color:#222; font-weight:500;">${a.lyrics}</p>
+      `;
+    }
+
+    function saveNewAarti() {
+      const title = document.getElementById('adm-aarti-title').value.trim();
+      const lyrics = document.getElementById('adm-aarti-lyrics').value.trim();
+
+      if (!title || !lyrics) {
+        alert('Please enter Aarti title and lyrics.');
+        return;
+      }
+
+      const id = 'aarti_' + Date.now();
+      const newAarti = { id, title, lyrics };
+
+      cachedAarties.push(newAarti);
+      localStorage.setItem('nbmm_aarties', JSON.stringify(cachedAarties));
+      if (db) db.ref('aarties/' + id).set(newAarti);
+
+      document.getElementById('adm-aarti-title').value = '';
+      document.getElementById('adm-aarti-lyrics').value = '';
+      alert(`"${title}" added & synced!`);
+      renderAartiTabs();
+      renderAdminAartiList();
+    }
+
+    function deleteAarti(id) {
+      if (!confirm('Delete this Aarti across all phones?')) return;
+      cachedAarties = cachedAarties.filter(x => x.id !== id);
+      localStorage.setItem('nbmm_aarties', JSON.stringify(cachedAarties));
+      if (db) db.ref('aarties/' + id).remove();
+      renderAartiTabs();
+      renderAdminAartiList();
+    }
+
+    function renderAdminAartiList() {
+      const box = document.getElementById('adm-aarti-list');
+      if (!box) return;
+      box.innerHTML = '';
+
+      if (!cachedAarties || cachedAarties.length === 0) {
+        box.innerHTML = '<p style="font-size:0.75rem; color:#777;">No Aartis added yet.</p>';
+        return;
+      }
+
+      cachedAarties.forEach(a => {
+        const div = document.createElement('div');
+        div.style = 'display:flex; justify-content:space-between; align-items:center; background:#f5f5f5; padding:8px 10px; border-radius:6px; margin-bottom:6px; font-size:0.85rem;';
+        div.innerHTML = `
+          <span><strong>🪔 ${a.title}</strong></span>
+          <button class="btn" style="background:#c0392b; padding:4px 8px; font-size:0.7rem;" onclick="deleteAarti('${a.id}')">🗑️ Delete</button>
+        `;
+        box.appendChild(div);
+      });
+    }
+
+    // -------------------------------------------------------------
+    // 14. BOOTSTRAP INITIALIZATION
     // -------------------------------------------------------------
     setLanguage(currentLang);
     initDays();
