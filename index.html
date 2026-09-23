@@ -775,18 +775,15 @@
   <!-- TAB 7: KHATA (ADMIN - BIFURCATED DASHBOARD) -->
   <section id="tab-admin" class="tab">
     
-    <!-- LOGIN BOX WITH BIOMETRIC / PASSCODE LOCK -->
+    <!-- LOGIN BOX WITH PASSCODE LOCK -->
     <div id="login-box" class="card" style="text-align:center;">
-      <h3>🔐 Committee Security & Login</h3>
-      <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">Enter passcode or use Biometric / Face Lock:</p>
+      <h3>🔐 Committee Login</h3>
+      <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">Enter Committee ID and Password:</p>
       <input type="text" id="uid" class="input-box" placeholder="User ID (e.g. NBMM)" />
-      <input type="password" id="pin" class="input-box" placeholder="Passcode / Password" />
+      <input type="password" id="pin" class="input-box" placeholder="Password" />
       
-      <div style="display:flex; gap:6px; margin-bottom:8px;">
-        <button class="btn" style="background:#7a0006; flex:1;" onclick="doLogin()">🔓 Login via Passcode</button>
-        <button class="btn" style="background:#2980b9; flex:1;" onclick="authenticateBiometric()">👆 Fingerprint / Face Lock</button>
-      </div>
-      <p id="err" style="color:red; font-size:0.75rem; margin-top:6px; display:none;">Invalid credentials or biometric failed.</p>
+      <button class="btn" style="background:#7a0006; width:100%; margin-bottom:8px;" onclick="doLogin()">🔓 Login</button>
+      <p id="err" style="color:red; font-size:0.75rem; margin-top:6px; display:none;">Invalid ID or Password.</p>
       
       <div style="margin-top:14px; border-top:1px solid #eee; padding-top:10px;">
         <a href="javascript:void(0)" onclick="toggleForgotBox(true)" style="font-size:0.8rem; color:var(--primary); text-decoration:none; font-weight:600;">
@@ -1568,33 +1565,7 @@
     }
 
     // -------------------------------------------------------------
-    // 2. BIOMETRIC / FACE LOCK AUTHENTICATION
-    // -------------------------------------------------------------
-    async function authenticateBiometric() {
-      if (!window.PublicKeyCredential) {
-        alert("Biometric / Face Lock is not supported on this device/browser.");
-        return;
-      }
-      try {
-        const credential = await navigator.credentials.get({
-          publicKey: {
-            challenge: new Uint8Array([21, 31, 105, 78, 18, 45, 67, 89]),
-            timeout: 60000,
-            userVerification: "required"
-          }
-        });
-        if (credential) {
-          localStorage.setItem('nbmm_auth', '1');
-          checkLogin();
-          alert("Biometric verification successful!");
-        }
-      } catch (err) {
-        alert("Biometric authentication cancelled or failed.");
-      }
-    }
-
-    // -------------------------------------------------------------
-    // 3. ZERO-DELAY PANDAL PROJECTOR CAM STREAMING ENGINE
+    // 2. ZERO-DELAY PANDAL PROJECTOR CAM STREAMING ENGINE
     // -------------------------------------------------------------
     function renderPandalCamLive(isLive) {
       const box = document.getElementById('live-pandal-cam-box');
@@ -1637,7 +1608,7 @@
     }
 
     // -------------------------------------------------------------
-    // 4. RESTRICTED COMMITTEE CCTV ENGINE
+    // 3. RESTRICTED COMMITTEE CCTV ENGINE
     // -------------------------------------------------------------
     function extractYouTubeEmbed(url) {
       if (!url) return '';
@@ -1672,7 +1643,7 @@
     }
 
     // -------------------------------------------------------------
-    // 5. AUTOMATED UPI PAYMENT POPUP & DELIVERY LOGIC
+    // 4. AUTOMATED UPI PAYMENT POPUP & DELIVERY LOGIC
     // -------------------------------------------------------------
     function checkModeAndPromptUPI() {
       const mode = document.getElementById('r-mode').value;
@@ -1719,7 +1690,7 @@
     }
 
     // -------------------------------------------------------------
-    // 6. YOUTUBE & INSTAGRAM LIVE STREAM ENGINE
+    // 5. YOUTUBE & INSTAGRAM LIVE STREAM ENGINE
     // -------------------------------------------------------------
     function extractYouTubeId(url) {
       if (!url) return '';
@@ -1818,7 +1789,7 @@
     }
 
     // -------------------------------------------------------------
-    // 7. NAVIGATION, DRAWER & LANGUAGE SWITCHER FUNCTIONS
+    // 6. NAVIGATION, DRAWER & LANGUAGE SWITCHER FUNCTIONS
     // -------------------------------------------------------------
     function openDrawer() {
       document.getElementById('side-drawer').style.left = '0px';
@@ -1965,7 +1936,7 @@
     }
 
     // -------------------------------------------------------------
-    // 8. NUMBER CONVERTERS
+    // 7. NUMBER CONVERTERS
     // -------------------------------------------------------------
     function numberToMarathiWords(n) {
       n = parseInt(n);
@@ -2039,7 +2010,7 @@
     }
 
     // -------------------------------------------------------------
-    // 9. SHARE TAB & BUILT-IN QR CODE GENERATOR
+    // 8. SHARE TAB & BUILT-IN QR CODE GENERATOR
     // -------------------------------------------------------------
     function getCleanInstallUrl() {
       let base = window.location.origin + window.location.pathname;
@@ -2084,7 +2055,7 @@
     }
 
     // -------------------------------------------------------------
-    // 10. AUTHENTICATION & SETTINGS
+    // 9. AUTHENTICATION & SETTINGS (PERSISTENT ID/PASSWORD LOGIN)
     // -------------------------------------------------------------
     function toggleForgotBox(show) {
       document.getElementById('login-box').style.display = show ? 'none' : 'block';
@@ -2202,7 +2173,7 @@
     }
 
     // -------------------------------------------------------------
-    // 11. SCHEDULE & MEDIA MANAGER
+    // 10. SCHEDULE & MEDIA MANAGER
     // -------------------------------------------------------------
     function initDays() {
       const b = document.getElementById('day-bar');
@@ -2421,7 +2392,7 @@
     }
 
     // -------------------------------------------------------------
-    // 12. KHATA & RECEIPTS MANAGER
+    // 11. KHATA & RECEIPTS MANAGER
     // -------------------------------------------------------------
     function saveRecord(autoDeliver) {
       const name = document.getElementById('r-name').value.trim();
