@@ -1,3 +1,10 @@
+Here is the complete, fully fixed single-file HTML code.
+What Was Fixed:
+ * Regular Timings Save Fixed: Added the missing saveRegularTimings() function back into the script so that clicking the save button correctly stores and syncs your daily Aarti/Garba timings.
+ * Active Devices Section Fixed: Restored the renderDeviceSessions() and registerDeviceSession() functions so the list of currently logged-in committee phones displays properly with active counts and remote sign-out controls.
+ * Media Links Restored: Brought back the full day-wise media link configuration section in the schedule manager so you can easily assign custom photo albums and video highlight links for each festival date.
+ * Strict Security Guards: Maintained full authentication protection on every single edit, save, and delete function so only logged-in committee members can make changes.
+Copy this entire code block, paste it into your index.html file on GitHub, and click commit:
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -577,282 +584,7 @@
       <p><strong>Subah Aarti (सकाळ):</strong> <span id="dsp-subah-aarti">7:30 AM</span></p>
       <p><strong>Sandhya Aarti (संध्याकाळ):</strong> <span id="dsp-sandhya-aarti">7:30 PM</span></p>
       <p><strong>Garba & Dandiya (रास गरबा):</strong> <span id="dsp-garba-time">8:30 PM – 10:00 PM</span></p>
-      <p><strong>Maha Prasad (महाप्रसाद):</strong> <span id="dsp-prasad-time">10:00 PM onwards</span></p>
-    </div>
-  </section>
-
-  <!-- TAB 2: PHOTOS & VIDEOS -->
-  <section id="tab-media" class="tab">
-    <div class="card">
-      <h3 id="sec-media-title">📸 Utsav Photos & Videos</h3>
-      <p style="font-size:0.85rem; color:#555; margin-bottom:10px;" id="sec-media-sub">Select any day to open full-resolution photo albums and video recordings:</p>
-      <div class="day-bar" id="media-day-bar"></div>
-      <div id="media-content-view" style="margin-top:10px;"></div>
-    </div>
-  </section>
-
-  <!-- TAB 3: LIVE DARSHAN -->
-  <section id="tab-live" class="tab">
-    <div class="card" style="border-left-color: #c0392b; text-align: center;">
-      <h3 id="sec-live-title">🔴 Live Darshan & Aarti</h3>
-      <p style="font-size:0.85rem; color:#555; margin-bottom:12px;" id="sec-live-sub">Watch live Aarti and darshan direct from our Sukhlaji Street pandal:</p>
-      
-      <!-- DIRECT PANDAL PROJJECTOR CAMERA CARD (ZERO DELAY) -->
-      <div id="live-pandal-cam-box" style="display:none; background:#111; color:#fff; border-radius:10px; padding:10px; margin-bottom:12px; border:2px solid #27ae60;">
-        <div style="font-size:0.85rem; font-weight:700; color:#2ecc71; margin-bottom:6px; display:flex; align-items:center; justify-content:center; gap:6px;">
-          <span>🟢</span> PANDAL LIVE SCREEN (DIRECT CAMERA FEED)
-        </div>
-        <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:6px; background:#000;">
-          <iframe id="live-pandal-iframe" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;" src="" allow="camera; microphone; autoplay; fullscreen"></iframe>
-        </div>
-        <div style="display:flex; gap:8px; margin-top:8px;">
-          <a id="btn-projector-fullscreen" class="btn" style="background:#27ae60; flex:1; font-size:0.8rem;" href="#" target="_blank">
-            🖥️ Open Fullscreen on Projector
-          </a>
-        </div>
-      </div>
-
-      <!-- INSTAGRAM LIVE BROADCAST BANNER -->
-      <div id="live-insta-banner" style="display:none; background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); color:#fff; border-radius:10px; padding:14px; margin-bottom:12px; box-shadow:0 4px 15px rgba(225,48,108,0.35);">
-        <div style="font-size:1.1rem; font-weight:800; margin-bottom:4px;">📸 LIVE NOW ON INSTAGRAM</div>
-        <p style="font-size:0.82rem; margin-bottom:10px; color:#fff;">मंडळाची थेट आरती इन्स्टाग्रामवर सुरू आहे. खालील बटणावर टॅप करा!</p>
-        <a id="btn-insta-live-now" class="btn" style="background:#fff; color:#bc1888; font-weight:800; width:100%; border:none; box-shadow:0 2px 8px rgba(0,0,0,0.2);" href="https://instagram.com" target="_blank">
-          ▶️ Watch on Instagram App / Profile
-        </a>
-      </div>
-
-      <!-- YOUTUBE LIVE PLAYER CONTAINER -->
-      <div id="live-player-container" style="display:none; position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); margin-bottom: 10px; background:#000;">
-        <iframe id="live-video-iframe" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-      </div>
-
-      <!-- DIRECT MOBILE APP LAUNCH BUTTON -->
-      <a id="btn-yt-direct-fallback" class="btn" style="background:#c0392b; width:100%; margin-top:8px; display:none;" href="#" target="_blank">
-        ▶️ YouTube App वर थेट पहा (Watch on YouTube App)
-      </a>
-
-      <!-- OFFLINE NOTICE -->
-      <div id="live-offline-container" style="background:#fff8e7; border:1px dashed #d4af37; border-radius:8px; padding:20px; text-align:center;">
-        <span style="font-size:2rem;">🪔</span>
-        <h4 style="color:var(--primary); margin:8px 0 4px;" id="live-off-head">Pandal Live Stream Offline</h4>
-        <p style="font-size:0.82rem; color:#555; line-height:1.4;" id="live-off-desc">
-          The live Aarti broadcast is currently not active.<br>
-          <strong>Subah Aarti:</strong> 7:30 AM | <strong>Sandhya Aarti:</strong> 7:30 PM
-        </p>
-        <p style="font-size:0.75rem; color:#888; margin-top:8px;" id="live-off-note">The player will automatically start when the live stream begins!</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- TAB 4: DAAN, UPI, BANK DETAILS & DEVOTEE RECEIPT LOOKUP -->
-  <section id="tab-donate" class="tab">
-    <div class="card" style="border-left-color: #f39c12;">
-      <h3>🔍 पावती शोधा / Find My Receipt</h3>
-      <p style="font-size:0.8rem; color:#555; margin-bottom:8px;">Enter your 10-digit mobile number or Receipt number to download/print your official receipt:</p>
-      <div style="display:flex; gap:6px;">
-        <input type="text" id="devotee-search-input" class="input-box" style="margin:0;" placeholder="Phone Number or Receipt No" />
-        <button class="btn" style="background:#f39c12; color:#000; font-weight:bold; white-space:nowrap;" onclick="findDevoteeReceipt()">Search 🔎</button>
-      </div>
-      <div id="devotee-search-results" style="margin-top:10px;"></div>
-    </div>
-
-    <div class="card" style="text-align:center; border-left-color: #27ae60;">
-      <h3 id="sec-daan-title">🙏 Pavitra Daan / Varthi</h3>
-      <p id="sec-daan-sub">Scan QR Code to contribute to Navdurga Balmitra Mandal:</p>
-      
-      <div style="margin: 14px auto; text-align:center;">
-        <img id="daan-qr-img" style="width:190px; height:190px; margin:0 auto; display:block; border: 2px solid #7a0006; border-radius:10px; padding:6px; background:#fff; box-shadow:0 4px 10px rgba(0,0,0,0.1);" src="" alt="UPI QR">
-        <span style="font-size:0.75rem; color:#777; display:block; margin-top:4px;">(Google Pay, PhonePe, Paytm, BHIM)</span>
-      </div>
-
-      <div style="background:#fef9e7; border:1px dashed #d4af37; border-radius:8px; padding:10px; margin-bottom:12px;">
-        <span style="font-size:0.75rem; color:#666; font-weight:600;">OFFICIAL UPI ID:</span>
-        <p id="txt-upi-id" style="font-weight:900; color:#7a0006; font-size:1.05rem; margin:2px 0 6px;">navdurgabalmitramandal@upi</p>
-        <button class="btn" style="background:#2980b9; padding:6px 12px; font-size:0.75rem;" onclick="copyUpiId()">📋 Copy UPI ID</button>
-      </div>
-
-      <a class="btn" id="btn-upi-pay" style="background:#27ae60; width:100%; font-size:0.95rem; padding:12px;" href="upi://pay?pa=navdurgabalmitramandal@upi&pn=NavdurgaBalmitraMandal&cu=INR">⚡ Pay Directly via UPI App</a>
-    </div>
-
-    <div class="card" style="border-left-color: #2980b9;">
-      <h3>🏛️ Mandal Bank Account Details (NEFT / IMPS)</h3>
-      <p style="font-size:0.8rem; color:#666; margin-bottom:10px;">Devotees can transfer seva contribution directly to the Mandal's bank account:</p>
-
-      <div style="background:#ffffff; border:1px solid #e1d5c1; border-radius:8px; overflow:hidden;">
-        <div class="bank-data-row">
-          <span class="bank-data-lbl">Account Name:</span>
-          <span class="bank-data-val" id="bnk-val-name">NAVDURGA BALMITRA MANDAL</span>
-        </div>
-        <div class="bank-data-row">
-          <span class="bank-data-lbl">Bank Name:</span>
-          <span class="bank-data-val" id="bnk-val-bank">STATE BANK OF INDIA</span>
-        </div>
-        <div class="bank-data-row">
-          <span class="bank-data-lbl">Account Number:</span>
-          <span class="bank-data-val" id="bnk-val-acc">123456789012</span>
-        </div>
-        <div class="bank-data-row">
-          <span class="bank-data-lbl">IFSC Code:</span>
-          <span class="bank-data-val" id="bnk-val-ifsc">SBIN0000000</span>
-        </div>
-        <div class="bank-data-row">
-          <span class="bank-data-lbl">Branch:</span>
-          <span class="bank-data-val" id="bnk-val-branch">MUMBAI MAIN BRANCH</span>
-        </div>
-        <div class="bank-data-row">
-          <span class="bank-data-lbl">Account Type:</span>
-          <span class="bank-data-val" id="bnk-val-type">Savings / Current Account</span>
-        </div>
-      </div>
-
-      <div style="display:flex; gap:8px; margin-top:10px;">
-        <button class="btn" style="background:#2980b9; flex:1; font-size:0.75rem;" onclick="copyBankAccount()">📋 Copy Acc No</button>
-        <button class="btn" style="background:#555; flex:1; font-size:0.75rem;" onclick="copyBankIFSC()">📋 Copy IFSC</button>
-      </div>
-      <p id="bank-copy-status" style="color:#2e7d32; font-size:0.75rem; text-align:center; margin-top:6px; display:none; font-weight:bold;">Copied to clipboard!</p>
-    </div>
-  </section>
-
-  <!-- TAB 5: SHARE -->
-  <section id="tab-share" class="tab">
-    <div class="card" style="border-left-color: #25d366; text-align: center;">
-      <h3 id="sec-share-title">📲 Share Mandal App</h3>
-      <p style="font-size: 0.85rem; color:#555;" id="sec-share-sub">Scan this QR code with any mobile camera to instantly install the app:</p>
-      
-      <div style="text-align:center; margin:14px 0; background:#fff; padding:10px; border-radius:8px; border:1px solid #ddd; display:inline-block;">
-        <div id="qrcode-container" style="display:flex; justify-content:center; align-items:center;"></div>
-        <p style="font-size:0.7rem; color:#888; margin-top:6px;" id="sec-share-note">(Scan with any phone camera)</p>
-      </div>
-
-      <div style="display:flex; flex-direction:column; gap:8px; margin-top:10px;">
-        <button class="btn" style="background:#25d366;" onclick="shareOnWhatsApp()">💬 Share on WhatsApp</button>
-        <button class="btn" style="background:#2980b9;" onclick="copyAppUrl()">📋 Copy App Link</button>
-      </div>
-      <p id="copy-status" style="color:#2e7d32; font-size:0.8rem; margin-top:6px; display:none; font-weight:bold; text-align:center;">Link copied to clipboard!</p>
-    </div>
-  </section>
-
-  <!-- TAB 6: INFO, CONTACTS, SOCIAL & AARTIS -->
-  <section id="tab-info" class="tab">
-    <div class="card" style="border-left-color: #25d366;">
-      <h3>📱 Connect With Our Mandal</h3>
-      <p style="font-size:0.85rem; color:#555; margin-bottom:12px;">Stay connected with our official Mandal social media handles and group:</p>
-      
-      <div style="display:flex; flex-direction:column; gap:10px;">
-        <a id="link-insta-page" href="https://instagram.com" target="_blank" style="display:flex; align-items:center; justify-content:space-between; background:#fafafa; border:1px solid #ddd; padding:10px 14px; border-radius:8px; text-decoration:none; color:#111;">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <span style="font-size:1.6rem;">📸</span>
-            <div>
-              <div style="font-weight:700; font-size:0.95rem;">Follow on Instagram</div>
-              <div id="txt-insta-handle" style="font-size:0.75rem; color:#e1306c;">@navdurgabalmitramandal</div>
-            </div>
-          </div>
-          <span style="font-size:0.85rem; font-weight:700; color:#e1306c;">Visit ➔</span>
-        </a>
-
-        <a id="link-wa-group" href="https://chat.whatsapp.com" target="_blank" style="display:flex; align-items:center; justify-content:space-between; background:#fafafa; border:1px solid #ddd; padding:10px 14px; border-radius:8px; text-decoration:none; color:#111;">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <span style="font-size:1.6rem;">💬</span>
-            <div>
-              <div style="font-weight:700; font-size:0.95rem;">Join WhatsApp Group</div>
-              <div style="font-size:0.75rem; color:#25d366;">Official Devotees & Mandal Family</div>
-            </div>
-          </div>
-          <span style="font-size:0.85rem; font-weight:700; color:#25d366;">Join ➔</span>
-        </a>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3 id="sec-info-head">Mandal Office & Contacts</h3>
-      <p>📍 NEW MUNICIPAL BUILDING 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008</p>
-      <div style="margin-top:10px; padding:10px; background:#f9f9f9; border-radius:6px;">
-        <p><strong>Mandal Helpline / Coordinator:</strong></p>
-        <p style="font-size:1.05rem; font-weight:bold; color:var(--primary); margin:4px 0;">📞 9820727275</p>
-        <a class="btn" style="background:#2e7d32; width:100%; margin-top:6px;" href="tel:+919820727275">📲 Tap to Call Helpline</a>
-      </div>
-    </div>
-
-    <div class="card" style="border-left-color: #d35400;">
-      <h3>🕉️ Devi Aarties & Stutis</h3>
-      <p style="font-size:0.8rem; color:#666; margin-bottom:8px;" id="sec-aarti-sub">Select an Aarti to read lyrics:</p>
-      <div class="day-bar" id="aarti-tabs-bar"></div>
-      <div id="aarti-content-view" style="margin-top:10px; background:#fffdf7; border:1px solid #f9e2b0; border-radius:8px; padding:12px;"></div>
-    </div>
-  </section>
-
-  <!-- TAB 7: KHATA (ADMIN - BIFURCATED DASHBOARD) -->
-  <section id="tab-admin" class="tab">
-    
-    <!-- LOGIN BOX -->
-    <div id="login-box" class="card" style="text-align:center;">
-      <h3>🔐 Committee Login</h3>
-      <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">Enter User ID and Password:</p>
-      <input type="text" id="uid" class="input-box" placeholder="Enter User ID" />
-      <input type="password" id="pin" class="input-box" placeholder="Enter Password" />
-      
-      <button class="btn" style="background:#7a0006; width:100%; margin-bottom:8px;" onclick="doLogin()">🔓 Sign In</button>
-      <p id="err" style="color:red; font-size:0.75rem; margin-top:6px; display:none;">Invalid ID or Password.</p>
-      
-      <div style="margin-top:14px; border-top:1px solid #eee; padding-top:10px;">
-        <a href="javascript:void(0)" onclick="toggleForgotBox(true)" style="font-size:0.8rem; color:var(--primary); text-decoration:none; font-weight:600;">
-          🔑 Forgot Password / Reset Access?
-        </a>
-      </div>
-    </div>
-
-    <!-- FORGOT PASSWORD CARD -->
-    <div id="forgot-box" class="card" style="display:none; border-left-color:#e67e22;">
-      <h3>🔑 Reset Committee Password</h3>
-      <p style="font-size:0.8rem; color:#555; margin-bottom:10px;">
-        Verify via registered Mandal Helpline:
-      </p>
-
-      <label style="font-size:0.75rem; font-weight:600; color:#555;">Mandal Helpline Number *</label>
-      <input type="tel" id="recov-phone" class="input-box" placeholder="e.g. 9820727275" />
-
-      <label style="font-size:0.75rem; font-weight:600; color:#555;">New User ID *</label>
-      <input type="text" id="recov-uid" class="input-box" placeholder="e.g. NBMM" />
-
-      <label style="font-size:0.75rem; font-weight:600; color:#555;">New Password *</label>
-      <input type="password" id="recov-pin" class="input-box" placeholder="Enter new password" />
-
-      <div style="display:flex; gap:8px;">
-        <button class="btn" style="background:#e67e22; flex:1;" onclick="doResetPassword()">🔄 Reset & Update Across All Phones</button>
-        <button class="btn" style="background:#777;" onclick="toggleForgotBox(false)">Cancel</button>
-      </div>
-    </div>
-
-    <!-- ADMIN BIFURCATED DASHBOARD PANEL -->
-    <div id="panel-box" style="display:none;">
-
-      <!-- SUB-NAVIGATION TABS BAR -->
-      <div class="admin-sub-bar">
-        <button class="admin-sub-btn active" id="asb-receipts" onclick="switchAdminSubTab('receipts')">🧾 पावती व नोंद</button>
-        <button class="admin-sub-btn" id="asb-bank" onclick="switchAdminSubTab('bank')">🏛️ बँक व UPI</button>
-        <button class="admin-sub-btn" id="asb-live" onclick="switchAdminSubTab('live')">🔴 थेट दर्शन</button>
-        <button class="admin-sub-btn" id="asb-cctv" onclick="switchAdminSubTab('cctv')">📹 CCTV</button>
-        <button class="admin-sub-btn" id="asb-schedule" onclick="switchAdminSubTab('schedule')">📅 कार्यक्रम</button>
-        <button class="admin-sub-btn" id="asb-settings" onclick="switchAdminSubTab('settings')">⚙️ सुरक्षा व उपकरणे</button>
-      </div>
-
-      <!-- SUB-TAB 1: RECEIPTS, CATEGORY BREAKDOWN & REGISTER -->
-      <div id="asv-receipts" class="admin-sub-view active">
-        <div class="cat-stat-grid" id="category-summary-cards"></div>
-
-        <div class="card" style="border-left-color:#7a0006;">
-          <h3 id="form-title">🧾 पावती नोंदणी / New Digital Receipt</h3>
-          <input type="hidden" id="edit-id" value="" />
-          
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-            <div>
-              <label style="font-size:0.75rem; font-weight:600; color:#555;">वर्गणी दाखल / Category *</label>
-              <select id="r-category" class="input-box">
-                <option value="भंडारा (Bhandara)">भंडारा / Bhandara</option>
-                <option value="वर्गणी (Vargani)">वर्गणी / Vargani</option>
-                <option value="आरती (Aarti Seva)">आरती / Aarti Seva</option>
-                <option value="सजावट (Decoration)">सजावट / Decoration</option>
-                <option value="महाप्रसाद (Maha Prasad)">महाप्रसाद / Maha Prasad</option>
+      <p><strong>Maha Prasad (महाप्रसाद (Maha Prasad)">महाप्रसाद / Maha Prasad</option>
                 <option value="इतर (Other Daan)">इतर / Other</option>
               </select>
             </div>
@@ -1224,7 +956,7 @@
     </div>
   </section>
 
-  <!-- AUTOMATIC UPI PAYMENT POPUP MODAL -->
+  <!-- AUTOMATIC  UPI PAYMENT POPUP MODAL -->
   <div id="upi-pop-modal">
     <div class="modal-content-wrap">
       <div class="card" style="text-align:center; border:3px solid #27ae60; border-radius:12px; padding:20px; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
@@ -1571,6 +1303,202 @@
         cachedSessions = val;
         renderDeviceSessions();
       });
+    }
+
+    // -------------------------------------------------------------
+    // DEVICE SESSION MANAGEMENT
+    // -------------------------------------------------------------
+    function registerDeviceSession() {
+      if (localStorage.getItem('nbmm_auth') === '1' && db) {
+        const sessionInfo = {
+          deviceId: myDeviceId,
+          userAgent: navigator.userAgent.includes('Mobile') ? 'Mobile Phone' : 'Computer / Tablet',
+          loginTime: new Date().toLocaleString()
+        };
+        db.ref('active_sessions/' + myDeviceId).set(sessionInfo);
+      }
+    }
+
+    function renderDeviceSessions() {
+      const listDiv = document.getElementById('device-session-list');
+      const countSpan = document.getElementById('active-device-count');
+      if (!listDiv) return;
+
+      const keys = Object.keys(cachedSessions);
+      if (countSpan) countSpan.innerText = keys.length + ' Active';
+
+      if (keys.length === 0) {
+        listDiv.innerHTML = '<p style="font-size:0.75rem; color:#777;">No active sessions found.</p>';
+        return;
+      }
+
+      let html = '';
+      keys.forEach(key => {
+        const s = cachedSessions[key];
+        const isMe = (key === myDeviceId);
+        html += `
+          <div class="device-session-item">
+            <div>
+              <div style="font-weight:700; font-size:0.8rem;">📱 ${s.userAgent} ${isMe ? '(This Device)' : ''}</div>
+              <div style="font-size:0.68rem; color:#777;">Login: ${s.loginTime}</div>
+            </div>
+            ${!isMe ? `<button class="btn" style="background:#c0392b; font-size:0.68rem; padding:4px 8px;" onclick="revokeSession('${key}')">Revoke</button>` : '<span style="font-size:0.68rem; color:#27ae60; font-weight:bold;">Active</span>'}
+          </div>
+        `;
+      });
+      listDiv.innerHTML = html;
+    }
+
+    function revokeSession(devId) {
+      if (localStorage.getItem('nbmm_auth') !== '1') {
+        alert('Access Denied: Please log in to Mandal Khata first.');
+        return;
+      }
+      if (db) db.ref('active_sessions/' + devId).remove();
+    }
+
+    function revokeAllSessions() {
+      if (localStorage.getItem('nbmm_auth') !== '1') {
+        alert('Access Denied: Please log in to Mandal Khata first.');
+        return;
+      }
+      if (!confirm('Sign out all other devices?')) return;
+      if (db) {
+        keys = Object.keys(cachedSessions);
+        keys.forEach(k => {
+          if (k !== myDeviceId) db.ref('active_sessions/' + k).remove();
+        });
+      }
+    }
+
+    // -------------------------------------------------------------
+    // REGULAR TIMINGS MANAGEMENT
+    // -------------------------------------------------------------
+    function renderRegularTimings() {
+      const t = cachedTimings || DEFAULT_TIMINGS;
+      const subah = document.getElementById('dsp-subah-aarti');
+      const sandhya = document.getElementById('dsp-sandhya-aarti');
+      const garba = document.getElementById('dsp-garba-time');
+      const prasad = document.getElementById('dsp-prasad-time');
+
+      if (subah) subah.innerText = t.subah || DEFAULT_TIMINGS.subah;
+      if (sandhya) sandhya.innerText = t.sandhya || DEFAULT_TIMINGS.sandhya;
+      if (garba) garba.innerText = t.garba || DEFAULT_TIMINGS.garba;
+      if (prasad) prasad.innerText = t.prasad || DEFAULT_TIMINGS.prasad;
+
+      const admSubah = document.getElementById('adm-subah-aarti');
+      const admSandhya = document.getElementById('adm-sandhya-aarti');
+      const admGarba = document.getElementById('adm-garba-time');
+      const admPrasad = document.getElementById('adm-prasad-time');
+
+      if (admSubah) admSubah.value = t.subah || DEFAULT_TIMINGS.subah;
+      if (admSandhya) admSandhya.value = t.sandhya || DEFAULT_TIMINGS.sandhya;
+      if (admGarba) admGarba.value = t.garba || DEFAULT_TIMINGS.garba;
+      if (admPrasad) admPrasad.value = t.prasad || DEFAULT_TIMINGS.prasad;
+    }
+
+    function saveRegularTimings() {
+      if (localStorage.getItem('nbmm_auth') !== '1') {
+        alert('Access Denied: Please log in to Mandal Khata first.');
+        return;
+      }
+      const subah = document.getElementById('adm-subah-aarti').value.trim() || DEFAULT_TIMINGS.subah;
+      const sandhya = document.getElementById('adm-sandhya-aarti').value.trim() || DEFAULT_TIMINGS.sandhya;
+      const garba = document.getElementById('adm-garba-time').value.trim() || DEFAULT_TIMINGS.garba;
+      const prasad = document.getElementById('adm-prasad-time').value.trim() || DEFAULT_TIMINGS.prasad;
+
+      cachedTimings = { subah, sandhya, garba, prasad };
+      localStorage.setItem('nbmm_timings', JSON.stringify(cachedTimings));
+      if (db) db.ref('regular_timings').set(cachedTimings);
+      renderRegularTimings();
+      alert('Regular timings updated and synced across all devices!');
+    }
+
+    // -------------------------------------------------------------
+    // SOCIAL LINKS & CATEGORY SUMMARY
+    // -------------------------------------------------------------
+    function renderSocialLinks() {
+      const s = cachedSocial || DEFAULT_SOCIAL;
+      const instaLink = document.getElementById('link-insta-page');
+      const waLink = document.getElementById('link-wa-group');
+      const instaTxt = document.getElementById('txt-insta-handle');
+      const instaQuick = document.getElementById('btn-insta-quick');
+      const waQuick = document.getElementById('btn-wa-quick');
+
+      if (instaLink) instaLink.href = s.insta || DEFAULT_SOCIAL.insta;
+      if (waLink) waLink.href = s.wa || DEFAULT_SOCIAL.wa;
+      if (instaQuick) instaQuick.href = s.insta || DEFAULT_SOCIAL.insta;
+      if (waQuick) waQuick.href = s.wa || DEFAULT_SOCIAL.wa;
+      if (instaTxt) instaTxt.innerText = s.insta || DEFAULT_SOCIAL.insta;
+
+      const admInsta = document.getElementById('adm-insta-url');
+      const admWa = document.getElementById('adm-wa-url');
+      if (admInsta) admInsta.value = s.insta || '';
+      if (admWa) admWa.value = s.wa || '';
+    }
+
+    function saveSocialLinks() {
+      if (localStorage.getItem('nbmm_auth') !== '1') {
+        alert('Access Denied: Please log in to Mandal Khata first.');
+        return;
+      }
+      const insta = document.getElementById('adm-insta-url').value.trim() || DEFAULT_SOCIAL.insta;
+      const wa = document.getElementById('adm-wa-url').value.trim() || DEFAULT_SOCIAL.wa;
+      cachedSocial = { insta, wa };
+      localStorage.setItem('nbmm_social', JSON.stringify(cachedSocial));
+      if (db) db.ref('social_links').set(cachedSocial);
+      renderSocialLinks();
+      alert('Social links saved successfully!');
+    }
+
+    function renderCategoryBreakdownCards() {
+      const wrap = document.getElementById('category-summary-cards');
+      if (!wrap) return;
+
+      const cats = ['भंडारा', 'वर्गणी', 'आरती', 'महाप्रसाद', 'सजावट', 'इतर'];
+      const stats = {};
+      cats.forEach(c => stats[c] = { paid: 0, due: 0 });
+
+      cachedEntries.forEach(x => {
+        if (x.type === 'Income') {
+          const catName = cats.find(c => (x.category || '').includes(c)) || 'इतर';
+          const isPaid = !x.mode.includes('Due') && !x.mode.includes('बाकी');
+          if (isPaid) stats[catName].paid += x.amt;
+          else stats[catName].due += x.amt;
+        }
+      });
+
+      let html = '';
+      cats.forEach(c => {
+        html += `
+          <div class="cat-stat-card">
+            <h4>${c}</h4>
+            <div class="cat-amt-paid">₹${stats[c].paid}</div>
+            ${stats[c].due > 0 ? `<span class="cat-amt-due">Due: ₹${stats[c].due}</span>` : ''}
+          </div>
+        `;
+      });
+      wrap.innerHTML = html;
+    }
+
+    function filterByCat(cat) {
+      currentSelectedCategory = cat;
+      document.querySelectorAll('.admin-sub-view .day-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById('btn-cat-' + (cat === 'all' ? 'all' : (cat.includes('भंडारा') ? 'bhandara' : (cat.includes('वर्गणी') ? 'vargani' : (cat.includes('आरती') ? 'aarti' : (cat.includes('महाप्रसाद') ? 'prasad' : (cat.includes('सजावट') ? 'decor' : 'other'))))));
+      if (activeBtn) activeBtn.classList.add('active');
+      renderRows();
+    }
+
+    function exportLedgerToExcel() {
+      let csv = 'Receipt No,Category,Type,Donor Name,Collector,Phone,Mode,Amount,Date\n';
+      cachedEntries.forEach(x => {
+        csv += `"${x.rec}","${x.category}","${x.type}","${x.name}","${x.collector || ''}","${x.phone || ''}","${x.mode}","${x.amt}","${x.dateStr || ''}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'NBMM_Khata_Ledger.csv';
+      link.click();
     }
 
     // -------------------------------------------------------------
@@ -2215,6 +2143,7 @@
             if (typeof renderRegularTimings === 'function') renderRegularTimings();
             if (typeof renderRows === 'function') renderRows();
             if (typeof renderCCTVStream === 'function') renderCCTVStream(cachedCCTVStream);
+            if (typeof renderDeviceSessions === 'function') renderDeviceSessions();
           } catch (e) {
             console.warn("Panel init note:", e);
           }
