@@ -218,18 +218,6 @@
     .cat-stat-card .cat-amt-paid { color: #2e7d32; font-weight: 800; font-size: 0.95rem; }
     .cat-stat-card .cat-amt-due { color: #d35400; font-size: 0.7rem; font-weight: 600; display: block; }
 
-    .device-session-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #fff;
-      border: 1px solid #e0d0b0;
-      padding: 9px 12px;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-    }
-
     .bank-data-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-bottom: 1px dashed #eee; font-size: 0.82rem; }
     .bank-data-row:last-child { border-bottom: none; }
     .bank-data-lbl { color: #666; font-weight: 600; }
@@ -585,7 +573,7 @@
   <section id="tab-media" class="tab">
     <div class="card">
       <h3 id="sec-media-title">📸 Utsav Photos & Videos</h3>
-      <p style="font-size:0.85rem; color:#555; margin-bottom:10px;" id="sec-media-sub">Select any day to open full-resolution photo albums and media streams:</p>
+      <p style="font-size:0.85rem; color:#555; margin-bottom:10px;" id="sec-media-sub">Select any day to open full-resolution photo albums, videos, reels, and YouTube links:</p>
       <div class="day-bar" id="media-day-bar"></div>
       <div id="media-content-view" style="margin-top:10px;"></div>
     </div>
@@ -597,7 +585,7 @@
       <h3 id="sec-live-title">🔴 Live Darshan & Aarti</h3>
       <p style="font-size:0.85rem; color:#555; margin-bottom:12px;" id="sec-live-sub">Watch live Aarti and darshan direct from our Sukhlaji Street pandal:</p>
       
-      <!-- DIRECT PANDAL PROJECTECTOR CAMERA CARD (ZERO DELAY) -->
+      <!-- DIRECT PANDAL PROJECTOR CAMERA CARD (ZERO DELAY) -->
       <div id="live-pandal-cam-box" style="display:none; background:#111; color:#fff; border-radius:10px; padding:10px; margin-bottom:12px; border:2px solid #27ae60;">
         <div style="font-size:0.85rem; font-weight:700; color:#2ecc71; margin-bottom:6px; display:flex; align-items:center; justify-content:center; gap:6px;">
           <span>🟢</span> PANDAL LIVE SCREEN (DIRECT CAMERA FEED)
@@ -781,7 +769,7 @@
     </div>
   </section>
 
-  <!-- TAB 7: KHATA  (ADMIN - BIFURCATED DASHBOARD) -->
+  <!-- TAB 7: KHATA (ADMIN - BIFURCATED DASHBOARD) -->
   <section id="tab-admin" class="tab">
     
     <!-- LOGIN BOX -->
@@ -1068,12 +1056,12 @@
         </div>
       </div>
 
-      <!-- SUB-TAB 4: SCHEDULE MANAGER -->
+      <!-- SUB-TAB 4: SCHEDULE & 4 MEDIA SECTIONS MANAGER -->
       <div id="asv-schedule" class="admin-sub-view">
         <div class="card" style="border-left-color: #8e44ad;">
           <h3>📅 Festival Schedule Manager (Dates, Weekdays & Poojas)</h3>
           <p style="font-size:0.75rem; color:#555; margin-bottom:10px;">
-            Manage your festival dates, weekdays (सोमवार, मंगलवार), and events.
+            Manage your festival dates, weekdays, and events.
           </p>
 
           <div style="margin-bottom:10px;">
@@ -1123,8 +1111,28 @@
           </div>
         </div>
 
+        <!-- 4 DIFFERENT MEDIA SECTIONS FOR SELECTED DAY -->
+        <div class="card" style="border-left-color: #f39c12; margin-top: 12px;">
+          <h3>📸 4 Media Sections Manager (Day-Wise Links)</h3>
+          <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Add specific media links for the selected date above:</p>
+          
+          <label style="font-size:0.72rem; font-weight:600; color:#555;">1. Image / Photo Album Link (Google Drive / Imgur / Photos)</label>
+          <input type="url" id="adm-media-photo" class="input-box" placeholder="https://photos.app.goo.gl/..." />
+
+          <label style="font-size:0.72rem; font-weight:600; color:#555;">2. Video Highlights Link (Google Drive / MP4)</label>
+          <input type="url" id="adm-media-video" class="input-box" placeholder="https://..." />
+
+          <label style="font-size:0.72rem; font-weight:600; color:#555;">3. Instagram Reel Link</label>
+          <input type="url" id="adm-media-insta" class="input-box" placeholder="https://www.instagram.com/reel/..." />
+
+          <label style="font-size:0.72rem; font-weight:600; color:#555;">4. YouTube Link (Full Recording or Short)</label>
+          <input type="url" id="adm-media-youtube" class="input-box" placeholder="https://youtu.be/..." />
+
+          <button class="btn" style="background:#f39c12; color:#000; width:100%; margin-top:4px;" onclick="saveFourMediaLinks()">💾 Save All 4 Media Links for Day</button>
+        </div>
+
         <!-- REGULAR TIMINGS EDITOR -->
-        <div class="card" style="border-left-color: #e67e22;">
+        <div class="card" style="border-left-color: #e67e22; margin-top: 12px;">
           <h3>⏰ Edit Regular Daily Timings (नियमित वेळ)</h3>
           <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Update daily Aarti and program timings shown on the front screen:</p>
           
@@ -1151,28 +1159,6 @@
           </div>
 
           <button class="btn" style="background:#e67e22; width:100%;" onclick="saveRegularTimings()">💾 Save Regular Timings</button>
-        </div>
-
-        <div class="card" style="border-left-color: #f39c12;">
-          <h3>📸 Upload Day-Wise Media Links (4 Sections)</h3>
-          <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Add images, videos, Instagram reels, and YouTube links for the selected day:</p>
-          <select id="adm-media-day" class="input-box" onchange="loadAdminMediaFields()">
-            <!-- Populated dynamically -->
-          </select>
-          
-          <label style="font-size:0.72rem; font-weight:600; color:#555;">1. Image / Photo Link (Google Drive or Direct Image URL)</label>
-          <input type="url" id="adm-photo-link" class="input-box" placeholder="https://..." />
-
-          <label style="font-size:0.72rem; font-weight:600; color:#555;">2. Video Link (MP4 / Google Drive Video)</label>
-          <input type="url" id="adm-video-link" class="input-box" placeholder="https://..." />
-
-          <label style="font-size:0.72rem; font-weight:600; color:#555;">3. Instagram Reel Link</label>
-          <input type="url" id="adm-insta-reel-link" class="input-box" placeholder="https://instagram.com/reel/..." />
-
-          <label style="font-size:0.72rem; font-weight:600; color:#555;">4. YouTube Link (Full Video / Short)</label>
-          <input type="url" id="adm-yt-link" class="input-box" placeholder="https://youtube.com/watch?v=..." />
-
-          <button class="btn" style="background:#f39c12; color:#000; width:100%; font-weight:bold;" onclick="saveMediaLink()">💾 Save & Sync Media Links</button>
         </div>
       </div>
 
@@ -1586,6 +1572,35 @@
     }
 
     // -------------------------------------------------------------
+    // REGULAR TIMINGS RENDERING & SAVING
+    // -------------------------------------------------------------
+    function renderRegularTimings() {
+      const t = cachedTimings || DEFAULT_TIMINGS;
+      if (document.getElementById('dsp-subah-aarti')) document.getElementById('dsp-subah-aarti').innerText = t.subah || "7:30 AM";
+      if (document.getElementById('dsp-sandhya-aarti')) document.getElementById('dsp-sandhya-aarti').innerText = t.sandhya || "7:30 PM";
+      if (document.getElementById('dsp-garba-time')) document.getElementById('dsp-garba-time').innerText = t.garba || "8:30 PM – 10:00 PM";
+      if (document.getElementById('dsp-prasad-time')) document.getElementById('dsp-prasad-time').innerText = t.prasad || "10:00 PM onwards";
+
+      if (document.getElementById('adm-subah-aarti')) document.getElementById('adm-subah-aarti').value = t.subah || "";
+      if (document.getElementById('adm-sandhya-aarti')) document.getElementById('adm-sandhya-aarti').value = t.sandhya || "";
+      if (document.getElementById('adm-garba-time')) document.getElementById('adm-garba-time').value = t.garba || "";
+      if (document.getElementById('adm-prasad-time')) document.getElementById('adm-prasad-time').value = t.prasad || "";
+    }
+
+    function saveRegularTimings() {
+      const subah = document.getElementById('adm-subah-aarti').value.trim();
+      const sandhya = document.getElementById('adm-sandhya-aarti').value.trim();
+      const garba = document.getElementById('adm-garba-time').value.trim();
+      const prasad = document.getElementById('adm-prasad-time').value.trim();
+
+      cachedTimings = { subah, sandhya, garba, prasad };
+      localStorage.setItem('nbmm_timings', JSON.stringify(cachedTimings));
+      if (db) db.ref('regular_timings').set(cachedTimings);
+      renderRegularTimings();
+      alert('Regular Timings updated and saved successfully across all devices!');
+    }
+
+    // -------------------------------------------------------------
     // PAVITRA DAAN QR & BANK DETAILS RENDERER
     // -------------------------------------------------------------
     function renderBankDetails() {
@@ -1746,12 +1761,6 @@
       return (match && match[1]) ? match[1] : '';
     }
 
-    function extractYouTubeEmbed(url) {
-      const id = extractYouTubeId(url);
-      if (id) return `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&playsinline=1&enablejsapi=1&rel=0`;
-      return url;
-    }
-
     function renderLiveStream(url) {
       const container = document.getElementById('live-player-container');
       const offline = document.getElementById('live-offline-container');
@@ -1843,13 +1852,17 @@
     // NAVIGATION, DRAWER & LANGUAGE SWITCHER FUNCTIONS
     // -------------------------------------------------------------
     function openDrawer() {
-      document.getElementById('side-drawer').style.left = '0px';
-      document.getElementById('drawer-overlay').style.display = 'block';
+      const drawer = document.getElementById('side-drawer');
+      const overlay = document.getElementById('drawer-overlay');
+      if (drawer) drawer.style.left = '0px';
+      if (overlay) overlay.style.display = 'block';
     }
 
     function closeDrawer() {
-      document.getElementById('side-drawer').style.left = '-290px';
-      document.getElementById('drawer-overlay').style.display = 'none';
+      const drawer = document.getElementById('side-drawer');
+      const overlay = document.getElementById('drawer-overlay');
+      if (drawer) drawer.style.left = '-290px';
+      if (overlay) overlay.style.display = 'none';
     }
 
     function switchSection(name, btn) {
@@ -1888,7 +1901,7 @@
         selectDay: "Select Festival Day",
         timingsTitle: "Regular Timings",
         mediaTitle: "📸 Utsav Photos & Videos",
-        mediaSub: "Select any day to open full-resolution photos and media streams:",
+        mediaSub: "Select any day to open full-resolution photos, reels, and videos:",
         liveTitle: "🔴 Live Darshan & Aarti",
         liveSub: "Watch Aarti live from our Sukhlaji Street pandal:",
         liveOffHead: "Pandal Live Stream Offline",
@@ -1913,7 +1926,7 @@
         selectDay: "त्योहार का दिन चुनें",
         timingsTitle: "नियमित आरती समय",
         mediaTitle: "📸 उत्सव फोटो और वीडियो",
-        mediaSub: "दैनिक फोटो और वीडियो देखने के लिए दिन चुनें:",
+        mediaSub: "दैनिक फोटो, रील्स और वीडियो देखने के लिए दिन चुनें:",
         liveTitle: "🔴 लाइव दर्शन एवं आरती",
         liveSub: "शुक्लाजी स्ट्रीट पंडाल से सीधा लाइव प्रसारण देखें:",
         liveOffHead: "लाइव प्रसारण अभी बंद है",
@@ -1938,7 +1951,7 @@
         selectDay: "उत्सवाचा दिवस निवडा",
         timingsTitle: "नियमित आरत्यांची वेळ",
         mediaTitle: "📸 उत्सव फोटो व व्हिडिओ अल्बम",
-        mediaSub: "फोटो आणि व्हिडिओ पाहण्यासाठी दिवस निवडा:",
+        mediaSub: "फोटो, रील्स आणि व्हिडिओ पाहण्यासाठी दिवस निवडा:",
         liveTitle: "🔴 थेट दर्शन व आरती (Live)",
         liveSub: "शुक्लाजी स्ट्रीट मंडपातून थेट आरतीचे दर्शन घ्या:",
         liveOffHead: "थेट प्रक्षेपण सध्या बंद आहे",
@@ -1960,38 +1973,30 @@
       if (activeBtn) activeBtn.classList.add('active');
 
       const dict = I18N[lang] || I18N['mr'];
-      const elTitle = document.getElementById('hdr-title');
-      const elAddr = document.getElementById('hdr-addr');
-      if (elTitle) elTitle.innerText = dict.title;
-      if (elAddr) elAddr.innerText = dict.addr;
-      
-      ['nav-sched', 'nav-media', 'nav-live', 'nav-donate', 'nav-share', 'nav-info', 'nav-admin'].forEach(id => {
-        const item = document.getElementById(id);
-        if (item) {
-          if (id === 'nav-sched') item.innerText = dict.navSched;
-          if (id === 'nav-media') item.innerText = dict.navMedia;
-          if (id === 'nav-live') item.innerText = dict.navLive;
-          if (id === 'nav-donate') item.innerText = dict.navDonate;
-          if (id === 'nav-share') item.innerText = dict.navShare;
-          if (id === 'nav-info') item.innerText = dict.navInfo;
-          if (id === 'nav-admin') item.innerText = dict.navAdmin;
-        }
-      });
+      if (document.getElementById('hdr-title')) document.getElementById('hdr-title').innerText = dict.title;
+      if (document.getElementById('hdr-addr')) document.getElementById('hdr-addr').innerText = dict.addr;
+      if (document.getElementById('nav-sched')) document.getElementById('nav-sched').innerText = dict.navSched;
+      if (document.getElementById('nav-media')) document.getElementById('nav-media').innerText = dict.navMedia;
+      if (document.getElementById('nav-live')) document.getElementById('nav-live').innerText = dict.navLive;
+      if (document.getElementById('nav-donate')) document.getElementById('nav-donate').innerText = dict.navDonate;
+      if (document.getElementById('nav-share')) document.getElementById('nav-share').innerText = dict.navShare;
+      if (document.getElementById('nav-info')) document.getElementById('nav-info').innerText = dict.navInfo;
+      if (document.getElementById('nav-admin')) document.getElementById('nav-admin').innerText = dict.navAdmin;
 
-      const st1 = document.getElementById('sec-pandal-title'); if (st1) st1.innerText = dict.pandalTitle;
-      const st2 = document.getElementById('sec-select-day'); if (st2) st2.innerText = dict.selectDay;
-      const st3 = document.getElementById('sec-timings-title'); if (st3) st3.innerText = dict.timingsTitle;
-      const st4 = document.getElementById('sec-media-title'); if (st4) st4.innerText = dict.mediaTitle;
-      const st5 = document.getElementById('sec-media-sub'); if (st5) st5.innerText = dict.mediaSub;
-      const st6 = document.getElementById('sec-live-title'); if (st6) st6.innerText = dict.liveTitle;
-      const st7 = document.getElementById('sec-live-sub'); if (st7) st7.innerText = dict.liveSub;
-      const st8 = document.getElementById('live-off-head'); if (st8) st8.innerText = dict.liveOffHead;
-      const st9 = document.getElementById('live-off-desc'); if (st9) st9.innerHTML = dict.liveOffDesc;
-      const st10 = document.getElementById('sec-daan-title'); if (st10) st10.innerText = dict.daanTitle;
-      const st11 = document.getElementById('sec-daan-sub'); if (st11) st11.innerText = dict.daanSub;
-      const st12 = document.getElementById('sec-share-title'); if (st12) st12.innerText = dict.shareTitle;
-      const st13 = document.getElementById('sec-share-sub'); if (st13) st13.innerText = dict.shareSub;
-      const st14 = document.getElementById('sec-aarti-sub'); if (st14) st14.innerText = dict.aartiHead;
+      if (document.getElementById('sec-pandal-title')) document.getElementById('sec-pandal-title').innerText = dict.pandalTitle;
+      if (document.getElementById('sec-select-day')) document.getElementById('sec-select-day').innerText = dict.selectDay;
+      if (document.getElementById('sec-timings-title')) document.getElementById('sec-timings-title').innerText = dict.timingsTitle;
+      if (document.getElementById('sec-media-title')) document.getElementById('sec-media-title').innerText = dict.mediaTitle;
+      if (document.getElementById('sec-media-sub')) document.getElementById('sec-media-sub').innerText = dict.mediaSub;
+      if (document.getElementById('sec-live-title')) document.getElementById('sec-live-title').innerText = dict.liveTitle;
+      if (document.getElementById('sec-live-sub')) document.getElementById('sec-live-sub').innerText = dict.liveSub;
+      if (document.getElementById('live-off-head')) document.getElementById('live-off-head').innerText = dict.liveOffHead;
+      if (document.getElementById('live-off-desc')) document.getElementById('live-off-desc').innerHTML = dict.liveOffDesc;
+      if (document.getElementById('sec-daan-title')) document.getElementById('sec-daan-title').innerText = dict.daanTitle;
+      if (document.getElementById('sec-daan-sub')) document.getElementById('sec-daan-sub').innerText = dict.daanSub;
+      if (document.getElementById('sec-share-title')) document.getElementById('sec-share-title').innerText = dict.shareTitle;
+      if (document.getElementById('sec-share-sub')) document.getElementById('sec-share-sub').innerText = dict.shareSub;
+      if (document.getElementById('sec-aarti-sub')) document.getElementById('sec-aarti-sub').innerText = dict.aartiHead;
     }
 
     // -------------------------------------------------------------
@@ -2202,6 +2207,7 @@
         const err = document.getElementById('err');
         if (err) err.style.display = 'none';
         checkLogin();
+        registerDeviceSession();
       } else {
         const err = document.getElementById('err');
         if (err) err.style.display = 'block';
@@ -2210,6 +2216,9 @@
 
     function doLogout(silent) {
       localStorage.removeItem('nbmm_auth');
+      if (db) {
+        db.ref('active_sessions/' + myDeviceId).remove();
+      }
       document.getElementById('panel-box').style.display = 'none';
       document.getElementById('login-box').style.display = 'block';
       document.getElementById('forgot-box').style.display = 'none';
@@ -2222,7 +2231,7 @@
     }
 
     // -------------------------------------------------------------
-    // SCHEDULE & MEDIA MANAGER
+    // SCHEDULE & 4 MEDIA SECTIONS MANAGER
     // -------------------------------------------------------------
     function initDays() {
       const b = document.getElementById('day-bar');
@@ -2294,6 +2303,7 @@
       document.getElementById('adm-sched-devi').value = x.devi || '';
       document.getElementById('adm-sched-prog').value = x.p || '';
       document.getElementById('adm-sched-prasad').value = x.pr || '';
+      loadAdminMediaFields();
     }
 
     function addNewFestivalDay() {
@@ -2403,30 +2413,32 @@
           <p style="font-size:0.8rem; color:#666; margin-bottom:12px;">Events: ${x.p || ''}</p>
       `;
 
-      let hasMedia = false;
-
+      // 1. Photo / Image Album Link
       if (current.photo) {
-        hasMedia = true;
-        html += `<a class="btn" style="background:#2980b9; width:100%; margin-bottom:8px;" href="${current.photo}" target="_blank">📁 Open Photo Album / Image</a>`;
+        html += `<a class="btn" style="background:#2980b9; width:100%; margin-bottom:6px;" href="${current.photo}" target="_blank">📁 1. Open Photo Album (Drive/Images)</a>`;
+      } else {
+        html += `<div style="padding:8px; background:#fff; border:1px dashed #ccc; border-radius:6px; text-align:center; font-size:0.78rem; color:#777; margin-bottom:6px;">📁 1. Photo Album: Not added yet</div>`;
       }
 
+      // 2. Video Highlights Link
       if (current.video) {
-        hasMedia = true;
-        html += `<a class="btn" style="background:#27ae60; width:100%; margin-bottom:8px;" href="${current.video}" target="_blank">🎬 Watch Video Highlights</a>`;
+        html += `<a class="btn" style="background:#c0392b; width:100%; margin-bottom:6px;" href="${current.video}" target="_blank">▶️ 2. Watch Video Highlights</a>`;
+      } else {
+        html += `<div style="padding:8px; background:#fff; border:1px dashed #ccc; border-radius:6px; text-align:center; font-size:0.78rem; color:#777; margin-bottom:6px;">▶️ 2. Video Highlights: Not added yet</div>`;
       }
 
-      if (current.instaReel) {
-        hasMedia = true;
-        html += `<a class="btn" style="background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color:#fff; width:100%; margin-bottom:8px;" href="${current.instaReel}" target="_blank">📸 Watch Instagram Reel</a>`;
+      // 3. Instagram Reel Link
+      if (current.insta) {
+        html += `<a class="btn" style="background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color:#fff; width:100%; margin-bottom:6px;" href="${current.insta}" target="_blank">📸 3. Watch Instagram Reel</a>`;
+      } else {
+        html += `<div style="padding:8px; background:#fff; border:1px dashed #ccc; border-radius:6px; text-align:center; font-size:0.78rem; color:#777; margin-bottom:6px;">📸 3. Instagram Reel: Not added yet</div>`;
       }
 
-      if (current.ytLink) {
-        hasMedia = true;
-        html += `<a class="btn" style="background:#c0392b; width:100%; margin-bottom:8px;" href="${current.ytLink}" target="_blank">▶️ Watch YouTube Link</a>`;
-      }
-
-      if (!hasMedia) {
-        html += `<div style="padding:15px; background:#fff; border:1px dashed #ccc; border-radius:6px; text-align:center; font-size:0.8rem; color:#777;">⏳ Media links will be uploaded soon!</div>`;
+      // 4. YouTube Link
+      if (current.youtube) {
+        html += `<a class="btn" style="background:#ff0000; color:#fff; width:100%;" href="${current.youtube}" target="_blank">🔴 4. Watch on YouTube</a>`;
+      } else {
+        html += `<div style="padding:8px; background:#fff; border:1px dashed #ccc; border-radius:6px; text-align:center; font-size:0.78rem; color:#777;">🔴 4. YouTube Link: Not added yet</div>`;
       }
 
       html += `</div>`;
@@ -2434,29 +2446,32 @@
     }
 
     function loadAdminMediaFields() {
-      const mediaSel = document.getElementById('adm-media-day');
-      if (!mediaSel) return;
-      const day = mediaSel.value || 0;
+      const sel = document.getElementById('adm-sched-day-select');
+      if (!sel) return;
+      const day = sel.value || 0;
       const current = cachedMedia[day] || {};
-      document.getElementById('adm-photo-link').value = current.photo || '';
-      document.getElementById('adm-video-link').value = current.video || '';
-      document.getElementById('adm-insta-reel-link').value = current.instaReel || '';
-      document.getElementById('adm-yt-link').value = current.ytLink || '';
+      
+      document.getElementById('adm-media-photo').value = current.photo || '';
+      document.getElementById('adm-media-video').value = current.video || '';
+      document.getElementById('adm-media-insta').value = current.insta || '';
+      document.getElementById('adm-media-youtube').value = current.youtube || '';
     }
 
-    function saveMediaLink() {
-      const mediaSel = document.getElementById('adm-media-day');
-      if (!mediaSel) return;
-      const day = mediaSel.value;
-      const photo = document.getElementById('adm-photo-link').value.trim();
-      const video = document.getElementById('adm-video-link').value.trim();
-      const instaReel = document.getElementById('adm-insta-reel-link').value.trim();
-      const ytLink = document.getElementById('adm-yt-link').value.trim();
+    function saveFourMediaLinks() {
+      const sel = document.getElementById('adm-sched-day-select');
+      if (!sel) return;
+      const day = sel.value;
 
-      cachedMedia[day] = { photo, video, instaReel, ytLink };
+      const photo = document.getElementById('adm-media-photo').value.trim();
+      const video = document.getElementById('adm-media-video').value.trim();
+      const insta = document.getElementById('adm-media-insta').value.trim();
+      const youtube = document.getElementById('adm-media-youtube').value.trim();
+
+      cachedMedia[day] = { photo, video, insta, youtube };
       localStorage.setItem('nbmm_media', JSON.stringify(cachedMedia));
-      if (db) db.ref('media/' + day).set({ photo, video, instaReel, ytLink });
-      alert(`Media links updated and synced successfully!`);
+      if (db) db.ref('media/' + day).set({ photo, video, insta, youtube });
+      
+      alert(`All 4 media links successfully saved and synced across all devices!`);
       renderMediaDay(day);
     }
 
@@ -2634,9 +2649,9 @@
         tb.appendChild(tr);
       });
 
-      const elIn = document.getElementById('tot-in'); if (elIn) elIn.innerText = incPaid;
-      const elPend = document.getElementById('tot-pending'); if (elPend) elPend.innerText = incPending;
-      const elBal = document.getElementById('tot-bal'); if (elBal) elBal.innerText = (incPaid - exp);
+      if (document.getElementById('tot-in')) document.getElementById('tot-in').innerText = incPaid;
+      if (document.getElementById('tot-pending')) document.getElementById('tot-pending').innerText = incPending;
+      if (document.getElementById('tot-bal')) document.getElementById('tot-bal').innerText = (incPaid - exp);
     }
 
     function openReceiptModal(item) {
@@ -2789,7 +2804,9 @@
     initMediaDays();
     renderAartiTabs();
     initShare();
+    renderSocialLinks();
     renderBankDetails();
+    renderRegularTimings();
     renderInstagramLive(cachedInstaLive);
     renderPandalCamLive(cachedPandalCam);
     renderCCTVStream(cachedCCTVStream);
