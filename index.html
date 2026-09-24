@@ -581,134 +581,15 @@
     </div>
   </section>
 
-<!-- DEVOTEE VIEW: 4-SECTION DAY-WISE MEDIA GALLERY -->
-<div class="card">
-  <h3>📸 Utsav Media Gallery (Day-Wise Links)</h3>
-  <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">Select a day to view Photos, Videos, Reels, and AV links:</p>
-  
-  <div class="day-bar" id="media-day-bar"></div>
-  <div id="media-content-view"></div>
-</div>
-
-<!-- ADMIN VIEW: MANAGE 4 SECTIONS PER DAY -->
-<div class="card" style="border-left-color: #f39c12;">
-  <h3>📸 Manage Day-Wise Media Links</h3>
-  <p style="font-size:0.75rem; color:#666; margin-bottom:8px;">Select a day and paste multiple links (one per line).</p>
-  
-  <label style="font-size:0.75rem; font-weight:700;">Select Day to Edit:</label>
-  <select id="adm-media-day-select" class="input-box" onchange="loadAdminMediaFields()"></select>
-  
-  <label style="font-size:0.75rem; font-weight:700; color:#2980b9;">📁 Photos Links (One per line)</label>
-  <textarea id="adm-photo-link" class="input-box" rows="2" placeholder="https://..."></textarea>
-  
-  <label style="font-size:0.75rem; font-weight:700; color:#c0392b;">▶️ Videos Links (One per line)</label>
-  <textarea id="adm-video-link" class="input-box" rows="2" placeholder="https://..."></textarea>
-  
-  <label style="font-size:0.75rem; font-weight:700; color:#e67e22;">🎥 Instagram Reels Links (One per line)</label>
-  <textarea id="adm-reel-link" class="input-box" rows="2" placeholder="https://..."></textarea>
-  
-  <label style="font-size:0.75rem; font-weight:700; color:#8e44ad;">🔴 AV / YouTube Links (One per line)</label>
-  <textarea id="adm-yt-link" class="input-box" rows="2" placeholder="https://..."></textarea>
-  
-  <button class="btn" style="background:#f39c12; color:#000;" onclick="saveMediaLinksPerDay()">💾 Save Media Links for this Day</button>
-</div>
-
-<script>
-  let dayWiseMedia = JSON.parse(localStorage.getItem('nbmm_daywise_media') || '{}');
-  
-  // Assumes cachedSchedule is your array of 10 days
-  const scheduleDays = typeof cachedSchedule !== 'undefined' ? cachedSchedule : [
-    { d: "11/10/2026", devi: "घटस्थापना" }, { d: "12/10/2026", devi: "ब्रह्मचारिणी" },
-    { d: "13/10/2026", devi: "चन्द्रघंटा" }, { d: "14/10/2026", devi: "कूष्माण्डा" },
-    { d: "15/10/2026", devi: "स्कन्दमाता" }, { d: "16/10/2026", devi: "कात्यायनी" },
-    { d: "17/10/2026", devi: "कालरात्रि" }, { d: "18/10/2026", devi: "महागौरी" },
-    { d: "19/10/2026", devi: "सिद्धिदात्री" }, { d: "20/10/2026", devi: "विसर्जन" }
-  ];
-
-  function initMediaGallery() {
-    let barHtml = '';
-    scheduleDays.forEach((x, i) => {
-      barHtml += `<button class="day-btn ${i === 0 ? 'active' : ''}" onclick="renderMediaGalleryDay(${i})">Day ${i+1}</button>`;
-    });
-    const mBar = document.getElementById('media-day-bar');
-    if (mBar) mBar.innerHTML = barHtml;
-
-    let selHtml = '';
-    scheduleDays.forEach((x, i) => {
-      selHtml += `<option value="${i}">Day ${i+1}: ${x.d} - ${x.devi}</option>`;
-    });
-    const mSel = document.getElementById('adm-media-day-select');
-    if (mSel) mSel.innerHTML = selHtml;
-
-    renderMediaGalleryDay(0);
-    loadAdminMediaFields();
-  }
-
-  function renderMediaGalleryDay(idx) {
-    document.querySelectorAll('#media-day-bar .day-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
-    
-    const dayInfo = scheduleDays[idx] || { d: `Day ${idx+1}`, devi: '' };
-    const cur = dayWiseMedia[idx] || {};
-    
-    let html = `<div style="background:#fffaf0; border:1px solid #fce8cc; padding:12px; border-radius:8px; margin-top:8px;">`;
-    html += `<h4 style="color:#7a0006; margin-bottom:6px;">Day ${idx+1} — ${dayInfo.d} (${dayInfo.devi})</h4>`;
-
-    const cats = [
-      { key: 'photos', label: '📁 Photos Albums', color: '#2980b9' },
-      { key: 'videos', label: '▶️ Video Highlights', color: '#c0392b' },
-      { key: 'reels', label: '🎥 Instagram Reels', color: '#e67e22' },
-      { key: 'av', label: '🔴 AV / YouTube Stream', color: '#8e44ad' }
-    ];
-
-    let found = false;
-    cats.forEach(c => {
-      if (cur[c.key] && cur[c.key].trim()) {
-        found = true;
-        html += `<span style="font-size:0.78rem; font-weight:700; margin-top:8px; margin-bottom:4px; display:block; color:${c.color}; text-transform:uppercase;">${c.label}</span>`;
-        cur[c.key].split('\n').map(l => l.trim()).filter(l => l).forEach(url => {
-          let finalUrl = url.startsWith('http') ? url : 'https://' + url;
-          html += `<a class="btn" style="background:${c.color}; width:100%; display:block; text-align:center; padding:8px; margin-bottom:4px; color:#fff; text-decoration:none; border-radius:6px; font-size:0.8rem;" href="${finalUrl}" target="_blank">Open ${c.label} Link</a>`;
-        });
-      }
-    });
-
-    if (!found) {
-      html += `<p style="font-size:0.8rem; color:#777; font-style:italic; margin-top:6px;">No media links added for this day yet.</p>`;
-    }
-    html += `</div>`;
-    
-    const mView = document.getElementById('media-content-view');
-    if (mView) mView.innerHTML = html;
-  }
-
-  function loadAdminMediaFields() {
-    const sel = document.getElementById('adm-media-day-select');
-    if (!sel) return;
-    const day = sel.value || 0;
-    const cur = dayWiseMedia[day] || {};
-    document.getElementById('adm-photo-link').value = cur.photos || '';
-    document.getElementById('adm-video-link').value = cur.videos || '';
-    document.getElementById('adm-reel-link').value = cur.reels || '';
-    document.getElementById('adm-yt-link').value = cur.av || '';
-  }
-
-  function saveMediaLinksPerDay() {
-    const day = document.getElementById('adm-media-day-select').value;
-    dayWiseMedia[day] = {
-      photos: document.getElementById('adm-photo-link').value.trim(),
-      videos: document.getElementById('adm-video-link').value.trim(),
-      reels: document.getElementById('adm-reel-link').value.trim(),
-      av: document.getElementById('adm-yt-link').value.trim()
-    };
-    localStorage.setItem('nbmm_daywise_media', JSON.stringify(dayWiseMedia));
-    alert('Media links successfully saved for Day ' + (parseInt(day)+1) + '!');
-    renderMediaGalleryDay(parseInt(day));
-  }
-
-  initMediaGallery();
-</script>
-  
-  
+  <!-- TAB 2: PHOTOS & VIDEOS -->
+  <section id="tab-media" class="tab">
+    <div class="card">
+      <h3 id="sec-media-title">📸 Utsav Photos & Videos</h3>
+      <p style="font-size:0.85rem; color:#555; margin-bottom:10px;" id="sec-media-sub">Select any day to open full-resolution photo albums and video recordings:</p>
+      <div class="day-bar" id="media-day-bar"></div>
+      <div id="media-content-view" style="margin-top:10px;"></div>
+    </div>
+  </section>
 
   <!-- TAB 3: LIVE DARSHAN -->
   <section id="tab-live" class="tab">
@@ -1242,32 +1123,35 @@
           </div>
         </div>
 
-        <!-- REGULAR TIMINGS EDIT FORM -->
+        <!-- REGULAR TIMINGS EDITOR -->
         <div class="card" style="border-left-color: #e67e22;">
-          <h3>⏰ Edit & Save Regular Daily Timings</h3>
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+          <h3>⏰ Edit Regular Daily Timings (नियमित वेळ)</h3>
+          <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Update daily Aarti and program timings shown on the front screen:</p>
+          
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
             <div>
-              <label style="font-size:0.75rem; font-weight:700;">Subah Aarti</label>
-              <input type="text" id="adm-subah-aarti" class="input-box" placeholder="7:30 AM" />
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">Subah Aarti Time (सकाळ)</label>
+              <input type="text" id="adm-subah-aarti" class="input-box" placeholder="e.g. 7:30 AM" />
             </div>
             <div>
-              <label style="font-size:0.75rem; font-weight:700;">Sandhya Aarti</label>
-              <input type="text" id="adm-sandhya-aarti" class="input-box" placeholder="7:30 PM" />
-            </div>
-          </div>
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-            <div>
-              <label style="font-size:0.75rem; font-weight:700;">Garba & Dandiya</label>
-              <input type="text" id="adm-garba-time" class="input-box" placeholder="8:30 PM" />
-            </div>
-            <div>
-              <label style="font-size:0.75rem; font-weight:700;">Maha Prasad</label>
-              <input type="text" id="adm-prasad-time" class="input-box" placeholder="10:00 PM" />
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">Sandhya Aarti Time (संध्याकाळ)</label>
+              <input type="text" id="adm-sandhya-aarti" class="input-box" placeholder="e.g. 7:30 PM" />
             </div>
           </div>
-          <button class="btn" style="background:#e67e22; width:100%; color:#fff;" onclick="saveRegularTimings()">💾 Save Timings</button>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">Garba & Dandiya (रास गरबा)</label>
+              <input type="text" id="adm-garba-time" class="input-box" placeholder="e.g. 8:30 PM – 10:00 PM" />
+            </div>
+            <div>
+              <label style="font-size:0.75rem; font-weight:600; color:#555;">Maha Prasad (महाप्रसाद)</label>
+              <input type="text" id="adm-prasad-time" class="input-box" placeholder="e.g. 10:00 PM onwards" />
+            </div>
+          </div>
+
+          <button class="btn" style="background:#e67e22; width:100%;" onclick="saveRegularTimings()">💾 Save Regular Timings</button>
         </div>
-        
 
         <div class="card" style="border-left-color: #f39c12;">
           <h3>📸 Upload Day-Wise Media Links</h3>
@@ -1469,7 +1353,7 @@
 
   <script>
     // -------------------------------------------------------------
-    // 1. FIREBASE CONFIGURATION & REAL-TIME SYNC
+    // 1. FIREBASE  CONFIGURATION & REAL-TIME SYNC
     // -------------------------------------------------------------
     const firebaseConfig = {
       apiKey: "AIzaSyDGlzOKivwNehIUzwIMCd2VLgdkGorkUxk",
@@ -1503,42 +1387,12 @@
       { d: "21/10/2026 - बुधवार", dt: "21/10/2026", devi: "मूर्ति विसर्जन", clr: "सफेद (White)", p: "मूर्ति विसर्जन", pr: "महाप्रसाद" }
     ];
 
-        const DEFAULT_TIMINGS = { 
-      subah: "7:30 AM", 
-      sandhya: "7:30 PM", 
-      garba: "8:30 PM – 10:00 PM", 
-      prasad: "10:00 PM onwards" 
+    const DEFAULT_TIMINGS = {
+      subah: "7:30 AM",
+      sandhya: "7:30 PM",
+      garba: "8:30 PM – 10:00 PM",
+      prasad: "10:00 PM onwards"
     };
-
-    let cachedTimings = JSON.parse(localStorage.getItem('nbmm_timings') || 'null') || DEFAULT_TIMINGS;
-
-    function renderRegularTimings() {
-      if(document.getElementById('dsp-subah-aarti')) document.getElementById('dsp-subah-aarti').innerText = cachedTimings.subah;
-      if(document.getElementById('dsp-sandhya-aarti')) document.getElementById('dsp-sandhya-aarti').innerText = cachedTimings.sandhya;
-      if(document.getElementById('dsp-garba-time')) document.getElementById('dsp-garba-time').innerText = cachedTimings.garba;
-      if(document.getElementById('dsp-prasad-time')) document.getElementById('dsp-prasad-time').innerText = cachedTimings.prasad;
-
-      if(document.getElementById('adm-subah-aarti')) document.getElementById('adm-subah-aarti').value = cachedTimings.subah;
-      if(document.getElementById('adm-sandhya-aarti')) document.getElementById('adm-sandhya-aarti').value = cachedTimings.sandhya;
-      if(document.getElementById('adm-garba-time')) document.getElementById('adm-garba-time').value = cachedTimings.garba;
-      if(document.getElementById('adm-prasad-time')) document.getElementById('adm-prasad-time').value = cachedTimings.prasad;
-    }
-
-    function saveRegularTimings() {
-      cachedTimings = {
-        subah: document.getElementById('adm-subah-aarti').value.trim() || DEFAULT_TIMINGS.subah,
-        sandhya: document.getElementById('adm-sandhya-aarti').value.trim() || DEFAULT_TIMINGS.sandhya,
-        garba: document.getElementById('adm-garba-time').value.trim() || DEFAULT_TIMINGS.garba,
-        prasad: document.getElementById('adm-prasad-time').value.trim() || DEFAULT_TIMINGS.prasad
-      };
-
-      localStorage.setItem('nbmm_timings', JSON.stringify(cachedTimings));
-      renderRegularTimings();
-      alert('Regular timings updated and saved successfully!');
-    }
-
-    renderRegularTimings();
-    
 
     const DEFAULT_AARTIES = [
       {
@@ -1749,6 +1603,27 @@
       }
     }
 
+    function saveBankDetails() {
+      if (localStorage.getItem('nbmm_auth') !== '1') {
+        alert('Access Denied: Please log in to Mandal Khata first.');
+        return;
+      }
+      const upi = document.getElementById('adm-upi-id').value.trim() || DEFAULT_BANK.upi;
+      const qrImg = document.getElementById('adm-qr-url').value.trim();
+      const holder = document.getElementById('adm-bank-name-holder').value.trim() || DEFAULT_BANK.holder;
+      const bank = document.getElementById('adm-bank-name').value.trim() || DEFAULT_BANK.bank;
+      const acc = document.getElementById('adm-bank-acc').value.trim() || DEFAULT_BANK.acc;
+      const ifsc = document.getElementById('adm-bank-ifsc').value.trim() || DEFAULT_BANK.ifsc;
+      const branch = document.getElementById('adm-bank-branch').value.trim() || DEFAULT_BANK.branch;
+      const type = document.getElementById('adm-bank-type').value.trim() || DEFAULT_BANK.type;
+
+      cachedBank = { upi, qrImg, holder, bank, acc, ifsc, branch, type };
+      localStorage.setItem('nbmm_bank_details', JSON.stringify(cachedBank));
+      if (db) db.ref('bank_details').set(cachedBank);
+      renderBankDetails();
+      alert('Bank & UPI details saved successfully!');
+    }
+
     // -------------------------------------------------------------
     // ZERO-DELAY PANDAL PROJECTOR CAM STREAMING ENGINE
     // -------------------------------------------------------------
@@ -1785,6 +1660,10 @@
     }
 
     function togglePandalCamLive(turnOn) {
+      if (localStorage.getItem('nbmm_auth') !== '1') {
+        alert('Access Denied: Please log in to Mandal Khata first.');
+        return;
+      }
       cachedPandalCam = turnOn;
       localStorage.setItem('nbmm_pandal_cam', turnOn ? '1' : '0');
       if (db) db.ref('pandal_cam_live').set(turnOn);
@@ -1800,19 +1679,32 @@
       const msg = document.getElementById('cctv-offline-msg');
       const iframe = document.getElementById('cctv-iframe');
 
+      if (localStorage.getItem('nbmm_auth') !== '1') {
+        if (wrap) wrap.style.display = 'none';
+        if (msg) {
+          msg.style.display = 'block';
+          msg.innerHTML = '🔒 Locked: Please sign in to Mandal Khata to view secure CCTV feeds.';
+        }
+        return;
+      }
+
       if (url && url.trim()) {
-        const finalUrl = extractYouTubeEmbed(url.trim());
-        iframe.src = finalUrl;
+        iframe.src = url.trim();
         wrap.style.display = 'block';
         msg.style.display = 'none';
       } else {
         iframe.src = '';
         wrap.style.display = 'none';
         msg.style.display = 'block';
+        msg.innerHTML = '🔒 No CCTV link configured yet. Paste your private stream link above.';
       }
     }
 
     function saveCCTVStream() {
+      if (localStorage.getItem('nbmm_auth') !== '1') {
+        alert('Access Denied: Please log in to Mandal Khata first.');
+        return;
+      }
       const url = document.getElementById('adm-cctv-url').value.trim();
       cachedCCTVStream = url;
       localStorage.setItem('nbmm_cctv_url', url);
@@ -1908,6 +1800,10 @@
     }
 
     function saveLiveStream() {
+      if (localStorage.getItem('nbmm_auth') !== '1') {
+        alert('Access Denied: Please log in to Mandal Khata first.');
+        return;
+      }
       const url = document.getElementById('adm-live-url').value.trim();
       if (!url) {
         alert('Please paste a valid YouTube Live link.');
@@ -1921,6 +1817,10 @@
     }
 
     function clearLiveStream() {
+      if (localStorage.getItem('nbmm_auth') !== '1') {
+        alert('Access Denied: Please log in to Mandal Khata first.');
+        return;
+      }
       if (!confirm('End YouTube live stream for all devotees?')) return;
       cachedLiveStream = '';
       localStorage.removeItem('nbmm_live_url');
@@ -1960,6 +1860,10 @@
     }
 
     function toggleInstagramLive(turnOn) {
+      if (localStorage.getItem('nbmm_auth') !== '1') {
+        alert('Access Denied: Please log in to Mandal Khata first.');
+        return;
+      }
       cachedInstaLive = turnOn;
       localStorage.setItem('nbmm_insta_live', turnOn ? '1' : '0');
       if (db) db.ref('insta_live').set(turnOn);
@@ -2272,6 +2176,10 @@
     }
 
     function updateSettingsPassword() {
+      if (localStorage.getItem('nbmm_auth') !== '1') {
+        alert('Access Denied: Please log in to Mandal Khata first.');
+        return;
+      }
       const newU = document.getElementById('set-uid').value.trim();
       const newP = document.getElementById('set-pin').value.trim();
 
@@ -2306,6 +2214,7 @@
             if (typeof renderBankDetails === 'function') renderBankDetails();
             if (typeof renderRegularTimings === 'function') renderRegularTimings();
             if (typeof renderRows === 'function') renderRows();
+            if (typeof renderCCTVStream === 'function') renderCCTVStream(cachedCCTVStream);
           } catch (e) {
             console.warn("Panel init note:", e);
           }
@@ -2340,6 +2249,7 @@
       document.getElementById('uid').value = '';
       document.getElementById('pin').value = '';
       cancelEdit();
+      renderCCTVStream(''); // Re-lock CCTV when logged out
       if (!silent) {
         alert('Signed out successfully.');
       }
@@ -2421,6 +2331,10 @@
     }
 
     function addNewFestivalDay() {
+      if (localStorage.getItem('nbmm_auth') !== '1') {
+        alert('Access Denied: Please log in to Mandal Khata first.');
+        return;
+      }
       const newDay = {
         d: "22/10/2026 - गुरुवार",
         dt: "22/10/2026",
@@ -2442,6 +2356,10 @@
     }
 
     function saveScheduleDay() {
+      if (localStorage.getItem('nbmm_auth') !== '1') {
+        alert('Access Denied: Please log in to Mandal Khata first.');
+        return;
+      }
       const sel = document.getElementById('adm-sched-day-select');
       if (!sel) return;
       const idx = parseInt(sel.value) || 0;
@@ -2465,6 +2383,10 @@
     }
 
     function deleteCurrentScheduleDay() {
+      if (localStorage.getItem('nbmm_auth') !== '1') {
+        alert('Access Denied: Please log in to Mandal Khata first.');
+        return;
+      }
       const sel = document.getElementById('adm-sched-day-select');
       if (!sel) return;
       const idx = parseInt(sel.value) || 0;
@@ -2487,6 +2409,10 @@
     }
 
     function resetScheduleDefaults() {
+      if (localStorage.getItem('nbmm_auth') !== '1') {
+        alert('Access Denied: Please log in to Mandal Khata first.');
+        return;
+      }
       if (!confirm('Reset schedule back to official Navratri 2026 poster dates?')) return;
       cachedSchedule = DEFAULT_DAYS;
       localStorage.setItem('nbmm_schedule_custom', JSON.stringify(DEFAULT_DAYS));
@@ -2551,6 +2477,10 @@
     }
 
     function saveMediaLink() {
+      if (localStorage.getItem('nbmm_auth') !== '1') {
+        alert('Access Denied: Please log in to Mandal Khata first.');
+        return;
+      }
       const mediaSel = document.getElementById('adm-media-day');
       if (!mediaSel) return;
       const day = mediaSel.value;
@@ -2562,12 +2492,16 @@
       if (db) db.ref('media/' + day).set({ photo, video });
       alert(`Media links updated!`);
       renderMediaDay(day);
-  }
+    }
 
     // -------------------------------------------------------------
     // KHATA & RECEIPTS MANAGER
     // -------------------------------------------------------------
     function saveRecord(autoDeliver) {
+      if (localStorage.getItem('nbmm_auth') !== '1') {
+        alert('Access Denied: Please log in to Mandal Khata first.');
+        return;
+      }
       const name = document.getElementById('r-name').value.trim();
       const amt = parseFloat(document.getElementById('r-amt').value);
       const category = document.getElementById('r-category').value;
@@ -2644,6 +2578,10 @@
     }
 
     function editRow(id) {
+      if (localStorage.getItem('nbmm_auth') !== '1') {
+        alert('Access Denied: Please log in to Mandal Khata first.');
+        return;
+      }
       const item = cachedEntries.find(x => x.id == id);
       if (!item) return;
 
@@ -2678,6 +2616,10 @@
     }
 
     function deleteRow(id) {
+      if (localStorage.getItem('nbmm_auth') !== '1') {
+        alert('Access Denied: Please log in to Mandal Khata first.');
+        return;
+      }
       if (!confirm('Delete this receipt across all devices?')) return;
       cachedEntries = cachedEntries.filter(x => x.id != id);
       localStorage.setItem('nbmm_entries', JSON.stringify(cachedEntries));
@@ -2834,6 +2776,10 @@
     }
 
     function saveNewAarti() {
+      if (localStorage.getItem('nbmm_auth') !== '1') {
+        alert('Access Denied: Please log in to Mandal Khata first.');
+        return;
+      }
       const title = document.getElementById('adm-aarti-title').value.trim();
       const lyrics = document.getElementById('adm-aarti-lyrics').value.trim();
 
@@ -2857,6 +2803,10 @@
     }
 
     function deleteAarti(id) {
+      if (localStorage.getItem('nbmm_auth') !== '1') {
+        alert('Access Denied: Please log in to Mandal Khata first.');
+        return;
+      }
       if (!confirm('Delete this Aarti across all phones?')) return;
       cachedAarties = cachedAarties.filter(x => x.id !== id);
       localStorage.setItem('nbmm_aarties', JSON.stringify(cachedAarties));
@@ -2884,50 +2834,6 @@
         `;
         box.appendChild(div);
       });
-
-          // -------------------------------------------------------------
-    // REGULAR TIMINGS MANAGER
-    // -------------------------------------------------------------
-    function renderRegularTimings() {
-      const t = cachedTimings || DEFAULT_TIMINGS;
-      const subahEl = document.getElementById('dsp-subah-aarti');
-      const sandhyaEl = document.getElementById('dsp-sandhya-aarti');
-      const garbaEl = document.getElementById('dsp-garba-time');
-      const prasadEl = document.getElementById('dsp-prasad-time');
-
-      if (subahEl) subahEl.innerText = t.subah || DEFAULT_TIMINGS.subah;
-      if (sandhyaEl) sandhyaEl.innerText = t.sandhya || DEFAULT_TIMINGS.sandhya;
-      if (garbaEl) garbaEl.innerText = t.garba || DEFAULT_TIMINGS.garba;
-      if (prasadEl) prasadEl.innerText = t.prasad || DEFAULT_TIMINGS.prasad;
-
-      // Populate admin inputs if visible
-      if (document.getElementById('adm-subah-aarti')) {
-        document.getElementById('adm-subah-aarti').value = t.subah || DEFAULT_TIMINGS.subah;
-        document.getElementById('adm-sandhya-aarti').value = t.sandhya || DEFAULT_TIMINGS.sandhya;
-        document.getElementById('adm-garba-time').value = t.garba || DEFAULT_TIMINGS.garba;
-        document.getElementById('adm-prasad-time').value = t.prasad || DEFAULT_TIMINGS.prasad;
-      }
-    }
-
-    function saveRegularTimings() {
-      const subah = document.getElementById('adm-subah-aarti').value.trim();
-      const sandhya = document.getElementById('adm-sandhya-aarti').value.trim();
-      const garba = document.getElementById('adm-garba-time').value.trim();
-      const prasad = document.getElementById('adm-prasad-time').value.trim();
-
-      if (!subah || !sandhya) {
-        alert('Please enter valid Aarti timings.');
-        return;
-      }
-
-      cachedTimings = { subah, sandhya, garba, prasad };
-      localStorage.setItem('nbmm_timings', JSON.stringify(cachedTimings));
-      if (db) db.ref('regular_timings').set(cachedTimings);
-
-      renderRegularTimings();
-      alert('Regular timings updated and synced across all devices!');
-    }
-    
     }
 
     // -------------------------------------------------------------
@@ -2946,8 +2852,6 @@
     renderCCTVStream(cachedCCTVStream);
     renderLiveStream(cachedLiveStream);
     checkLogin();
-    saveRegularTimings()
-    
   </script>
 </body>
 </html>
