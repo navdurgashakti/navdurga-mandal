@@ -1242,35 +1242,32 @@
           </div>
         </div>
 
-        <!-- REGULAR TIMINGS EDITOR -->
+        <!-- REGULAR TIMINGS EDIT FORM -->
         <div class="card" style="border-left-color: #e67e22;">
-          <h3>⏰ Edit Regular Daily Timings (नियमित वेळ)</h3>
-          <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Update daily Aarti and program timings shown on the front screen:</p>
-          
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <h3>⏰ Edit & Save Regular Daily Timings</h3>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
             <div>
-              <label style="font-size:0.75rem; font-weight:600; color:#555;">Subah Aarti Time (सकाळ)</label>
-              <input type="text" id="adm-subah-aarti" class="input-box" placeholder="e.g. 7:30 AM" />
+              <label style="font-size:0.75rem; font-weight:700;">Subah Aarti</label>
+              <input type="text" id="adm-subah-aarti" class="input-box" placeholder="7:30 AM" />
             </div>
             <div>
-              <label style="font-size:0.75rem; font-weight:600; color:#555;">Sandhya Aarti Time (संध्याकाळ)</label>
-              <input type="text" id="adm-sandhya-aarti" class="input-box" placeholder="e.g. 7:30 PM" />
+              <label style="font-size:0.75rem; font-weight:700;">Sandhya Aarti</label>
+              <input type="text" id="adm-sandhya-aarti" class="input-box" placeholder="7:30 PM" />
             </div>
           </div>
-
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
             <div>
-              <label style="font-size:0.75rem; font-weight:600; color:#555;">Garba & Dandiya (रास गरबा)</label>
-              <input type="text" id="adm-garba-time" class="input-box" placeholder="e.g. 8:30 PM – 10:00 PM" />
+              <label style="font-size:0.75rem; font-weight:700;">Garba & Dandiya</label>
+              <input type="text" id="adm-garba-time" class="input-box" placeholder="8:30 PM" />
             </div>
             <div>
-              <label style="font-size:0.75rem; font-weight:600; color:#555;">Maha Prasad (महाप्रसाद)</label>
-              <input type="text" id="adm-prasad-time" class="input-box" placeholder="e.g. 10:00 PM onwards" />
+              <label style="font-size:0.75rem; font-weight:700;">Maha Prasad</label>
+              <input type="text" id="adm-prasad-time" class="input-box" placeholder="10:00 PM" />
             </div>
           </div>
-
-          <button class="btn" style="background:#e67e22; width:100%;" onclick="saveRegularTimings()">💾 Save Regular Timings</button>
+          <button class="btn" style="background:#e67e22; width:100%; color:#fff;" onclick="saveRegularTimings()">💾 Save Timings</button>
         </div>
+        
 
         <div class="card" style="border-left-color: #f39c12;">
           <h3>📸 Upload Day-Wise Media Links</h3>
@@ -2919,6 +2916,7 @@
     renderCCTVStream(cachedCCTVStream);
     renderLiveStream(cachedLiveStream);
     checkLogin();
+    saveRegularTimings()
     
   </script>
 </body>
