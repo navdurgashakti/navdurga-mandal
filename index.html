@@ -2692,7 +2692,7 @@
     }
 
     // -------------------------------------------------------------
-    // KHATA & RECEIPTS MANAGER
+    // KHATA  & RECEIPTS MANAGER
     // -------------------------------------------------------------
     function saveRecord(autoDeliver) {
       if (localStorage.getItem('nbmm_auth') !== '1') {
@@ -2879,9 +2879,14 @@
         tb.appendChild(tr);
       });
 
-      document.getElementById('tot-in').innerText = incPaid;
-      document.getElementById('tot-pending').innerText = incPending;
-      document.getElementById('tot-bal').innerText = (incPaid - exp);
+      const totIn = document.getElementById('tot-in');
+      const totPen = document.getElementById('tot-pending');
+      const totBal = document.getElementById('tot-bal');
+
+      if (totIn) totIn.innerText = incPaid;
+      if (totPen) totPen.innerText = incPending;
+      if (totBal) totBal.innerText = (incPaid - exp);
+
       renderCategoryBreakdownCards();
     }
 
