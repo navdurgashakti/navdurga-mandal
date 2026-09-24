@@ -1503,12 +1503,42 @@
       { d: "21/10/2026 - बुधवार", dt: "21/10/2026", devi: "मूर्ति विसर्जन", clr: "सफेद (White)", p: "मूर्ति विसर्जन", pr: "महाप्रसाद" }
     ];
 
-    const DEFAULT_TIMINGS = {
-      subah: "7:30 AM",
-      sandhya: "7:30 PM",
-      garba: "8:30 PM – 10:00 PM",
-      prasad: "10:00 PM onwards"
+        const DEFAULT_TIMINGS = { 
+      subah: "7:30 AM", 
+      sandhya: "7:30 PM", 
+      garba: "8:30 PM – 10:00 PM", 
+      prasad: "10:00 PM onwards" 
     };
+
+    let cachedTimings = JSON.parse(localStorage.getItem('nbmm_timings') || 'null') || DEFAULT_TIMINGS;
+
+    function renderRegularTimings() {
+      if(document.getElementById('dsp-subah-aarti')) document.getElementById('dsp-subah-aarti').innerText = cachedTimings.subah;
+      if(document.getElementById('dsp-sandhya-aarti')) document.getElementById('dsp-sandhya-aarti').innerText = cachedTimings.sandhya;
+      if(document.getElementById('dsp-garba-time')) document.getElementById('dsp-garba-time').innerText = cachedTimings.garba;
+      if(document.getElementById('dsp-prasad-time')) document.getElementById('dsp-prasad-time').innerText = cachedTimings.prasad;
+
+      if(document.getElementById('adm-subah-aarti')) document.getElementById('adm-subah-aarti').value = cachedTimings.subah;
+      if(document.getElementById('adm-sandhya-aarti')) document.getElementById('adm-sandhya-aarti').value = cachedTimings.sandhya;
+      if(document.getElementById('adm-garba-time')) document.getElementById('adm-garba-time').value = cachedTimings.garba;
+      if(document.getElementById('adm-prasad-time')) document.getElementById('adm-prasad-time').value = cachedTimings.prasad;
+    }
+
+    function saveRegularTimings() {
+      cachedTimings = {
+        subah: document.getElementById('adm-subah-aarti').value.trim() || DEFAULT_TIMINGS.subah,
+        sandhya: document.getElementById('adm-sandhya-aarti').value.trim() || DEFAULT_TIMINGS.sandhya,
+        garba: document.getElementById('adm-garba-time').value.trim() || DEFAULT_TIMINGS.garba,
+        prasad: document.getElementById('adm-prasad-time').value.trim() || DEFAULT_TIMINGS.prasad
+      };
+
+      localStorage.setItem('nbmm_timings', JSON.stringify(cachedTimings));
+      renderRegularTimings();
+      alert('Regular timings updated and saved successfully!');
+    }
+
+    renderRegularTimings();
+    
 
     const DEFAULT_AARTIES = [
       {
