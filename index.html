@@ -166,57 +166,6 @@
     .badge-paid { background: #e8f8f5; color: #27ae60; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; border: 1px solid #a3e4d7; display: inline-block; }
     .badge-unpaid { background: #fef9e7; color: #d35400; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; border: 1px solid #f9e79f; display: inline-block; }
 
-    /* Home Screen Photo Showcase Grid */
-    .home-showcase-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      margin-top: 8px;
-    }
-    .home-showcase-item {
-      position: relative;
-      border-radius: 6px;
-      overflow: hidden;
-      aspect-ratio: 1 / 1;
-      background: #000;
-      border: 1px solid #ebd8bd;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-      cursor: pointer;
-    }
-    .home-showcase-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.3s ease;
-    }
-    .home-showcase-item:hover img {
-      transform: scale(1.08);
-    }
-    .home-showcase-caption {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      background: rgba(0,0,0,0.75);
-      color: #fff;
-      font-size: 0.62rem;
-      font-weight: 700;
-      padding: 3px 2px;
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* Image Preview Modal */
-    #image-preview-modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.9);
-      z-index: 600;
-      padding: 20px;
-      text-align: center;
-    }
-
     /* Bifurcated Sub-Tabs Bar in Khata */
     .admin-sub-bar {
       display: flex;
@@ -586,35 +535,8 @@
     </div>
   </aside>
 
-  <!-- IMAGE PREVIEW POPUP MODAL -->
-  <div id="image-preview-modal" onclick="closeImagePreview()">
-    <div style="max-width:92%; max-height:85vh; margin:8vh auto 0; position:relative;">
-      <img id="preview-modal-img" src="" style="max-width:100%; max-height:75vh; border-radius:8px; border:3px solid var(--gold); object-fit:contain;" />
-      <div id="preview-modal-caption" style="color:#fff; font-size:1.05rem; font-weight:700; margin-top:10px; text-shadow:0 1px 2px rgba(0,0,0,0.8);"></div>
-      <button class="btn" style="background:#c0392b; margin-top:14px; padding:8px 20px;" onclick="closeImagePreview()">✕ Close Preview</button>
-    </div>
-  </div>
-
-  <!-- TAB 1: SCHEDULE, REGULAR TIMINGS & HOME SCREEN SHOWCASE -->
+  <!-- TAB 1: SCHEDULE & REGULAR TIMINGS -->
   <section id="tab-schedule" class="tab active">
-    
-    <!-- HOME SCREEN PHOTO HIGHLIGHTS (DYNAMICALLY MANAGED) -->
-    <div class="card" style="border-left-color: #d4af37; background: linear-gradient(135deg, #fffdf8, #fff6e4);">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-        <h3 style="margin:0; font-size:0.95rem;">🪔 Utsav Photo Highlights</h3>
-        <span style="font-size:0.68rem; font-weight:700; color:#7a0006; background:#fce8cc; padding:2px 8px; border-radius:10px;">Navratri 2026</span>
-      </div>
-      <p style="font-size:0.75rem; color:#666; margin-bottom:6px;">Glimpse of Mata Ji's divine idol & Sukhlaji Street celebrations:</p>
-      
-      <div class="home-showcase-grid" id="home-showcase-container">
-        <!-- Dynamically rendered custom home screen photos -->
-      </div>
-      
-      <button class="btn" style="background:#7a0006; width:100%; margin-top:8px; font-size:0.75rem; padding:7px;" onclick="switchSection('media', document.querySelectorAll('.drawer-links button')[1])">
-        📸 View Full Media Albums ➔
-      </button>
-    </div>
-
     <div class="card" style="border-left-color: #2e7d32;">
       <h3 id="sec-pandal-title">Pandal Address & Helpdesk</h3>
       <p><strong>NEW MUNICIPAL BUILDING 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008</strong></p>
@@ -647,7 +569,7 @@
     </div>
   </section>
 
-  <!-- TAB 2: PHOTOS & VIDEOS (SEPARATE UNTOUCHED MEDIA SECTION) -->
+  <!-- TAB 2: PHOTOS & VIDEOS -->
   <section id="tab-media" class="tab">
     <div class="card">
       <h3 id="sec-media-title">📸 Utsav Photos & Videos</h3>
@@ -1240,32 +1162,9 @@
         </div>
       </div>
 
-      <!-- SUB-TAB 5: SETTINGS, SOCIAL, SESSIONS & HOME GALLERY MANAGER -->
+      <!-- SUB-TAB 5: SETTINGS, SOCIAL, SESSIONS & AARTIS -->
       <div id="asv-settings" class="admin-sub-view">
-        
-        <!-- HOME SCREEN GALLERY MANAGER (ADD/DELETE 4-5 PHOTOS) -->
-        <div class="card" style="border-left-color: #d4af37;">
-          <h3>🖼️ Home Screen Utsav Photo Highlights Manager</h3>
-          <p style="font-size:0.75rem; color:#555; margin-bottom:10px;">
-            Add or delete the 4-6 photos displayed directly on the home screen showcase (independent of the daily media tab):
-          </p>
-
-          <div style="background:#fffdf8; border:1px solid #ebd8bd; padding:10px; border-radius:8px; margin-bottom:10px;">
-            <label style="font-size:0.72rem; font-weight:600; color:#555;">Photo Image Link / URL *</label>
-            <input type="url" id="adm-home-img-url" class="input-box" placeholder="Paste image URL (e.g. https://...)" />
-
-            <label style="font-size:0.72rem; font-weight:600; color:#555;">Photo Caption / Title (e.g. Mata Ji Darshan)</label>
-            <input type="text" id="adm-home-img-caption" class="input-box" placeholder="Enter short title" />
-
-            <button class="btn" style="background:#d4af37; color:#000; width:100%; font-weight:bold;" onclick="addHomeScreenPhoto()">➕ Add Photo to Home Screen</button>
-          </div>
-
-          <div id="adm-home-photos-list">
-            <!-- Populated dynamically -->
-          </div>
-        </div>
-
-        <div class="card" style="border-left-color: #e74c3c; margin-top: 12px;">
+        <div class="card" style="border-left-color: #e74c3c;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
             <h3>📱 सक्रिय उपकरणे / Active Logged-In Mobiles</h3>
             <span id="active-device-count" style="background:#e74c3c; color:#fff; font-size:0.7rem; padding:2px 8px; border-radius:10px; font-weight:bold;">0 Active</span>
@@ -1281,7 +1180,7 @@
           </button>
         </div>
 
-        <div class="card" style="border-left-color: #25d366; margin-top: 12px;">
+        <div class="card" style="border-left-color: #25d366;">
           <h3>📱 Update Instagram & WhatsApp Links</h3>
           <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Paste your official Instagram profile and WhatsApp invite link:</p>
           <label style="font-size:0.75rem; font-weight:600; color:#555;">Instagram URL</label>
@@ -1291,7 +1190,7 @@
           <button class="btn" style="background:#25d366; width:100%;" onclick="saveSocialLinks()">💾 Save Social Links</button>
         </div>
 
-        <div class="card" style="border-left-color: #2980b9; margin-top: 12px;">
+        <div class="card" style="border-left-color: #2980b9;">
           <h3>⚙️ Settings & Security</h3>
           <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Change Committee Login Credentials:</p>
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
@@ -1307,7 +1206,7 @@
           <button class="btn" style="background:#2980b9; width:100%;" onclick="updateSettingsPassword()">💾 Save New Credentials</button>
         </div>
 
-        <div class="card" style="border-left-color: #e67e22; margin-top: 12px;">
+        <div class="card" style="border-left-color: #e67e22;">
           <h3>🕉️ Add / Manage Festival Aarties</h3>
           <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Add new Aartis or Bhajans:</p>
           <input type="text" id="adm-aarti-title" class="input-box" placeholder="Aarti Title (Hindi / Marathi / English)" />
@@ -1423,7 +1322,7 @@
             </div>
 
             <div class="mrc-qr-box">
-              <img id="pr-qr-code" alt="QR" />
+              <img id="pr-qr-code" src="" alt="QR" />
               <span>पडताळणी / Scan<br>Verify Receipt</span>
             </div>
           </div>
@@ -1493,15 +1392,6 @@
       prasad: "10:00 PM onwards"
     };
 
-    const DEFAULT_HOME_PHOTOS = [
-      { id: "hp_1", url: "icon.jpg", caption: "Mata Ji Darshan" },
-      { id: "hp_2", url: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=300&auto=format&fit=crop", caption: "Pandal Decor" },
-      { id: "hp_3", url: "https://images.unsplash.com/photo-1567157577867-05ccb1388e66?q=80&w=300&auto=format&fit=crop", caption: "Maha Aarti" },
-      { id: "hp_4", url: "https://images.unsplash.com/photo-1543807535-eceef0bc6599?q=80&w=300&auto=format&fit=crop", caption: "Garba Ras" },
-      { id: "hp_5", url: "https://images.unsplash.com/photo-1599839575945-a9e5af0c3fa5?q=80&w=300&auto=format&fit=crop", caption: "Devotees Seva" },
-      { id: "hp_6", url: "https://images.unsplash.com/photo-1606216794074-735e91bcbc29?q=80&w=300&auto=format&fit=crop", caption: "Maha Prasad" }
-    ];
-
     const DEFAULT_AARTIES = [
       {
         id: "aarti_1",
@@ -1534,7 +1424,6 @@
 
     let cachedSchedule = JSON.parse(localStorage.getItem('nbmm_schedule_custom') || 'null') || DEFAULT_DAYS;
     let cachedTimings = JSON.parse(localStorage.getItem('nbmm_timings') || 'null') || DEFAULT_TIMINGS;
-    let cachedHomePhotos = JSON.parse(localStorage.getItem('nbmm_home_photos') || 'null') || DEFAULT_HOME_PHOTOS;
     let cachedMedia = JSON.parse(localStorage.getItem('nbmm_media') || '{}');
     let cachedEntries = JSON.parse(localStorage.getItem('nbmm_entries') || '[]');
     let cachedAarties = JSON.parse(localStorage.getItem('nbmm_aarties') || 'null') || DEFAULT_AARTIES;
@@ -1575,19 +1464,6 @@
           localStorage.setItem('nbmm_timings', JSON.stringify(val));
           renderRegularTimings();
         }
-      });
-
-      db.ref('home_photos').on('value', (snap) => {
-        const val = snap.val();
-        if (val) {
-          cachedHomePhotos = Object.values(val);
-          localStorage.setItem('nbmm_home_photos', JSON.stringify(cachedHomePhotos));
-        } else {
-          cachedHomePhotos = DEFAULT_HOME_PHOTOS;
-          localStorage.setItem('nbmm_home_photos', JSON.stringify(DEFAULT_HOME_PHOTOS));
-        }
-        renderHomeScreenPhotos();
-        renderAdminHomePhotosList();
       });
 
       db.ref('media').on('value', (snap) => {
@@ -1693,97 +1569,6 @@
         cachedSessions = val;
         renderDeviceSessions();
       });
-    }
-
-    // -------------------------------------------------------------
-    // HOME SCREEN PHOTO HIGHLIGHTS & PREVIEW MODAL
-    // -------------------------------------------------------------
-    function renderHomeScreenPhotos() {
-      const container = document.getElementById('home-showcase-container');
-      if (!container) return;
-      container.innerHTML = '';
-
-      if (!cachedHomePhotos || cachedHomePhotos.length === 0) {
-        container.innerHTML = '<p style="font-size:0.75rem; color:#777; grid-column:span 3; text-align:center;">No photos added yet.</p>';
-        return;
-      }
-
-      cachedHomePhotos.forEach(p => {
-        const div = document.createElement('div');
-        div.className = 'home-showcase-item';
-        div.onclick = function() { openImagePreview(p.url, p.caption); };
-        div.innerHTML = `
-          <img src="${p.url}" alt="${p.caption || 'Mandal Photo'}" onerror="this.src='icon.jpg'" />
-          <div class="home-showcase-caption">${p.caption || 'Utsav'}</div>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function openImagePreview(url, caption) {
-      document.getElementById('preview-modal-img').src = url;
-      document.getElementById('preview-modal-caption').innerText = caption || 'Utsav Photo Highlight';
-      document.getElementById('image-preview-modal').style.display = 'block';
-    }
-
-    function closeImagePreview() {
-      document.getElementById('image-preview-modal').style.display = 'none';
-    }
-
-    function renderAdminHomePhotosList() {
-      const list = document.getElementById('adm-home-photos-list');
-      if (!list) return;
-      list.innerHTML = '';
-
-      if (!cachedHomePhotos || cachedHomePhotos.length === 0) {
-        list.innerHTML = '<p style="font-size:0.75rem; color:#777;">No home screen photos added yet.</p>';
-        return;
-      }
-
-      cachedHomePhotos.forEach(p => {
-        const row = document.createElement('div');
-        row.style = 'display:flex; align-items:center; justify-content:space-between; background:#f9f5ed; border:1px solid #e2d2b5; padding:6px 10px; border-radius:6px; margin-bottom:6px; font-size:0.78rem;';
-        row.innerHTML = `
-          <div style="display:flex; align-items:center; gap:8px; overflow:hidden;">
-            <img src="${p.url}" style="width:36px; height:36px; border-radius:4px; object-fit:cover;" onerror="this.src='icon.jpg'" />
-            <span style="font-weight:700; color:#333; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px;">${p.caption || 'Photo'}</span>
-          </div>
-          <button class="btn" style="background:#c0392b; padding:4px 8px; font-size:0.7rem;" onclick="deleteHomeScreenPhoto('${p.id}')">🗑️ Delete</button>
-        `;
-        list.appendChild(row);
-      });
-    }
-
-    function addHomeScreenPhoto() {
-      const url = document.getElementById('adm-home-img-url').value.trim();
-      const caption = document.getElementById('adm-home-img-caption').value.trim() || 'Utsav';
-
-      if (!url) {
-        alert('Please enter a valid image URL.');
-        return;
-      }
-
-      const id = 'hp_' + Date.now();
-      const newPhoto = { id, url, caption };
-
-      cachedHomePhotos.push(newPhoto);
-      localStorage.setItem('nbmm_home_photos', JSON.stringify(cachedHomePhotos));
-      if (db) db.ref('home_photos/' + id).set(newPhoto);
-
-      document.getElementById('adm-home-img-url').value = '';
-      document.getElementById('adm-home-img-caption').value = '';
-      alert('Photo added to Home Screen successfully!');
-      renderHomeScreenPhotos();
-      renderAdminHomePhotosList();
-    }
-
-    function deleteHomeScreenPhoto(id) {
-      if (!confirm('Delete this photo from the home screen showcase?')) return;
-      cachedHomePhotos = cachedHomePhotos.filter(p => p.id !== id);
-      localStorage.setItem('nbmm_home_photos', JSON.stringify(cachedHomePhotos));
-      if (db) db.ref('home_photos/' + id).remove();
-      renderHomeScreenPhotos();
-      renderAdminHomePhotosList();
     }
 
     // -------------------------------------------------------------
@@ -2402,7 +2187,6 @@
             if (document.getElementById('set-pin')) document.getElementById('set-pin').value = cachedAuth.pin;
             if (typeof populateScheduleSelects === 'function') populateScheduleSelects();
             if (typeof renderAdminAartiList === 'function') renderAdminAartiList();
-            if (typeof renderAdminHomePhotosList === 'function') renderAdminHomePhotosList();
             if (typeof renderSocialLinks === 'function') renderSocialLinks();
             if (typeof renderBankDetails === 'function') renderBankDetails();
             if (typeof renderRegularTimings === 'function') renderRegularTimings();
@@ -3023,8 +2807,6 @@
     renderSocialLinks();
     renderBankDetails();
     renderRegularTimings();
-    renderHomeScreenPhotos();
-    renderAdminHomePhotosList();
     renderInstagramLive(cachedInstaLive);
     renderPandalCamLive(cachedPandalCam);
     renderCCTVStream(cachedCCTVStream);
