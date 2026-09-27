@@ -181,6 +181,7 @@
       background: #000;
       border: 1px solid #ebd8bd;
       box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      cursor: pointer;
     }
     .home-showcase-item img {
       width: 100%;
@@ -203,6 +204,17 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    /* Image Preview Modal */
+    #image-preview-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 600;
+      padding: 20px;
+      text-align: center;
     }
 
     /* Bifurcated Sub-Tabs Bar in Khata */
@@ -573,6 +585,15 @@
       <button onclick="switchSection('admin', this)" id="nav-admin">🔐 पावती पुस्तक (Khata)</button>
     </div>
   </aside>
+
+  <!-- IMAGE PREVIEW POPUP MODAL -->
+  <div id="image-preview-modal" onclick="closeImagePreview()">
+    <div style="max-width:92%; max-height:85vh; margin:8vh auto 0; position:relative;">
+      <img id="preview-modal-img" src="" style="max-width:100%; max-height:75vh; border-radius:8px; border:3px solid var(--gold); object-fit:contain;" />
+      <div id="preview-modal-caption" style="color:#fff; font-size:1.05rem; font-weight:700; margin-top:10px; text-shadow:0 1px 2px rgba(0,0,0,0.8);"></div>
+      <button class="btn" style="background:#c0392b; margin-top:14px; padding:8px 20px;" onclick="closeImagePreview()">✕ Close Preview</button>
+    </div>
+  </div>
 
   <!-- TAB 1: SCHEDULE, REGULAR TIMINGS & HOME SCREEN SHOWCASE -->
   <section id="tab-schedule" class="tab active">
@@ -1675,7 +1696,7 @@
     }
 
     // -------------------------------------------------------------
-    // HOME SCREEN PHOTO HIGHLIGHTS MANAGER
+    // HOME SCREEN PHOTO HIGHLIGHTS & PREVIEW MODAL
     // -------------------------------------------------------------
     function renderHomeScreenPhotos() {
       const container = document.getElementById('home-showcase-container');
@@ -1690,12 +1711,23 @@
       cachedHomePhotos.forEach(p => {
         const div = document.createElement('div');
         div.className = 'home-showcase-item';
+        div.onclick = function() { openImagePreview(p.url, p.caption); };
         div.innerHTML = `
           <img src="${p.url}" alt="${p.caption || 'Mandal Photo'}" onerror="this.src='icon.jpg'" />
           <div class="home-showcase-caption">${p.caption || 'Utsav'}</div>
         `;
         container.appendChild(div);
       });
+    }
+
+    function openImagePreview(url, caption) {
+      document.getElementById('preview-modal-img').src = url;
+      document.getElementById('preview-modal-caption').innerText = caption || 'Utsav Photo Highlight';
+      document.getElementById('image-preview-modal').style.display = 'block';
+    }
+
+    function closeImagePreview() {
+      document.getElementById('image-preview-modal').style.display = 'none';
     }
 
     function renderAdminHomePhotosList() {
