@@ -166,6 +166,43 @@
     .badge-paid { background: #e8f8f5; color: #27ae60; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; border: 1px solid #a3e4d7; display: inline-block; }
     .badge-unpaid { background: #fef9e7; color: #d35400; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; border: 1px solid #f9e79f; display: inline-block; }
 
+    /* Professional Home Screen Gallery Carousel / Grid */
+    .home-gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .home-gallery-item {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      aspect-ratio: 4 / 3;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      border: 1px solid #e5d7be;
+      background: #000;
+    }
+    .home-gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    .home-gallery-item:hover img {
+      transform: scale(1.05);
+    }
+    .home-gallery-caption {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 12px 8px 6px;
+      text-align: center;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+    }
+
     /* Bifurcated Sub-Tabs Bar in Khata */
     .admin-sub-bar {
       display: flex;
@@ -535,8 +572,40 @@
     </div>
   </aside>
 
-  <!-- TAB 1: SCHEDULE & REGULAR TIMINGS -->
+  <!-- TAB 1: SCHEDULE, REGULAR TIMINGS & PROFESSIONAL HOME PHOTOS -->
   <section id="tab-schedule" class="tab active">
+    
+    <!-- PROFESSIONAL HOME SCREEN HIGHLIGHT PHOTOS CARD -->
+    <div class="card" style="border-left-color: #d4af37; background: linear-gradient(135deg, #fffdf8, #fff5e1);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <h3 style="margin:0;">🪔 Utsav Darshan Highlights</h3>
+        <span style="font-size:0.7rem; font-weight:700; color:#7a0006; background:#fce8cc; padding:2px 8px; border-radius:10px;">Navratri 2026</span>
+      </div>
+      <p style="font-size:0.78rem; color:#666; margin-bottom:8px;">Glimpse of Mata Ji's divine idol & Sukhlaji Street pandal decoration:</p>
+      
+      <div class="home-gallery-grid">
+        <div class="home-gallery-item" onclick="switchSection('media', document.querySelectorAll('.drawer-links button')[1])">
+          <img src="icon.jpg" alt="Mata Ji Darshan" onerror="this.src='https://images.unsplash.com/photo-1609137144881-527e36f183ef?q=80&w=400&auto=format&fit=crop'" />
+          <div class="home-gallery-caption">✨ Mata Ji Divine Darshan</div>
+        </div>
+        <div class="home-gallery-item" onclick="switchSection('media', document.querySelectorAll('.drawer-links button')[1])">
+          <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=400&auto=format&fit=crop" alt="Pandal Lighting" />
+          <div class="home-gallery-caption">🌟 Pandal & Lighting</div>
+        </div>
+        <div class="home-gallery-item" onclick="switchSection('media', document.querySelectorAll('.drawer-links button')[1])">
+          <img src="https://images.unsplash.com/photo-1567157577867-05ccb1388e66?q=80&w=400&auto=format&fit=crop" alt="Maha Aarti" />
+          <div class="home-gallery-caption">🪔 Sandhya Maha Aarti</div>
+        </div>
+        <div class="home-gallery-item" onclick="switchSection('media', document.querySelectorAll('.drawer-links button')[1])">
+          <img src="https://images.unsplash.com/photo-1543807535-eceef0bc6599?q=80&w=400&auto=format&fit=crop" alt="Garba Utsav" />
+          <div class="home-gallery-caption">💃 Ras Garba Nights</div>
+        </div>
+      </div>
+      <button class="btn" style="background:#7a0006; width:100%; margin-top:10px; font-size:0.78rem; padding:8px;" onclick="switchSection('media', document.querySelectorAll('.drawer-links button')[1])">
+        📸 View Full Utsav Photo & Video Album ➔
+      </button>
+    </div>
+
     <div class="card" style="border-left-color: #2e7d32;">
       <h3 id="sec-pandal-title">Pandal Address & Helpdesk</h3>
       <p><strong>NEW MUNICIPAL BUILDING 76 TENAMENT 5TH LANE KAMATHIPURA SUKHLAJI STREET MUMBAI 400008</strong></p>
@@ -1322,7 +1391,7 @@
             </div>
 
             <div class="mrc-qr-box">
-              <img id="pr-qr-code" src="" alt="QR" />
+              <img id="pr-qr-code" alt="QR" />
               <span>पडताळणी / Scan<br>Verify Receipt</span>
             </div>
           </div>
