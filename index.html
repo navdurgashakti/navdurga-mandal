@@ -1385,50 +1385,7 @@
       { d: "21/10/2026 - बुधवार", dt: "21/10/2026", devi: "मूर्ति विसर्जन", clr: "सफेद (White)", p: "मूर्ति विसर्जन", pr: "महाप्रसाद" }
     ];
 
-        function renderDay(i) {
-      const x = cachedSchedule[i] || DEFAULT_DAYS[0];
-      
-      // Map color names to actual CSS colors for the swatch dot
-      const colorMap = {
-        "Red": "#e74c3c", "लाल": "#e74c3c",
-        "Royal Blue": "#2980b9", "रॉयल ब्लू": "#2980b9",
-        "Yellow": "#f1c40f", "पीला": "#f1c40f",
-        "Green": "#27ae60", "हरा": "#27ae60",
-        "Grey": "#7f8c8d", "ग्रे": "#7f8c8d",
-        "Orange": "#e67e22", "नारंगी": "#e67e22",
-        "White": "#ecf0f1", "सफेद": "#ecf0f1",
-        "Pink": "#ff69b4", "गुलाबी": "#ff69b4",
-        "Sky Blue": "#3498db", "आसमान": "#3498db",
-        "Purple": "#8e44ad", "बैंगनी": "#8e44ad"
-      };
-
-      // Extract color text (e.g. from "Orange (नारंगी)" or similar)
-      const rawColor = x.color || "Orange (नारंगी)";
-      let dotColor = "#e67e22"; // default fallback
-      for (let key in colorMap) {
-        if (rawColor.toLowerCase().includes(key.toLowerCase())) {
-          dotColor = colorMap[key];
-          break;
-        }
-      }
-
-      // Render the card with the color circle icon
-      document.getElementById('day-view').innerHTML = `
-        <div style="font-size:0.85rem; line-height:1.5;">
-          <div style="font-weight:700; color:var(--primary); margin-bottom:4px;">📅 दिनांक व वार / Date & Day: Day ${i+1} (${x.d || ''})</div>
-          <div>
-            <strong>रंग (Color Theme):</strong> 
-            <span style="display:inline-flex; align-items:center; gap:5px; font-weight:600;">
-              <span style="width:14px; height:14px; background:${dotColor}; border-radius:50%; display:inline-block; border:1px solid #999;"></span>
-              ${rawColor}
-            </span>
-          </div>
-          <div><strong>कार्यक्रम / Puja / Tithi:</strong> ${x.devi || ''}</div>
-          <div><strong>विशेष कार्यक्रम:</strong> ${x.special || 'Ghatstapana & Mandal Events'}</div>
-          <div><strong>प्रसाद:</strong> ${x.prasad || 'Mahaprasad'}</div>
-        </div>
-      `;
-        }
+        
     
 
     const DEFAULT_TIMINGS = {
