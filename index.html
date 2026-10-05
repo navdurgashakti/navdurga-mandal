@@ -8,6 +8,31 @@
   <link rel="apple-touch-icon" href="icon.jpg">
   <link rel="icon" type="image/jpeg" href="icon.jpg">
   <style>
+        /* Splash Screen Animation */
+    #splash-screen {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(135deg, var(--primary), #320002);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.6s ease;
+    }
+    .splash-logo {
+      width: 110px; height: 110px;
+      border-radius: 50%;
+      border: 3px solid var(--gold);
+      object-fit: cover;
+      box-shadow: 0 0 25px rgba(212, 175, 55, 0.6);
+      animation: popLogo 1.2s ease infinite alternate;
+    }
+    @keyframes popLogo {
+      0% { transform: scale(0.9); }
+      100% { transform: scale(1.1); }
+    }
+    
     :root { --primary: #7a0006; --gold: #d4af37; --gold-light: #fef8eb; --bg: #fffbf0; }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
     body { background: var(--bg); color: #2c3e50; min-height: 100vh; }
@@ -480,6 +505,127 @@
   </script>
 </head>
 <body>
+    <!-- SPLASH SCREEN WITH AUDIO & SUBTITLE -->
+  <div id="splash-screen">
+    <img src="icon.jpg" alt="Logo" class="splash-logo" onerror="this.src='https://via.cloudflare.com/110?text=NBMM'" />
+    <h2 style="color: #ffffff; font-size: 1.5rem; font-weight: 800; margin-top: 14px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">नवदुर्गा बाल मित्र मंडल</h2>
+    <p style="color: var(--gold); font-size: 1.1rem; font-weight: 700; letter-spacing: 1.5px; margin-top: 4px;">🌸 जय माता दी 🌸</p>
+    <!-- Basic instrumental audio using Web Audio API synthesizer (no broken external MP3 links) -->
+  </div>
+  <script>
+    // Play pleasant temple bell / flute style audio chime on open
+    window.addEventListener('load', () => {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const playTone = (freq, delay, dur) => {
+          setTimeout(() => {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + dur);
+          }, delay);
+        };
+        // Soft devotional chime sequence
+        playTone(330, 100, 1.2);
+        playTone(392, 400, 1.2);
+        playTone(493, 700, 1.5);
+        playTone(587, 1000, 2.0);
+      } catch(e) {}
+
+      setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        if (splash) {
+          splash.style.opacity = '0';
+          setTimeout(() => splash.remove(), 600);
+        }
+      }, 2500);
+    });
+  </script>
+
+      let cachedPosters = JSON.parse(localStorage.getItem('nbmm_posters') || 'null') || [
+      { id: 'p_1', title: 'Navratri Mahotsav 2026 Official Invitation', img: 'icon.jpg' }
+    ];
+
+    if (db) {
+      db.ref('posters').on('value', (snap) => {
+        const val = snap.val();
+        if (val) {
+          cachedPosters = Object.values(val);
+          localStorage.setItem('nbmm_posters', JSON.stringify(cachedPosters));
+        }
+        renderPosters();
+      });
+    }
+
+    function renderPosters() {
+      const grid = document.getElementById('public-posters-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      const isAdmin = (localStorage.getItem('nbmm_auth') === '1');
+      const adminBox = document.getElementById('member-poster-admin-box');
+      if (adminBox) adminBox.style.display = isAdmin ? 'block' : 'none';
+
+      if (cachedPosters.length === 0) {
+        grid.innerHTML = '<p style="font-size:0.8rem; color:#777; text-align:center; padding:15px;">No posters uploaded yet.</p>';
+        return;
+      }
+
+      cachedPosters.forEach(p => {
+        const div = document.createElement('div');
+        div.style = 'background:#fff; border:1px solid #e1d5c1; border-radius:8px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,0.06);';
+        div.innerHTML = `
+          <div style="background:#7a0006; color:#fff; padding:8px 10px; font-size:0.85rem; font-weight:bold;">${p.title}</div>
+          <div style="padding:10px; text-align:center; background:#000;">
+            <img src="${p.img}" alt="${p.title}" style="max-width:100%; max-height:350px; object-fit:contain; border-radius:4px;" onerror="this.src='icon.jpg'" />
+          </div>
+          ${isAdmin ? `<div style="padding:8px; text-align:right; background:#f9f9f9;"><button class="btn" style="background:#c0392b; font-size:0.75rem; padding:4px 10px;" onclick="deletePoster('${p.id}')">🗑️ Delete Poster</button></div>` : ''}
+        `;
+        grid.appendChild(div);
+      });
+    }
+
+    function saveMandalPoster() {
+      const title = document.getElementById('adm-poster-title').value.trim();
+      const img = document.getElementById('adm-poster-img').value.trim();
+
+      if (!title || !img) {
+        alert('Please enter poster title and image link.');
+        return;
+      }
+
+      const id = 'post_' + Date.now();
+      const item = { id, title, img };
+
+      cachedPosters.push(item);
+      localStorage.setItem('nbmm_posters', JSON.stringify(cachedPosters));
+      if (db) db.ref('posters/' + id).set(item);
+
+      document.getElementById('adm-poster-title').value = '';
+      document.getElementById('adm-poster-img').value = '';
+      alert('Poster published successfully!');
+      renderPosters();
+    }
+
+    function deletePoster(id) {
+      if (!confirm('Delete this poster?')) return;
+      cachedPosters = cachedPosters.filter(x => x.id !== id);
+      localStorage.setItem('nbmm_posters', JSON.stringify(cachedPosters));
+      if (db) db.ref('posters/' + id).remove();
+      renderPosters();
+    }
+
+    // Call renderPosters on load
+    renderPosters();
+  
+  
 
   <!-- HEADER -->
   <header>
@@ -525,6 +671,8 @@
       <p style="font-size:0.75rem; color:#ffe0b2; margin-top:3px;">शुक्लाजी स्ट्रीट, मुंबई</p>
     </div>
     <div class="drawer-links">
+      <button onclick="switchSection('posters', this)" id="nav-posters">🖼️ Mandal Posters</button>
+      
       <button class="active" onclick="switchSection('schedule', this)" id="nav-sched">📅 Daily Schedule</button>
       <button onclick="switchSection('media', this)" id="nav-media">📸 Photos & Videos</button>
       <button onclick="switchSection('live', this)" id="nav-live">🔴 Live Darshan</button>
@@ -534,6 +682,30 @@
       <button onclick="switchSection('admin', this)" id="nav-admin">🔐 पावती पुस्तक (Khata)</button>
     </div>
   </aside>
+
+    <!-- TAB: MANDAL POSTERS -->
+  <section id="tab-posters" class="tab">
+    <div class="card" style="border-left-color: #8e44ad;">
+      <h3>🖼️ Mandal Utsav Posters & Banners</h3>
+      <p style="font-size:0.82rem; color:#555; margin-bottom:10px;">Official festival posters published by the committee:</p>
+      <div id="public-posters-grid" style="display:grid; grid-template-columns:1fr; gap:12px;"></div>
+    </div>
+
+    <!-- MEMBER-ONLY POSTER UPLOAD CARD (Hidden unless logged in) -->
+    <div id="member-poster-admin-box" class="card" style="display:none; border-left-color: #7a0006; margin-top:14px;">
+      <h3>🔐 Committee Poster Manager (Member Only)</h3>
+      <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Add or remove official Mandal posters:</p>
+      
+      <label style="font-size:0.75rem; font-weight:600;">Poster Title *</label>
+      <input type="text" id="adm-poster-title" class="input-box" placeholder="e.g. Navratri Mahotsav Invitation Banner" />
+
+      <label style="font-size:0.75rem; font-weight:600;">Poster Image URL (Google Drive / Imgur / Direct Link) *</label>
+      <input type="url" id="adm-poster-img" class="input-box" placeholder="https://..." />
+
+      <button class="btn" style="background:#7a0006; width:100%;" onclick="saveMandalPoster()">➕ Publish Poster</button>
+    </div>
+  </section>
+  
 
   <!-- TAB 1: SCHEDULE & REGULAR TIMINGS -->
   <section id="tab-schedule" class="tab active">
@@ -2263,16 +2435,39 @@
 
     function renderDay(i) {
       const x = cachedSchedule[i] || DEFAULT_DAYS[0];
+        function renderDay(i) {
+      const x = cachedSchedule[i] || DEFAULT_DAYS[0];
       const view = document.getElementById('day-view');
       if (!view) return;
+
+      // Color mapping helper
+      let hex = '#d4af37';
+      const c = (x.clr || '').toLowerCase();
+      if (c.includes('केसरिया') || c.includes('orange')) hex = '#e67e22';
+      else if (c.includes('सफेद') || c.includes('white')) hex = '#ecf0f1';
+      else if (c.includes('लाल') || c.includes('red')) hex = '#c0392b';
+      else if (c.includes('ब्लू') || c.includes('blue')) hex = '#2980b9';
+      else if (c.includes('येलो') || c.includes('yellow')) hex = '#f1c40f';
+      else if (c.includes('हरा') || c.includes('green')) hex = '#27ae60';
+      else if (c.includes('ग्रे') || c.includes('grey')) hex = '#7f8c8d';
+      else if (c.includes('बैंगनी') || c.includes('purple')) hex = '#8e44ad';
+      else if (c.includes('गुलाबी') || c.includes('pink')) hex = '#e84393';
+
       view.innerHTML = `
         <h4 style="color:var(--primary); font-size:1.02rem; margin-bottom:6px;">📅 दिनांक व वार / Date & Day: ${x.d || ''}</h4>
-        <p><strong>रंग (Color Theme):</strong> <span style="font-weight:700; color:#d4af37;">${x.clr || ''}</span></p>
+        <p style="display:flex; align-items:center; gap:8px;">
+          <strong>रंग (Color Theme):</strong> 
+          <span style="display:inline-flex; align-items:center; gap:5px; font-weight:700; color:#333;">
+            <span style="width:16px; height:16px; background:${hex}; border-radius:50%; display:inline-block; border:1px solid #aaa; box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span>
+            ${x.clr || ''}
+          </span>
+        </p>
         <p><strong>कार्यक्रम / Puja / Tithi:</strong> ${x.devi || ''}</p>
         <p><strong>विशेष कार्यक्रम:</strong> ${x.p || ''}</p>
         <p><strong>प्रसाद:</strong> ${x.pr || ''}</p>
       `;
-    }
+        }
+      
 
     function populateScheduleSelects() {
       const sel = document.getElementById('adm-sched-day-select');
