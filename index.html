@@ -596,6 +596,14 @@
     <div class="card" style="border-left-color: #c0392b; text-align: center;">
       <h3 id="sec-live-title">🔴 Live Darshan & Aarti</h3>
       <p style="font-size:0.85rem; color:#555; margin-bottom:12px;" id="sec-live-sub">Watch live Aarti and darshan direct from our Sukhlaji Street pandal:</p>
+      <div class="card" style="border-left-color: #27ae60; margin-top: 10px; text-align: center;">
+  <h3>🔔 Live Notification Alerts</h3>
+  <p style="font-size:0.8rem; color:#555; margin-bottom:8px;">Get instant phone notifications when Aarti or live stream starts:</p>
+  <button class="btn" style="background:#27ae60; width:100%; font-size:0.85rem;" onclick="requestLiveNotificationPermission()">
+    🔔 Enable Live Push Notifications
+  </button>
+  <p id="notif-status-lbl" style="font-size:0.72rem; color:#777; margin-top:6px;"></p>
+      </div>
       
       <div id="live-pandal-cam-box" style="display:none; background:#111; color:#fff; border-radius:10px; padding:10px; margin-bottom:12px; border:2px solid #27ae60;">
         <div style="font-size:0.85rem; font-weight:700; color:#2ecc71; margin-bottom:6px; display:flex; align-items:center; justify-content:center; gap:6px;">
@@ -1599,7 +1607,109 @@
         qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiLink)}`;
       }
     }
+// -------------------------------------------------------------
+// PUSH NOTIFICATION ENGINE FOR LIVE STREAMS
+// -------------------------------------------------------------
+function requestLiveNotificationPermission() {
+  if (!("Notification" in window)) {
+    alert("This browser does not support desktop/mobile push notifications.");
+    return;
+  }
 
+  Notification.requestPermission().then((permission) => {
+    const lbl = document.getElementById('notif-status-lbl');
+    if (permission === "granted") {
+      if (lbl) {
+        lbl.innerText = "Status: 🟢 Notifications Enabled Successfully!";
+        lbl.style.color = "#27ae60";
+      }
+      alert("Notifications enabled! You will now receive alerts whenever the Mandal goes live.");
+      
+      // Send a test test notification
+      new Notification("Navdurga Balmitra Mandal", {
+        body: "Notifications are successfully activated for Utsav 2026!",
+        icon: "icon.jpg"
+      });
+    } else {
+      if (lbl) {
+        lbl.innerText = "Status: 🔴 Permission denied. Enable in browser settings.";
+        lbl.style.color = "#c0392b";
+      }
+      alert("Notification permission was denied. Please allow notifications in your browser settings.");
+    }
+  });
+}
+
+function triggerLivePushAlert(title, message, streamUrl) {
+  // Check if browser supports notifications and permission is granted
+  if ("Notification" in window && Notification.permission === "granted") {
+    const notification = new Notification(title, {
+      body: message,
+      icon: "icon.jpg",
+      badge: "icon.jpg",
+      tag: "nbmm-live-alert",
+      requireInteraction: true
+    });
+
+    notification.onclick = function(event) {
+      event.preventDefault();
+      window.focus();
+      if (streamUrl) {
+        window.open(streamUrl, '_blank');
+      } else {
+        switchSection('live', document.querySelector('.drawer-links button'));
+      }
+      notification.close();
+    };
+  }
+}
+
+// Hook into existing Firebase live listeners to automatically trigger notifications
+// Add these lines inside your existing Firebase .on('value') handlers:
+
+// 1. Inside YouTube Live listener:
+db.ref('live_stream').on('value', (snap) => {
+  const val = snap.val() || '';
+  if (val && val !== cachedLiveStream) {
+    triggerLivePushAlert(
+      "🔴 MANDAL LIVE ON YOUTUBE!", 
+      "The live Aarti broadcast has just started. Tap here to join now!", 
+      val
+    );
+  }
+  cachedLiveStream = val;
+  localStorage.setItem('nbmm_live_url', val);
+  renderLiveStream(val);
+});
+
+// 2. Inside Instagram Live listener:
+db.ref('insta_live').on('value', (snap) => {
+  const isLive = (snap.val() === true);
+  if (isLive && !cachedInstaLive) {
+    triggerLivePushAlert(
+      "📸 INSTAGRAM LIVE STARTED!", 
+      "Navdurga Balmitra Mandal is now live on Instagram. Tap to watch!", 
+      "https://instagram.com"
+    );
+  }
+  cachedInstaLive = isLive;
+  renderInstagramLive(isLive);
+});
+
+// 3. Inside Pandal Camera Live listener:
+db.ref('pandal_cam_live').on('value', (snap) => {
+  const isLive = (snap.val() === true);
+  if (isLive && !cachedPandalCam) {
+    triggerLivePushAlert(
+      "🟢 PANDAL DIRECT CAMERA LIVE!", 
+      "Direct camera feed from Sukhlaji Street mandal is now active.",
+      window.location.href
+    );
+  }
+  cachedPandalCam = isLive;
+  renderPandalCamLive(isLive);
+});
+    
     function renderPandalCamLive(isLive) {
       const box = document.getElementById('live-pandal-cam-box');
       const iframe = document.getElementById('live-pandal-iframe');
