@@ -8,35 +8,62 @@
   <link rel="apple-touch-icon" href="icon.jpg">
   <link rel="icon" type="image/jpeg" href="icon.jpg">
   <style>
-        /* Splash Screen Animation */
-    #splash-screen {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(135deg, var(--primary), #320002);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      transition: opacity 0.6s ease;
-    }
-    .splash-logo {
-      width: 110px; height: 110px;
-      border-radius: 50%;
-      border: 3px solid var(--gold);
-      object-fit: cover;
-      box-shadow: 0 0 25px rgba(212, 175, 55, 0.6);
-      animation: popLogo 1.2s ease infinite alternate;
-    }
-    @keyframes popLogo {
-      0% { transform: scale(0.9); }
-      100% { transform: scale(1.1); }
-    }
-    
     :root { --primary: #7a0006; --gold: #d4af37; --gold-light: #fef8eb; --bg: #fffbf0; }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
     body { background: var(--bg); color: #2c3e50; min-height: 100vh; }
     
+    /* SPLASH SCREEN & LOGO ANIMATION */
+    #app-splash-screen {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(135deg, #7a0006, #3b0003);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      transition: opacity 0.6s ease;
+    }
+    .splash-logo-wrap {
+      position: relative;
+      margin-bottom: 16px;
+      animation: pulseGlow 2s infinite alternate;
+    }
+    .splash-logo {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 3px solid var(--gold);
+      object-fit: cover;
+      box-shadow: 0 0 25px rgba(212, 175, 55, 0.6);
+    }
+    .splash-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 6px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+    .splash-subtitle {
+      font-size: 1.15rem;
+      color: var(--gold);
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+      animation: fadeInText 1.2s ease-in-out;
+    }
+    @keyframes fadeInText {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulseGlow {
+      from { transform: scale(1); box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); }
+      to { transform: scale(1.05); box-shadow: 0 0 30px rgba(212, 175, 55, 0.8); }
+    }
+
     header { 
       background: linear-gradient(135deg, var(--primary), #520004); 
       color: #fff; 
@@ -505,127 +532,27 @@
   </script>
 </head>
 <body>
-    <!-- SPLASH SCREEN WITH AUDIO & SUBTITLE -->
-  <div id="splash-screen">
-    <img src="icon.jpg" alt="Logo" class="splash-logo" onerror="this.src='https://via.cloudflare.com/110?text=NBMM'" />
-    <h2 style="color: #ffffff; font-size: 1.5rem; font-weight: 800; margin-top: 14px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">नवदुर्गा बाल मित्र मंडल</h2>
-    <p style="color: var(--gold); font-size: 1.1rem; font-weight: 700; letter-spacing: 1.5px; margin-top: 4px;">🌸 जय माता दी 🌸</p>
-    <!-- Basic instrumental audio using Web Audio API synthesizer (no broken external MP3 links) -->
+
+  <!-- APP LAUNCH WELCOME SPLASH SCREEN WITH LOGO & JAI MATA DI SUBTITLE -->
+  <div id="app-splash-screen">
+    <div class="splash-logo-wrap">
+      <img src="icon.jpg" alt="Logo" class="splash-logo" onerror="this.style.display='none'" />
+    </div>
+    <h2 class="splash-title">नवदुर्गा बाल मित्र मंडल</h2>
+    <div class="splash-subtitle">🚩 जय माता दी (Jai Mata Di) 🚩</div>
+    <p style="font-size:0.75rem; color:#ffe0b2; margin-top:12px;">Navratri Utsav 2026 • Sukhlaji Street, Mumbai</p>
   </div>
-  <script>
-    // Play pleasant temple bell / flute style audio chime on open
-    window.addEventListener('load', () => {
-      try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const playTone = (freq, delay, dur) => {
-          setTimeout(() => {
-            if (!audioCtx) return;
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'triangle';
-            osc.frequency.value = freq;
-            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + dur);
-          }, delay);
-        };
-        // Soft devotional chime sequence
-        playTone(330, 100, 1.2);
-        playTone(392, 400, 1.2);
-        playTone(493, 700, 1.5);
-        playTone(587, 1000, 2.0);
-      } catch(e) {}
 
-      setTimeout(() => {
-        const splash = document.getElementById('splash-screen');
-        if (splash) {
-          splash.style.opacity = '0';
-          setTimeout(() => splash.remove(), 600);
-        }
-      }, 2500);
-    });
-  </script>
+  <!-- BACKGROUND DEVOTIONAL AUDIO PLAYER -->
+  <audio id="devotional-audio" loop preload="auto">
+    <source src="https://actions.google.com/sounds/v1/religious/hindu_temple_bells.ogg" type="audio/ogg">
+    <source src="https://actions.google.com/sounds/v1/ambiences/temple_bells.ogg" type="audio/ogg">
+  </audio>
 
-      let cachedPosters = JSON.parse(localStorage.getItem('nbmm_posters') || 'null') || [
-      { id: 'p_1', title: 'Navratri Mahotsav 2026 Official Invitation', img: 'icon.jpg' }
-    ];
-
-    if (db) {
-      db.ref('posters').on('value', (snap) => {
-        const val = snap.val();
-        if (val) {
-          cachedPosters = Object.values(val);
-          localStorage.setItem('nbmm_posters', JSON.stringify(cachedPosters));
-        }
-        renderPosters();
-      });
-    }
-
-    function renderPosters() {
-      const grid = document.getElementById('public-posters-grid');
-      if (!grid) return;
-      grid.innerHTML = '';
-
-      const isAdmin = (localStorage.getItem('nbmm_auth') === '1');
-      const adminBox = document.getElementById('member-poster-admin-box');
-      if (adminBox) adminBox.style.display = isAdmin ? 'block' : 'none';
-
-      if (cachedPosters.length === 0) {
-        grid.innerHTML = '<p style="font-size:0.8rem; color:#777; text-align:center; padding:15px;">No posters uploaded yet.</p>';
-        return;
-      }
-
-      cachedPosters.forEach(p => {
-        const div = document.createElement('div');
-        div.style = 'background:#fff; border:1px solid #e1d5c1; border-radius:8px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,0.06);';
-        div.innerHTML = `
-          <div style="background:#7a0006; color:#fff; padding:8px 10px; font-size:0.85rem; font-weight:bold;">${p.title}</div>
-          <div style="padding:10px; text-align:center; background:#000;">
-            <img src="${p.img}" alt="${p.title}" style="max-width:100%; max-height:350px; object-fit:contain; border-radius:4px;" onerror="this.src='icon.jpg'" />
-          </div>
-          ${isAdmin ? `<div style="padding:8px; text-align:right; background:#f9f9f9;"><button class="btn" style="background:#c0392b; font-size:0.75rem; padding:4px 10px;" onclick="deletePoster('${p.id}')">🗑️ Delete Poster</button></div>` : ''}
-        `;
-        grid.appendChild(div);
-      });
-    }
-
-    function saveMandalPoster() {
-      const title = document.getElementById('adm-poster-title').value.trim();
-      const img = document.getElementById('adm-poster-img').value.trim();
-
-      if (!title || !img) {
-        alert('Please enter poster title and image link.');
-        return;
-      }
-
-      const id = 'post_' + Date.now();
-      const item = { id, title, img };
-
-      cachedPosters.push(item);
-      localStorage.setItem('nbmm_posters', JSON.stringify(cachedPosters));
-      if (db) db.ref('posters/' + id).set(item);
-
-      document.getElementById('adm-poster-title').value = '';
-      document.getElementById('adm-poster-img').value = '';
-      alert('Poster published successfully!');
-      renderPosters();
-    }
-
-    function deletePoster(id) {
-      if (!confirm('Delete this poster?')) return;
-      cachedPosters = cachedPosters.filter(x => x.id !== id);
-      localStorage.setItem('nbmm_posters', JSON.stringify(cachedPosters));
-      if (db) db.ref('posters/' + id).remove();
-      renderPosters();
-    }
-
-    // Call renderPosters on load
-    renderPosters();
-  
-  
+  <!-- FLOATING AUDIO TOGGLE BUTTON -->
+  <button id="audio-toggle-btn" onclick="toggleBackgroundAudio()" style="position:fixed; bottom:16px; right:16px; z-index:95; background:var(--primary); color:#fff; border:2px solid var(--gold); border-radius:50%; width:46px; height:46px; font-size:1.2rem; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(0,0,0,0.3); cursor:pointer;" title="Mute/Unmute Aarti Music">
+    🔕
+  </button>
 
   <!-- HEADER -->
   <header>
@@ -645,10 +572,14 @@
     </div>
   </header>
 
-  <!-- 1-TAP QR DIRECT INSTALL MODAL -->
+    <!-- 1-TAP QR DIRECT INSTALL & OPENING SPLASH MODAL -->
   <div id="qr-install-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.85); z-index:500; padding:20px;">
     <div style="background:#ffffff; max-width:380px; margin:18vh auto 0; border-radius:12px; padding:22px; text-align:center; border:3px solid #7a0006; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
-      <img src="icon.jpg" alt="Logo" style="width:70px; height:70px; border-radius:50%; border:2px solid #d4af37; margin-bottom:10px; object-fit:cover;" onerror="this.style.display='none'" />
+      <img src="icon.jpg" alt="Logo" style="width:70px; height:70px; border-radius:50%; border:2px solid #d4af37; margin-bottom:6px; object-fit:cover;" onerror="this.style.display='none'" />
+      
+      <!-- SUBTITLE FEATURE -->
+      <div style="font-size:0.85rem; font-weight:800; color:#d4af37; letter-spacing:1px; margin-bottom:6px; text-transform:uppercase;">🌸 जय माता दी (Jay Mata Di) 🌸</div>
+
       <h3 style="color:#7a0006; font-size:1.15rem; margin-bottom:6px;" id="qrm-title">नवदुर्गा बाल मित्र मंडल</h3>
       <p style="font-size:0.85rem; color:#444; line-height:1.4; margin-bottom:16px;" id="qrm-desc">
         Install our official Mandal app directly to your home screen!
@@ -662,6 +593,12 @@
     </div>
   </div>
 
+  <!-- OPENING MANTRA / BELL AUDIO ELEMENT -->
+  <audio id="opening-audio" preload="auto">
+    <source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mpeg">
+  </audio>
+  
+
   <!-- OVERLAY & SIDE DRAWER -->
   <div id="drawer-overlay" onclick="closeDrawer()"></div>
   <aside id="side-drawer">
@@ -671,8 +608,6 @@
       <p style="font-size:0.75rem; color:#ffe0b2; margin-top:3px;">शुक्लाजी स्ट्रीट, मुंबई</p>
     </div>
     <div class="drawer-links">
-      <button onclick="switchSection('posters', this)" id="nav-posters">🖼️ Mandal Posters</button>
-      
       <button class="active" onclick="switchSection('schedule', this)" id="nav-sched">📅 Daily Schedule</button>
       <button onclick="switchSection('media', this)" id="nav-media">📸 Photos & Videos</button>
       <button onclick="switchSection('live', this)" id="nav-live">🔴 Live Darshan</button>
@@ -682,30 +617,6 @@
       <button onclick="switchSection('admin', this)" id="nav-admin">🔐 पावती पुस्तक (Khata)</button>
     </div>
   </aside>
-
-    <!-- TAB: MANDAL POSTERS -->
-  <section id="tab-posters" class="tab">
-    <div class="card" style="border-left-color: #8e44ad;">
-      <h3>🖼️ Mandal Utsav Posters & Banners</h3>
-      <p style="font-size:0.82rem; color:#555; margin-bottom:10px;">Official festival posters published by the committee:</p>
-      <div id="public-posters-grid" style="display:grid; grid-template-columns:1fr; gap:12px;"></div>
-    </div>
-
-    <!-- MEMBER-ONLY POSTER UPLOAD CARD (Hidden unless logged in) -->
-    <div id="member-poster-admin-box" class="card" style="display:none; border-left-color: #7a0006; margin-top:14px;">
-      <h3>🔐 Committee Poster Manager (Member Only)</h3>
-      <p style="font-size:0.75rem; color:#555; margin-bottom:8px;">Add or remove official Mandal posters:</p>
-      
-      <label style="font-size:0.75rem; font-weight:600;">Poster Title *</label>
-      <input type="text" id="adm-poster-title" class="input-box" placeholder="e.g. Navratri Mahotsav Invitation Banner" />
-
-      <label style="font-size:0.75rem; font-weight:600;">Poster Image URL (Google Drive / Imgur / Direct Link) *</label>
-      <input type="url" id="adm-poster-img" class="input-box" placeholder="https://..." />
-
-      <button class="btn" style="background:#7a0006; width:100%;" onclick="saveMandalPoster()">➕ Publish Poster</button>
-    </div>
-  </section>
-  
 
   <!-- TAB 1: SCHEDULE & REGULAR TIMINGS -->
   <section id="tab-schedule" class="tab active">
@@ -851,7 +762,7 @@
           <span class="bank-data-lbl">Account Number:</span>
           <span class="bank-data-val" id="bnk-val-acc">123456789012</span>
         </div>
-        <div class="bank-data-row">
+        <div class="bank--data-row">
           <span class="bank-data-lbl">IFSC Code:</span>
           <span class="bank-data-val" id="bnk-val-ifsc">SBIN0000000</span>
         </div>
@@ -1557,9 +1468,6 @@
       { d: "21/10/2026 - बुधवार", dt: "21/10/2026", devi: "मूर्ति विसर्जन", clr: "सफेद (White)", p: "मूर्ति विसर्जन", pr: "महाप्रसाद" }
     ];
 
-        
-    
-
     const DEFAULT_TIMINGS = {
       subah: "7:30 AM",
       sandhya: "7:30 PM",
@@ -2024,7 +1932,7 @@
     }
 
     // -------------------------------------------------------------
-    // NAVIGATION, DRAWER & LANGUAGE SWITCHER FUNCTIONS
+    // NAVIGATION,DRAWER & LANGUAGE SWITCHER FUNCTIONS
     // -------------------------------------------------------------
     function openDrawer() {
       const drawer = document.getElementById('side-drawer');
@@ -2433,41 +2341,37 @@
       renderDay(i);
     }
 
-    function renderDay(i) {
-      const x = cachedSchedule[i] || DEFAULT_DAYS[0];
         function renderDay(i) {
       const x = cachedSchedule[i] || DEFAULT_DAYS[0];
       const view = document.getElementById('day-view');
       if (!view) return;
 
-      // Color mapping helper
-      let hex = '#d4af37';
-      const c = (x.clr || '').toLowerCase();
-      if (c.includes('केसरिया') || c.includes('orange')) hex = '#e67e22';
-      else if (c.includes('सफेद') || c.includes('white')) hex = '#ecf0f1';
-      else if (c.includes('लाल') || c.includes('red')) hex = '#c0392b';
-      else if (c.includes('ब्लू') || c.includes('blue')) hex = '#2980b9';
-      else if (c.includes('येलो') || c.includes('yellow')) hex = '#f1c40f';
-      else if (c.includes('हरा') || c.includes('green')) hex = '#27ae60';
-      else if (c.includes('ग्रे') || c.includes('grey')) hex = '#7f8c8d';
-      else if (c.includes('बैंगनी') || c.includes('purple')) hex = '#8e44ad';
-      else if (c.includes('गुलाबी') || c.includes('pink')) hex = '#e84393';
+      // COLOR MAPPING HELPER FOR ICON DOTS
+      let colorCode = '#d4af37'; // Default Gold
+      const clrLower = (x.clr || '').toLowerCase();
+      if (clrLower.includes('orange') || clrLower.includes('केसरिया')) colorCode = '#e67e22';
+      else if (clrLower.includes('white') || clrLower.includes('सफेद')) colorCode = '#ecf0f1; border:1px solid #bdc3c7';
+      else if (clrLower.includes('red') || clrLower.includes('लाल')) colorCode = '#c0392b';
+      else if (clrLower.includes('blue') || clrLower.includes('ब्लू')) colorCode = '#2980b9';
+      else if (clrLower.includes('yellow') || clrLower.includes('येलो') || clrLower.includes('पिवळा')) colorCode = '#f1c40f';
+      else if (clrLower.includes('green') || clrLower.includes('हरा') || clrLower.includes('हिरवा')) colorCode = '#27ae60';
+      else if (clrLower.includes('grey') || clrLower.includes('ग्रे')) colorCode = '#7f8c8d';
+      else if (clrLower.includes('purple') || clrLower.includes('बैंगनी')) colorCode = '#8e44ad';
+      else if (clrLower.includes('pink') || clrLower.includes('गुलाबी')) colorCode = '#e84393';
 
       view.innerHTML = `
         <h4 style="color:var(--primary); font-size:1.02rem; margin-bottom:6px;">📅 दिनांक व वार / Date & Day: ${x.d || ''}</h4>
-        <p style="display:flex; align-items:center; gap:8px;">
+        <p style="display:flex; align-items:center; gap:6px;">
           <strong>रंग (Color Theme):</strong> 
-          <span style="display:inline-flex; align-items:center; gap:5px; font-weight:700; color:#333;">
-            <span style="width:16px; height:16px; background:${hex}; border-radius:50%; display:inline-block; border:1px solid #aaa; box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span>
-            ${x.clr || ''}
-          </span>
+          <span style="display:inline-block; width:14px; height:14px; border-radius:50%; background:${colorCode}; vertical-align:middle; box-shadow:0 1px 3px rgba(0,0,0,0.3);"></span>
+          <span style="font-weight:700; color:#444;">${x.clr || ''}</span>
         </p>
         <p><strong>कार्यक्रम / Puja / Tithi:</strong> ${x.devi || ''}</p>
         <p><strong>विशेष कार्यक्रम:</strong> ${x.p || ''}</p>
         <p><strong>प्रसाद:</strong> ${x.pr || ''}</p>
       `;
-        }
-      
+    }
+    
 
     function populateScheduleSelects() {
       const sel = document.getElementById('adm-sched-day-select');
@@ -3010,7 +2914,23 @@
     renderCCTVStream(cachedCCTVStream);
     renderLiveStream(cachedLiveStream);
     checkLogin();
+        // FEATURE 1: PLAY OPENING SOUND ON FIRST USER INTERACTION / LOAD
+    window.addEventListener('DOMContentLoaded', () => {
+      const audio = document.getElementById('opening-audio');
+      if (audio) {
+        audio.volume = 0.6;
+        audio.play().catch(() => {
+          // Fallback if browser blocks autoplay without user interaction
+          const unlockAudio = () => {
+            audio.play().catch(() => {});
+            document.removeEventListener('click', unlockAudio);
+            document.removeEventListener('touchstart', unlockAudio);
+          };
+          document.addEventListener('click', unlockAudio);
+          document.addEventListener('touchstart', unlockAudio);
+        });
+      }
+    });
   </script>
 </body>
 </html>
-
